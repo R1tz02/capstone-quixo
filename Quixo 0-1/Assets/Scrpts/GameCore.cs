@@ -10,7 +10,7 @@ public class GameCore : MonoBehaviour
     public Material playerTwoSpace;
 
     private PieceLogic pieceLogic;
-    private GameObject[,] gameBoard = new GameObject[5, 5];
+    public GameObject[,] gameBoard = new GameObject[5, 5];
     private bool playerOneTurn = true;
 
     // Start is called before the first frame update
