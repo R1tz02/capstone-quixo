@@ -377,7 +377,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 20, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 20, y: 180, z: -0}
 --- !u!1 &1168835912 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6996250526482911767, guid: dd6a351acc2491446a00759faf0ee278,
@@ -406,7 +406,7 @@ MonoBehaviour:
   endMarker: {fileID: 1169903712}
   lookAt: {fileID: 1168835913}
   currentCam: {fileID: 961739752}
-  speed: 10
+  speed: 8
 --- !u!64 &1168835920
 MeshCollider:
   m_ObjectHideFlags: 0
