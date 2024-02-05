@@ -23,6 +23,7 @@ public class GameCore : MonoBehaviour
     public Player currentPlayer = new Player();
     public Player p1 = new Player();
     public Player p2 = new Player();
+main
 
     
     // Start is called before the first frame update
