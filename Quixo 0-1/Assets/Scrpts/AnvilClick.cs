@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 
 public class AnvilClick : MonoBehaviour
@@ -10,14 +12,15 @@ public class AnvilClick : MonoBehaviour
     public Transform lookAt;
     public Camera currentCam;
 
-    public float speed = 1f;
-    public float lerpDuration = 1f;
+    public float moveDuration = 1f;
+    public float rotaionDuration = 1f;
 
     private bool hasBeenClicked = false;
     private float startTime;
     private float journeyLength;
     
     bool rotating;
+    bool moving;
 
     // Start is called before the first frame update
     void Start()
@@ -34,15 +37,33 @@ public class AnvilClick : MonoBehaviour
         Debug.Log("Test");
     }
 
-    IEnumerator Rotate90()
+
+    IEnumerator MoveToLocation() 
+    { 
+        moving = true;
+        startTime = Time.time;
+        float timeElapsed = 0;
+
+        while (timeElapsed < moveDuration) 
+        { 
+            currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, timeElapsed / moveDuration);
+            timeElapsed = Time.deltaTime;
+            yield return null;
+        }
+        currentCam.transform.position = endMarker.position;
+        moving = false;
+        hasBeenClicked = false;
+    }
+    IEnumerator RotateDown()
     {
         rotating = true;
         float timeElapsed = 0;
+
         Quaternion startRotation = currentCam.transform.rotation;
         Quaternion targetRotation = endMarker.transform.rotation;
-        while (timeElapsed < lerpDuration)
+        while (timeElapsed < rotaionDuration)
         {
-            currentCam.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, timeElapsed / lerpDuration);
+            currentCam.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, timeElapsed / rotaionDuration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
@@ -55,18 +76,14 @@ public class AnvilClick : MonoBehaviour
     {
         if (hasBeenClicked)
         {
-            // Distance moved equals elapsed time times speed..
-            float distCovered = (Time.time - startTime) * speed;
-
-            // Fraction of journey completed equals current distance divided by total distance.
-            float fractionOfJourney = distCovered / journeyLength;
-
-            // Set our position as a fraction of the distance between the markers.
-            currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, fractionOfJourney);
             if (!rotating)
             {
-                StartCoroutine(Rotate90());
+                StartCoroutine(RotateDown());
             }
-        }
+            if (!moving)
+            { 
+                StartCoroutine(MoveToLocation());
+            }
+       }
     }
 }
