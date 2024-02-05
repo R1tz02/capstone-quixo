@@ -11,22 +11,43 @@ public class AnvilClick : MonoBehaviour
     public Camera currentCam;
 
     public float speed = 1f;
+    public float lerpDuration = 1f;
 
     private bool hasBeenClicked = false;
     private float startTime;
     private float journeyLength;
+    
+    bool rotating;
 
     // Start is called before the first frame update
     void Start()
     {
-        startTime = Time.time;
+        
 
         journeyLength = Vector3.Distance(currentCam.transform.position, endMarker.position);
     }
 
     void OnMouseDown()
     {
+        startTime = Time.time;
         hasBeenClicked = true;
+        Debug.Log("Test");
+    }
+
+    IEnumerator Rotate90()
+    {
+        rotating = true;
+        float timeElapsed = 0;
+        Quaternion startRotation = currentCam.transform.rotation;
+        Quaternion targetRotation = endMarker.transform.rotation;
+        while (timeElapsed < lerpDuration)
+        {
+            currentCam.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, timeElapsed / lerpDuration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        currentCam.transform.rotation = targetRotation;
+        rotating = false;
     }
 
     // Update is called once per frame
@@ -42,8 +63,10 @@ public class AnvilClick : MonoBehaviour
 
             // Set our position as a fraction of the distance between the markers.
             currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, fractionOfJourney);
-
-            currentCam.transform.LookAt(lookAt.position, Vector3.back);
+            if (!rotating)
+            {
+                StartCoroutine(Rotate90());
+            }
         }
     }
 }
