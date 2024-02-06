@@ -16,8 +16,7 @@ public class AnvilClick : MonoBehaviour
     public float rotaionDuration = 1f;
 
     private bool hasBeenClicked = false;
-    private float startTime;
-    private float journeyLength;
+    private bool isEnabled = true;
     
     bool rotating;
     bool moving;
@@ -25,34 +24,40 @@ public class AnvilClick : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-
-        journeyLength = Vector3.Distance(currentCam.transform.position, endMarker.position);
+       
     }
 
     void OnMouseDown()
     {
-        startTime = Time.time;
-        hasBeenClicked = true;
-        Debug.Log("Test");
+        if (isEnabled)
+        {
+            if (!rotating)
+            {
+                StartCoroutine(RotateDown());
+            }
+            if (!moving)
+            {
+                StartCoroutine(MoveToLocation());
+            }
+        }
+        isEnabled = false;
     }
 
 
     IEnumerator MoveToLocation() 
     { 
         moving = true;
-        startTime = Time.time;
         float timeElapsed = 0;
 
         while (timeElapsed < moveDuration) 
         { 
             currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, timeElapsed / moveDuration);
-            timeElapsed = Time.deltaTime;
+            timeElapsed += Time.deltaTime;
+            Debug.Log("0");
             yield return null;
         }
         currentCam.transform.position = endMarker.position;
         moving = false;
-        hasBeenClicked = false;
     }
     IEnumerator RotateDown()
     {
@@ -74,16 +79,5 @@ public class AnvilClick : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hasBeenClicked)
-        {
-            if (!rotating)
-            {
-                StartCoroutine(RotateDown());
-            }
-            if (!moving)
-            { 
-                StartCoroutine(MoveToLocation());
-            }
-       }
     }
 }
