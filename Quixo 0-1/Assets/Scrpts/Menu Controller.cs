@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class MenuController : MonoBehaviour
 {
     public Transform mMenuLocation;
     public Camera currentCam;
-
+    public Canvas currentCanvas;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
 
     bool rotating;
     bool moving;
+
+
+    void Start()
+    {
+        currentCanvas.enabled = false;
+    }
 
     IEnumerator MoveToLocation()
     {
@@ -51,6 +58,7 @@ public class MenuController : MonoBehaviour
 
     public void goBack()
     {
+        currentCanvas.enabled = false;
         if (!moving)
         {
             StartCoroutine(MoveToLocation());

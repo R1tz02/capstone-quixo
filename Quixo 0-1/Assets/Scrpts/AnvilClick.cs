@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using Unity.VisualScripting.ReorderableList;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEditor.UI;
 
 public class AnvilClick : MonoBehaviour
 {
@@ -11,12 +13,12 @@ public class AnvilClick : MonoBehaviour
     public Transform endMarker;
     public Transform lookAt;
     public Camera currentCam;
+    public Canvas currentCanvas;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
 
     private bool hasBeenClicked = false;
-    private bool isEnabled = true;
     
     bool rotating;
     bool moving;
@@ -29,7 +31,7 @@ public class AnvilClick : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (isEnabled)
+        if (currentCam.transform.position != endMarker.position)
         {
             if (!rotating)
             {
@@ -40,7 +42,6 @@ public class AnvilClick : MonoBehaviour
                 StartCoroutine(MoveToLocation());
             }
         }
-        isEnabled = false;
     }
 
 
@@ -57,6 +58,7 @@ public class AnvilClick : MonoBehaviour
             yield return null;
         }
         currentCam.transform.position = endMarker.position;
+        currentCanvas.enabled = true;
         moving = false;
     }
     IEnumerator RotateDown()
@@ -79,5 +81,6 @@ public class AnvilClick : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 }
