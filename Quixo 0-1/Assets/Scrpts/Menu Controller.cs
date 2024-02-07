@@ -9,7 +9,8 @@ public class MenuController : MonoBehaviour
 {
     public Transform mMenuLocation;
     public Camera currentCam;
-    public Canvas currentCanvas;
+    public Canvas quickCanvas;
+    public Canvas multiCanvas;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
@@ -17,10 +18,11 @@ public class MenuController : MonoBehaviour
     bool rotating;
     bool moving;
 
-
+    
     void Start()
     {
-        currentCanvas.enabled = false;
+        quickCanvas.enabled = false;
+        multiCanvas.enabled = false;
     }
 
     IEnumerator MoveToLocation()
@@ -58,7 +60,8 @@ public class MenuController : MonoBehaviour
 
     public void goBack()
     {
-        currentCanvas.enabled = false;
+        quickCanvas.enabled = false;
+        multiCanvas.enabled = false;
         if (!moving)
         {
             StartCoroutine(MoveToLocation());
