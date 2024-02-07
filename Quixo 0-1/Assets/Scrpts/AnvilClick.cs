@@ -9,9 +9,7 @@ using UnityEditor.UI;
 
 public class AnvilClick : MonoBehaviour
 {
-    public Transform startMarker;
     public Transform endMarker;
-    public Transform lookAt;
     public Camera currentCam;
     public Canvas currentCanvas;
 
