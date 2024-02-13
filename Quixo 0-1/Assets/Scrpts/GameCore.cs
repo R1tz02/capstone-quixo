@@ -176,14 +176,14 @@ public class GameCore : MonoBehaviour
             for (int i = chosenPiece.row; i > 0; i--)
             {
                 gameBoard[i - 1, chosenPiece.col].GetComponent<PieceLogic>().row = i; //F: Change the piece's underlying variable holding its row
-                gameBoard[i-1, chosenPiece.col].transform.position = new Vector3(gameBoard[i-1, chosenPiece.col].transform.position.x + 20, 5, gameBoard[i-1, chosenPiece.col].transform.position.z); //F: Physically move every piece in the row/col
+                gameBoard[i-1, chosenPiece.col].transform.position = new Vector3(gameBoard[i-1, chosenPiece.col].transform.position.x + 20, 99, gameBoard[i-1, chosenPiece.col].transform.position.z); //F: Physically move every piece in the row/col
                 gameBoard[i, chosenPiece.col] = gameBoard[i - 1, chosenPiece.col]; //F: updating the array (low level implementation of the game)
             }
             //F: This could probably be better, I'll improve it this week
             gameBoard[0, chosenPiece.col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
             gameBoard[0, chosenPiece.col].GetComponent<PieceLogic>().player = currentPiece; //F: changing the moved piece's symbol to the current
             gameBoard[0, chosenPiece.col].GetComponent<Renderer>().material = pieceColor; //F: ^ same thing but material (color) of the piece
-            gameBoard[0, chosenPiece.col].transform.position = new Vector3(-40, 5, gameBoard[1, chosenPiece.col].transform.position.z); //F: physically move the selected piece
+            gameBoard[0, chosenPiece.col].transform.position = new Vector3(-40, 99, gameBoard[1, chosenPiece.col].transform.position.z); //F: physically move the selected piece
             gameBoard[0, chosenPiece.col].GetComponent<PieceLogic>().row = 0; //F: ^^ same but with row
         }
         else if (dir == 'd')
@@ -191,13 +191,13 @@ public class GameCore : MonoBehaviour
             for (int i = chosenPiece.row; i < 4; i++)
             {
                 gameBoard[i + 1, chosenPiece.col].GetComponent<PieceLogic>().row = i;
-                gameBoard[i + 1, chosenPiece.col].transform.position = new Vector3(gameBoard[i + 1, chosenPiece.col].transform.position.x - 20, 5, gameBoard[i + 1, chosenPiece.col].transform.position.z);
+                gameBoard[i + 1, chosenPiece.col].transform.position = new Vector3(gameBoard[i + 1, chosenPiece.col].transform.position.x - 20, 99, gameBoard[i + 1, chosenPiece.col].transform.position.z);
                 gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col];
             }
             gameBoard[4, chosenPiece.col] = gameBoard[0, 5];
             gameBoard[4, chosenPiece.col].GetComponent<Renderer>().material = pieceColor;
             gameBoard[4, chosenPiece.col].GetComponent<PieceLogic>().player = currentPiece;
-            gameBoard[4, chosenPiece.col].transform.position = new Vector3(40, 5, gameBoard[1, chosenPiece.col].transform.position.z);
+            gameBoard[4, chosenPiece.col].transform.position = new Vector3(40, 99, gameBoard[1, chosenPiece.col].transform.position.z);
             gameBoard[4, chosenPiece.col].GetComponent<PieceLogic>().row = 4;
         }
         else if (dir == 'r')
@@ -205,13 +205,13 @@ public class GameCore : MonoBehaviour
             for (int i = chosenPiece.col; i < 4; i++)
             {
                 gameBoard[chosenPiece.row, i + 1].GetComponent<PieceLogic>().col = i;
-                gameBoard[chosenPiece.row, i + 1].transform.position = new Vector3(gameBoard[chosenPiece.row, i + 1].transform.position.x, 5, gameBoard[chosenPiece.row, i + 1].transform.position.z - 20);
+                gameBoard[chosenPiece.row, i + 1].transform.position = new Vector3(gameBoard[chosenPiece.row, i + 1].transform.position.x, 99, gameBoard[chosenPiece.row, i + 1].transform.position.z - 20);
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
             }
             gameBoard[chosenPiece.row, 4] = gameBoard[0, 5];
             gameBoard[chosenPiece.row, 4].GetComponent<Renderer>().material = pieceColor;
             gameBoard[chosenPiece.row, 4].GetComponent<PieceLogic>().player = currentPiece; 
-            gameBoard[chosenPiece.row, 4].transform.position = new Vector3(gameBoard[chosenPiece.row, 1].transform.position.x, 5, 40);
+            gameBoard[chosenPiece.row, 4].transform.position = new Vector3(gameBoard[chosenPiece.row, 1].transform.position.x, 99, 40);
             gameBoard[chosenPiece.row, 4].GetComponent<PieceLogic>().col = 4;
         }
         else if (dir == 'l')
@@ -219,13 +219,13 @@ public class GameCore : MonoBehaviour
             for (int i = chosenPiece.col; i > 0; i--)
             {
                 gameBoard[chosenPiece.row, i - 1].GetComponent<PieceLogic>().col = i;
-                gameBoard[chosenPiece.row, i - 1].transform.position = new Vector3(gameBoard[chosenPiece.row, i - 1].transform.position.x, 5, gameBoard[chosenPiece.row, i - 1].transform.position.z + 20);
+                gameBoard[chosenPiece.row, i - 1].transform.position = new Vector3(gameBoard[chosenPiece.row, i - 1].transform.position.x, 99, gameBoard[chosenPiece.row, i - 1].transform.position.z + 20);
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
             }
             gameBoard[chosenPiece.row, 0] = gameBoard[0, 5];
             gameBoard[chosenPiece.row, 0].GetComponent<Renderer>().material = pieceColor;
             gameBoard[chosenPiece.row, 0].GetComponent<PieceLogic>().player = currentPiece; 
-            gameBoard[chosenPiece.row, 0].transform.position = new Vector3(gameBoard[chosenPiece.row, 1].transform.position.x, 5, -40);
+            gameBoard[chosenPiece.row, 0].transform.position = new Vector3(gameBoard[chosenPiece.row, 1].transform.position.x, 99, -40);
             gameBoard[chosenPiece.row, 0].GetComponent<PieceLogic>().col = 0;
         }
     }
@@ -302,7 +302,7 @@ public class GameCore : MonoBehaviour
             z = -40;
             for (int j = 0; j < 5; j++)
             {
-                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3(x, 5f ,z), Quaternion.identity);
+                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3(x, 99f ,z), Quaternion.identity);
                 gameBoard[i, j].GetComponent<PieceLogic>().row = i;
                 gameBoard[i, j].GetComponent<PieceLogic>().col = j;
                 gameBoard[i, j].GetComponent<PieceLogic>().player = '-';
