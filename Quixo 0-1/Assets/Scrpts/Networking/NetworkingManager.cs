@@ -1,35 +1,87 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
-using System;
 using UnityEngine.SceneManagement;
-
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using Unity.VisualScripting;
+using System.Threading.Tasks;
 
 [Serializable]
-public class PieceData
+public struct PieceData
 {
     public int row;
     public int col;
     public char player;
 }
 
+
 [Serializable]
-public class GameState
+public struct GameState
 {
-    public PieceData[,] pieces;
+    public const int Rows = 5;
+    public const int Cols = 6;
+
+    public PieceData[] piecesData;
+
+    public static GameState Create()
+    {
+        return new GameState
+        {
+            piecesData = new PieceData[Rows * Cols]
+        };
+    }
+
+    public string Serialize()
+    {
+        return JsonUtility.ToJson(this);
+    }
+
+    public static GameState Deserialize(string data)
+    {
+        return JsonUtility.FromJson<GameState>(data);
+    }
 }
 
 public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 {
+    private List<PlayerRef> _players = new List<PlayerRef>();
+
+    [SerializeField] public NetworkPrefabRef _playerPrefab;
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         Debug.Log("Player joined: " + player);
-        if (runner.IsServer)
+        _players.Add(player);
+
+        if (_players.Count != 2)
         {
+            Debug.Log("Need to wait for more players to join before starting the game.");
+            return;
+        }
+
+        Debug.Log("All players have joined. Starting the game...");
+
+        game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+
+        gameState = GameState.Create();
+
+        if (_runner.IsServer)
+        {
+            Debug.Log("Starting game as server");
+
+            AssignPlayers();
+
+            game.populateBoard();
+
             SyncBoard();
         }
+
+        game.currentPlayer = game.p1;
+
+        game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
@@ -57,17 +109,22 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void Start()
     {
-        ButtonHandler.OnMoveMade += RPCSendMove;
+        //ButtonHandler.OnMoveMade += RpcSendMove;
     }
 
     public async void StartGame(GameMode mode)
     {
-        // Create the Fusion runner and let it know that we will be providing user input
-        _runner = GameObject.Find("NetworkManager").AddComponent<NetworkRunner>();
+        Debug.Log("Starting game...");
+        GameObject NetworkManager = GameObject.Find("NetworkManager");
+
+        if (!NetworkManager.TryGetComponent<NetworkRunner>(out _runner))
+        {
+            Debug.LogError("Failed to get NetworkRunner component to NetworkManager game object");
+            return;
+        }
 
         _runner.ProvideInput = true;
 
-        // Create the NetworkSceneInfo from the current scene
         var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
         var sceneInfo = new NetworkSceneInfo();
         if (scene.IsValid)
@@ -75,59 +132,55 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
         }
 
-        // Start or join (depends on gamemode) a session with a specific name
         await _runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
-
-            // TODO: This is where lobby settings would go
-
             SessionName = "TestRoom",
             Scene = scene,
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            SceneManager = NetworkManager.AddComponent<NetworkSceneManagerDefault>()
         });
-
-        game = gameObject.AddComponent<GameCore>();
-
-        game.populateBoard();
-
-        gameState = new GameState();
-
-        AssignPlayers();
-
-        SyncBoard();
     }
 
-    // Sync the board with the other player
-    // This only needs to be called on connect and other cases where the board may not be synced
-    private void SyncBoard()
+    private async void SyncBoard()
     {
+        Debug.Log("Syncing board...");
         UpdateSerializableObject();
-        UpdateGameState(gameState);
+        Debug.Log("Serialized game state: " + gameState.Serialize());
+
+        await Task.Delay(5000);
+        RpcUpdateGameState(gameState.Serialize());
     }
 
-    // Update the game state with the current serializable object
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    private void UpdateGameState(GameState state)
+    private void UpdateGameState()
     {
-        gameState = state;
-        for (int i = 0; i < gameState.pieces.GetLength(0); i++)
+        for (int i = 0; i < GameState.Rows - 1; i++)
         {
-            for (int j = 0; j < gameState.pieces.GetLength(1); j++)
+            for (int j = 0; j < GameState.Cols - 1; j++)
             {
-                game.gameBoard[i, j].GetComponent<PieceLogic>().player = gameState.pieces[i, j].player;
+                int index = i * (GameState.Cols - 1) + j;
+                PieceData piece = gameState.piecesData[index];
+                game.gameBoard[piece.row, piece.col].GetComponent<PieceLogic>().player = piece.player;
             }
         }
     }
 
-    // Update the serializable object with the current game state
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void RpcUpdateGameState(string serializedState)
+    {
+        Debug.Log("Updating game state...");
+        gameState = GameState.Deserialize(serializedState);
+        Debug.Log("Deserialized game state" + gameState.piecesData.Length + " pieces.");
+        UpdateGameState();
+    }
+
     private void UpdateSerializableObject()
     {
-        for (int i = 0; i < game.gameBoard.GetLength(0); i++)
+        for (int i = 0; i < GameState.Rows - 1; i++)
         {
-            for (int j = 0; j < game.gameBoard.GetLength(1); j++)
+            for (int j = 0; j < GameState.Cols - 1; j++)
             {
-                gameState.pieces[i, j] = new PieceData()
+                int index = i * (GameState.Cols - 1) + j;
+                gameState.piecesData[index] = new PieceData()
                 {
                     row = i,
                     col = j,
@@ -136,19 +189,34 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             }
         }
     }
-
-    // Send the move to the other player
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    private void RPCSendMove(char direction)
-    {
-        Debug.Log("Sending move: " + direction);
-        game.makeMove(direction);
-    }
+    /* 
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        private void RpcSendMove(char direction) // Change char to byte
+        {
+            Debug.Log("Sending move: " + (char)direction); // Convert byte back to char
+            game.makeMove(direction); // Convert byte back to char
+        } */
 
     private void AssignPlayers()
     {
-        // Assign the players to the game
-        game.p1 = new NetworkedPlayer('X');
-        game.p2 = new NetworkedPlayer('O');
+        Debug.Log("Assigning players...");
+        if (_runner == null)
+        {
+            Debug.Log("Runner is not initialized");
+            return;
+        }
+        game.p1 = SpawnNetworkedPlayer(_players[0], 'X');
+        game.p2 = SpawnNetworkedPlayer(_players[1], 'O');
+    }
+
+    public NetworkedPlayer SpawnNetworkedPlayer(PlayerRef playerRef, char playerSymbol)
+    {
+        NetworkObject networkedObject = _runner.Spawn(_playerPrefab, Vector3.zero, Quaternion.identity, playerRef);
+
+        NetworkedPlayer networkedPlayer = networkedObject.AddComponent<NetworkedPlayer>();
+
+        networkedPlayer.Initialize(playerRef, playerSymbol);
+
+        return networkedPlayer;
     }
 }

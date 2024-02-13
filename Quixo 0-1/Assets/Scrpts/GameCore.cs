@@ -2,12 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI.Table;
-
-public class Player //F: Holds the symbol of the particular player and whether they have won
-{
-    public char piece;
-    public bool won = false;
-}
+using Fusion;
 
 public class GameCore : MonoBehaviour
 { 
@@ -18,22 +13,73 @@ public class GameCore : MonoBehaviour
     public ButtonHandler buttonHandler;
     private PieceLogic pieceLogic;
     private PieceLogic chosenPiece;
-    private GameObject[,] gameBoard = new GameObject[5, 6];
+    public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
-    public Player currentPlayer = new Player();
-    public Player p1 = new Player();
-    public Player p2 = new Player();
-main
+    public IPlayer currentPlayer;
+    public IPlayer p1;
+    public IPlayer p2;
+    public bool isGameStarted = false;
 
-    
     // Start is called before the first frame update
     void Start()
-    { 
-        p1.piece = 'X'; //F: assign X to player one
-        currentPlayer = p1; //F: make X the first player/move
-        p2.piece = 'O'; //F: assign O to player two
+    {
+
+    }
+
+    public void OnGUI(){
+        if (isGameStarted) return;
+
+        if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
+        {
+            isGameStarted = true;
+            StartNetworkedGame("Host");
+        }
+        if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
+        {
+            isGameStarted = true;
+            StartNetworkedGame("Client");
+        }
+        if (GUI.Button(new Rect(0, 80, 200, 40), "Local"))
+        {
+            isGameStarted = true;
+            StartLocalGame();
+        }
+    }
+
+    void StartLocalGame()
+    {
+        GameObject player1Object = new GameObject("Player1");
+        p1 = player1Object.AddComponent<LocalPlayer>();
+        p1.Initialize('X');
+
+        GameObject player2Object = new GameObject("Player2");
+        p2 = player2Object.AddComponent<LocalPlayer>();
+        p2.Initialize('O');
+
+        currentPlayer = p1;
+
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-        populateBoard(); //Initialize board
+
+        populateBoard();
+    }
+
+    void StartNetworkedGame(string gameType)
+    {
+        if (gameType != "Host" && gameType != "Client")
+        {
+            throw new System.Exception("Not a valid game type");
+        }
+
+        NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+        if (gameType == "Host")
+        {
+            networkingManager.StartGame(GameMode.Host);
+        }
+        else
+        {
+            networkingManager.StartGame(GameMode.Client);
+        }
     }
         
 
@@ -293,8 +339,8 @@ main
         return false;
     }
 
-    //fills the board with GamePiece Objects and sets the important feilds
-    void populateBoard() 
+    //fills the board with GamePiece Objects and sets the important fields
+    public void populateBoard() 
     {
         int x = -40;
         int z = -40;
