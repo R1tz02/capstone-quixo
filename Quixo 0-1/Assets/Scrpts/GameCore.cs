@@ -24,6 +24,8 @@ public class GameCore : MonoBehaviour
     public Player p1 = new Player();
     public Player p2 = new Player();
 
+    public bool gamePaused = false;
+
     
     // Start is called before the first frame update
     void Start()
@@ -232,6 +234,10 @@ public class GameCore : MonoBehaviour
 
     public void makeMove(char c)
     {
+        if (gamePaused)
+        {
+            return;
+        }
         Debug.Log("make move called");
         shiftBoard(c, currentPlayer.piece);
         buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
@@ -281,6 +287,10 @@ public class GameCore : MonoBehaviour
 
     public bool validPiece(int row, int col)
     {
+        if(gamePaused)
+        {
+            return false;
+        }
         chosenPiece = gameBoard[row, col].GetComponent<PieceLogic>();
         if ((row == 0 || row == 4) || (col == 0 || col == 4)) //edge pieces
         {
