@@ -31,7 +31,7 @@ public class GameCore : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        winScreen.gameObject.SetActive(false);
+        winScreen.enabled = false;
         p1.piece = 'X'; //F: assign X to player one
         currentPlayer = p1; //F: make X the first player/move
         p2.piece = 'O'; //F: assign O to player two
@@ -269,7 +269,7 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (counter > 8 && won()) //F: TODO add counter 
             {
-                winScreen.gameObject.SetActive(true);
+                winScreen.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
