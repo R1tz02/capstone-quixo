@@ -336,11 +336,12 @@ public class GameCore : MonoBehaviour
             z = -40;
             for (int j = 0; j < 5; j++)
             {
-                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3(x, 100f, z), Quaternion.identity);
+                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3(x, 105f, z), Quaternion.identity);
                 gameBoard[i, j].GetComponent<PieceLogic>().row = i;
                 gameBoard[i, j].GetComponent<PieceLogic>().col = j;
                 gameBoard[i, j].GetComponent<PieceLogic>().player = '-';
                 gameBoard[i, j].GetComponent<PieceLogic>().game = this;
+                gameBoard[i, j].GetComponent<Rigidbody>().useGravity = true;
                 z += 20;
             }
             x += 20;
