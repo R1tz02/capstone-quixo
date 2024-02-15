@@ -26,10 +26,12 @@ public class GameCore : MonoBehaviour
     public Player p2 = new Player();
     public int counter = 0;
     public bool gamePaused;
+    public Canvas winScreen;
 
     // Start is called before the first frame update
     void Start()
     {
+        winScreen.gameObject.SetActive(false);
         p1.piece = 'X'; //F: assign X to player one
         currentPlayer = p1; //F: make X the first player/move
         p2.piece = 'O'; //F: assign O to player two
@@ -267,12 +269,9 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (counter > 8 && won()) //F: TODO add counter 
             {
-                GameObject instantiatedPrefab = Instantiate(winnerText, Vector3.zero, Quaternion.identity); //F: instantiating the winner text pop up, this is temporal
-                instantiatedPrefab.GetComponent<TextMesh>().text = currentPlayer.piece + " won!"; //F: setting its output content
-                instantiatedPrefab.SetActive(true); //F: make it appear
-                instantiatedPrefab.transform.position = new Vector3(41, 58, -21); //F: adjust it so it is visible
-                instantiatedPrefab.transform.rotation = Quaternion.Euler(90, -90, 0); //F: ^
-                instantiatedPrefab.GetComponent<TextMesh>().fontSize = 350;
+                winScreen.gameObject.SetActive(true);
+                Time.timeScale = 0;
+                gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
                 return;
             }
