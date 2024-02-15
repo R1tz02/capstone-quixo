@@ -25,6 +25,7 @@ public class GameCore : MonoBehaviour
     public Player p1 = new Player();
     public Player p2 = new Player();
     public int counter = 0;
+    public bool gamePaused;
 
     // Start is called before the first frame update
     void Start()
@@ -255,6 +256,10 @@ public class GameCore : MonoBehaviour
 
     public void makeMove(char c)
     {
+        if (gamePaused)
+        {
+            return;
+        }
         if (validPiece(chosenPiece.row, chosenPiece.col))
         {
             shiftBoard(c, currentPlayer.piece);
@@ -306,6 +311,10 @@ public class GameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col)
     {
+        if (gamePaused)
+        {
+            return false;
+        }
         PieceLogic piece = gameBoard[row, col].GetComponent<PieceLogic>();
         if ((row == 0 || row == 4) || (col == 0 || col == 4))
         {
