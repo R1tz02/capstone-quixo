@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
-using static UnityEngine.Rendering.DebugUI.Table;
 using Fusion;
 
 public class GameCore : MonoBehaviour
@@ -13,25 +10,30 @@ public class GameCore : MonoBehaviour
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
     private PieceLogic pieceLogic;
-    private PieceLogic chosenPiece;
+    public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
+    // TODO: This is just a temp place holder for testing networking. Please remove this when you are done.
     public bool isGameStarted = false;
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
 
+    //Event for sending chosen piece to the NetworkingManager
+    public delegate void ChosenPieceEvent(PieceLogic piece);
+    public static event ChosenPieceEvent OnChosenPiece;
     
     // Start is called before the first frame update
     void Start()
     {
-
+        winScreen.enabled = false;
     }
 
     public void OnGUI(){
+        // TODO: Please remove this whole function
         if (isGameStarted) return;
 
         if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
@@ -51,9 +53,27 @@ public class GameCore : MonoBehaviour
         }
     }
 
+    void StartNetworkedGame(string gameType)
+    {
+        if (gameType != "Host" && gameType != "Client")
+        {
+            throw new System.Exception("Not a valid game type");
+        }
+
+        NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+        if (gameType == "Host")
+        {
+            networkingManager.StartGame(GameMode.Host);
+        }
+        else
+        {
+            networkingManager.StartGame(GameMode.Client);
+        }
+    }
+
     void StartLocalGame()
     {
-        winScreen.enabled = false;
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
         p1.Initialize('X');
@@ -349,6 +369,9 @@ public class GameCore : MonoBehaviour
             if (piece.player == '-' || currentPlayer.piece == piece.player)
             {
                 chosenPiece = piece;
+
+                OnChosenPiece?.Invoke(chosenPiece);
+
                 return true;
             }
         }

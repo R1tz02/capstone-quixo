@@ -73,6 +73,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         ButtonHandler.OnMoveMade += SendMove;
+        GameCore.OnChosenPiece += SetChosenPiece;
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -228,5 +229,11 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnDestroy()
     {
         ButtonHandler.OnMoveMade -= SendMove;
+        GameCore.OnChosenPiece -= SetChosenPiece;
+    }
+
+    public void SetChosenPiece(PieceLogic piece)
+    {
+        game.chosenPiece = piece;
     }
 }
