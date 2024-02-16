@@ -15,7 +15,7 @@ public class ButtonHandler : MonoBehaviour
     public GameCore game;
 
     // Create Event so that we can add a listener to any other class that wants to know when a move was made
-    public delegate void MoveMade(byte direction);
+    public delegate void MoveMade(char direction);
     public static event MoveMade OnMoveMade;
 
     void Start()
@@ -31,6 +31,7 @@ public class ButtonHandler : MonoBehaviour
     private void doOnClick(char c)
     {
         game.makeMove(c); //F: make a move
+        OnMoveMade?.Invoke(c); // Call the event to let other classes know that a move was made
     }
 
     public void changeArrowsBack() //F: we change the arrows back to white

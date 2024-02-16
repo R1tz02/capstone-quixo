@@ -4,10 +4,6 @@ using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine.SceneManagement;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using Unity.VisualScripting;
-using System.Threading.Tasks;
 
 [Serializable]
 public struct PieceData
@@ -16,7 +12,6 @@ public struct PieceData
     public int col;
     public char player;
 }
-
 
 [Serializable]
 public struct GameState
@@ -47,44 +42,49 @@ public struct GameState
 
 public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    private List<PlayerRef> _players = new List<PlayerRef>();
+    public List<KeyValuePair<PlayerRef, NetworkedPlayer>> _players = new();
 
-    [SerializeField] public NetworkPrefabRef _playerPrefab;
+    public static bool GameSetUp { get; set; } = false;
+
+    [SerializeField] private NetworkPrefabRef _playerPrefab;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log("Player joined: " + player);
-        _players.Add(player);
+        _players.Add(new KeyValuePair<PlayerRef, NetworkedPlayer>(player, null));
 
-        if (_players.Count != 2)
-        {
-            Debug.Log("Need to wait for more players to join before starting the game.");
-            return;
-        }
-
-        Debug.Log("All players have joined. Starting the game...");
+        if (_players.Count != 2) return;
 
         game = GameObject.Find("GameMaster").GetComponent<GameCore>();
 
         gameState = GameState.Create();
 
-        if (_runner.IsServer)
+        game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+
+        game.populateBoard();
+
+        if (runner.IsServer)
         {
-            Debug.Log("Starting game as server");
+            AssignPlayers(() =>
+            {
+                GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key);
+                SyncBoard();
+            });
 
-            AssignPlayers();
-
-            game.populateBoard();
-
-            SyncBoard();
         }
 
-        game.currentPlayer = game.p1;
-
-        game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        ButtonHandler.OnMoveMade += SendMove;
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        int playerIndex = _players.FindIndex(p => p.Key == player);
+        if (playerIndex != -1)
+        {
+            NetworkedPlayer networkedPlayer = _players[playerIndex].Value;
+            runner.Despawn(networkedPlayer.GetComponent<NetworkObject>());
+            _players.RemoveAt(playerIndex);
+        }
+    }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
@@ -103,25 +103,13 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
     public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
 
-    private NetworkRunner _runner;
+    public NetworkRunner _runner;
     public GameCore game;
     public GameState gameState;
 
-    public void Start()
-    {
-        //ButtonHandler.OnMoveMade += RpcSendMove;
-    }
-
     public async void StartGame(GameMode mode)
     {
-        Debug.Log("Starting game...");
-        GameObject NetworkManager = GameObject.Find("NetworkManager");
-
-        if (!NetworkManager.TryGetComponent<NetworkRunner>(out _runner))
-        {
-            Debug.LogError("Failed to get NetworkRunner component to NetworkManager game object");
-            return;
-        }
+        _runner = gameObject.AddComponent<NetworkRunner>();
 
         _runner.ProvideInput = true;
 
@@ -137,23 +125,24 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             GameMode = mode,
             SessionName = "TestRoom",
             Scene = scene,
-            SceneManager = NetworkManager.AddComponent<NetworkSceneManagerDefault>()
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
+
+        Debug.Log("Game started");
     }
 
-    private async void SyncBoard()
+    private void SyncBoard()
     {
         Debug.Log("Syncing board...");
         UpdateSerializableObject();
         Debug.Log("Serialized game state: " + gameState.Serialize());
 
-        await Task.Delay(5000);
-        RpcUpdateGameState(gameState.Serialize());
+        GetNetworkedPlayer(_runner.LocalPlayer).RpcUpdateGameState(gameState.Serialize());
     }
 
-    private void UpdateGameState()
+    public void UpdateGameState()
     {
-        for (int i = 0; i < GameState.Rows - 1; i++)
+        for (int i = 0; i < GameState.Rows; i++)
         {
             for (int j = 0; j < GameState.Cols - 1; j++)
             {
@@ -164,18 +153,20 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    private void RpcUpdateGameState(string serializedState)
+    private NetworkedPlayer GetNetworkedPlayer(PlayerRef playerRef)
     {
-        Debug.Log("Updating game state...");
-        gameState = GameState.Deserialize(serializedState);
-        Debug.Log("Deserialized game state" + gameState.piecesData.Length + " pieces.");
-        UpdateGameState();
+        int playerIndex = _players.FindIndex(p => p.Key == playerRef);
+        if (playerIndex != -1)
+        {
+            return _players[playerIndex].Value;
+        }
+
+        throw new Exception("Player not found");
     }
 
     private void UpdateSerializableObject()
     {
-        for (int i = 0; i < GameState.Rows - 1; i++)
+        for (int i = 0; i < GameState.Rows; i++)
         {
             for (int j = 0; j < GameState.Cols - 1; j++)
             {
@@ -189,34 +180,53 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             }
         }
     }
-    /* 
-        [Rpc(RpcSources.All, RpcTargets.All)]
-        private void RpcSendMove(char direction) // Change char to byte
-        {
-            Debug.Log("Sending move: " + (char)direction); // Convert byte back to char
-            game.makeMove(direction); // Convert byte back to char
-        } */
 
-    private void AssignPlayers()
+    private void AssignPlayers(Action OnComplete)
     {
-        Debug.Log("Assigning players...");
         if (_runner == null)
         {
             Debug.Log("Runner is not initialized");
             return;
         }
-        game.p1 = SpawnNetworkedPlayer(_players[0], 'X');
-        game.p2 = SpawnNetworkedPlayer(_players[1], 'O');
+
+        for (int playerIndex = 0; playerIndex < 2; playerIndex++)
+        {
+            var player = _players[playerIndex];
+
+            char playerSymbol = playerIndex == 0 ? 'X' : 'O';
+
+            NetworkedPlayer networkedPlayer = SpawnNetworkedPlayer(player.Key, playerSymbol);
+
+            _players[playerIndex] = new KeyValuePair<PlayerRef, NetworkedPlayer>(player.Key, networkedPlayer);
+
+            Debug.Log("Spawned player: " + player.Key);
+        }
+
+        // Use this callback to make sure that the players are created on the client before continuing
+        StartCoroutine(NetworkedPlayer.WaitForClientConfirmation(OnComplete));
     }
 
     public NetworkedPlayer SpawnNetworkedPlayer(PlayerRef playerRef, char playerSymbol)
     {
         NetworkObject networkedObject = _runner.Spawn(_playerPrefab, Vector3.zero, Quaternion.identity, playerRef);
 
-        NetworkedPlayer networkedPlayer = networkedObject.AddComponent<NetworkedPlayer>();
+        NetworkedPlayer networkedPlayer = networkedObject.GetComponent<NetworkedPlayer>();
 
-        networkedPlayer.Initialize(playerRef, playerSymbol);
+        networkedPlayer.Initialize(playerSymbol, playerRef);
 
         return networkedPlayer;
+    }
+
+    public void SendMove(char direction)
+    {
+        Debug.Log("Sending move: " + direction);
+        Debug.Log("Is Server: " + _runner.IsServer);
+        byte move = (byte)direction;
+        GetNetworkedPlayer(_runner.LocalPlayer).RpcSendMove(move);
+    }
+
+    public void OnDestroy()
+    {
+        ButtonHandler.OnMoveMade -= SendMove;
     }
 }
