@@ -79,7 +79,7 @@ PlayerSettings:
   androidAutoRotationBehavior: 1
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
-  runInBackground: 1
+  runInBackground: 0
   captureSingleScreen: 0
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
@@ -804,7 +804,19 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: FUSION_WEAVER;FUSION2
+    Android: UNITY_POST_PROCESSING_STACK_V2
+    EmbeddedLinux: UNITY_POST_PROCESSING_STACK_V2
+    GameCoreXboxOne: UNITY_POST_PROCESSING_STACK_V2
+    Nintendo Switch: UNITY_POST_PROCESSING_STACK_V2
+    PS4: UNITY_POST_PROCESSING_STACK_V2
+    PS5: UNITY_POST_PROCESSING_STACK_V2
+    QNX: UNITY_POST_PROCESSING_STACK_V2
+    Stadia: UNITY_POST_PROCESSING_STACK_V2
+    Standalone: UNITY_POST_PROCESSING_STACK_V2
+    VisionOS: UNITY_POST_PROCESSING_STACK_V2
+    WebGL: UNITY_POST_PROCESSING_STACK_V2
+    XboxOne: UNITY_POST_PROCESSING_STACK_V2
+    tvOS: UNITY_POST_PROCESSING_STACK_V2
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
@@ -827,7 +839,7 @@ PlayerSettings:
     tvOS: 1
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
-  allowUnsafeCode: 1
+  allowUnsafeCode: 0
   useDeterministicCompilation: 1
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1

@@ -1,49 +1,84 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using Unity.VisualScripting.ReorderableList;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEditor.UI;
 
 public class AnvilClick : MonoBehaviour
 {
-    public Transform startMarker;
     public Transform endMarker;
-    public Transform lookAt;
     public Camera currentCam;
+    public Canvas currentCanvas;
 
-    public float speed = 1f;
+    public float moveDuration = 1f;
+    public float rotaionDuration = 1f;
 
     private bool hasBeenClicked = false;
-    private float startTime;
-    private float journeyLength;
+    
+    bool rotating;
+    bool moving;
 
     // Start is called before the first frame update
     void Start()
     {
-        startTime = Time.time;
-
-        journeyLength = Vector3.Distance(currentCam.transform.position, endMarker.position);
+       
     }
 
     void OnMouseDown()
     {
-        hasBeenClicked = true;
+        if (currentCam.transform.position != endMarker.position)
+        {
+            if (!rotating)
+            {
+                StartCoroutine(RotateDown());
+            }
+            if (!moving)
+            {
+                StartCoroutine(MoveToLocation());
+            }
+        }
+    }
+
+
+    IEnumerator MoveToLocation() 
+    { 
+        moving = true;
+        float timeElapsed = 0;
+
+        while (timeElapsed < moveDuration) 
+        { 
+            currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, timeElapsed / moveDuration);
+            timeElapsed += Time.deltaTime;
+            Debug.Log("0");
+            yield return null;
+        }
+        currentCam.transform.position = endMarker.position;
+        currentCanvas.enabled = true;
+        moving = false;
+    }
+    IEnumerator RotateDown()
+    {
+        rotating = true;
+        float timeElapsed = 0;
+
+        Quaternion startRotation = currentCam.transform.rotation;
+        Quaternion targetRotation = endMarker.transform.rotation;
+        while (timeElapsed < rotaionDuration)
+        {
+            currentCam.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, timeElapsed / rotaionDuration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        currentCam.transform.rotation = targetRotation;
+        rotating = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (hasBeenClicked)
-        {
-            // Distance moved equals elapsed time times speed..
-            float distCovered = (Time.time - startTime) * speed;
 
-            // Fraction of journey completed equals current distance divided by total distance.
-            float fractionOfJourney = distCovered / journeyLength;
-
-            // Set our position as a fraction of the distance between the markers.
-            currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, fractionOfJourney);
-
-            currentCam.transform.LookAt(lookAt.position, Vector3.back);
-        }
     }
 }
