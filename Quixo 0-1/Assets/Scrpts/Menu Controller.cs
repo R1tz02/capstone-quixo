@@ -78,5 +78,7 @@ public class MenuController : MonoBehaviour
         public void NewEasyGame() 
     {
         SceneManager.LoadScene(1);
+        // Need to call something like:
+        // GameCore.StartLocalGame();
     }
 }

@@ -13,6 +13,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Networked]
     public PlayerRef PlayerRef { get; set; }
     private static int TotalPlayers = 0;
+    public int PlayerNumber { get; set; }
 
     private NetworkingManager networkingManager;
 
@@ -28,16 +29,13 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         TotalPlayers++;
 
+        // Potentially a race condition where the client doesn't have the networked players created yet
+        // Server will wait until the client's networked players are both created
         if (networkingManager._runner.IsClient && TotalPlayers == 2)
         {
             Debug.Log("Client is good");
             RpcSendClientConfirmation();
         }
-    }
-
-    public void Initialize(char playerSymbol)
-    {
-        throw new System.NotImplementedException("This method is not possible for a NetworkedPlayer. Use other Initialize method instead.");
     }
 
     public void Initialize(char playerSymbol, PlayerRef playerRef)
@@ -46,34 +44,23 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         this.PlayerRef = playerRef;
     }
 
+    public void Initialize(char playerSymbol)
+    {
+        throw new NotImplementedException("This method should not be called for a Networked Player");
+    }
+
+    // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcUpdateGameState(string serializedState)
     {
-        Debug.Log("Updating game state...");
-
         networkingManager.gameState = GameState.Deserialize(serializedState);
 
-        Debug.Log("Deserialized game state" + networkingManager.gameState.piecesData.Length + " pieces.");
-
         networkingManager.UpdateGameState();
+
+        Debug.Log("Updated game state");
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Debug.Log("Sending message...");
-            RPC_SendMessage("Hey Mate!");
-        }
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.All, HostMode = RpcHostMode.SourceIsHostPlayer)]
-    public void RPC_SendMessage(string message, RpcInfo rpcInfo = default)
-    {
-        Debug.Log("Relaying message: " + message);
-    }
-
-
+    // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcAssignPlayers(PlayerRef p1Ref, PlayerRef p2Ref)
     {
@@ -84,13 +71,14 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         foreach (NetworkedPlayer player in allPlayers)
         {
-            Debug.Log("Player is valid: " + player.PlayerRef);
             if (player.PlayerRef == p1Ref)
             {
+                player.PlayerNumber = 1;
                 networkingManager.game.p1 = player;
             }
             else if (player.PlayerRef == p2Ref)
             {
+                player.PlayerNumber = 2;
                 networkingManager.game.p2 = player;
             }
             else
@@ -104,15 +92,16 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         }
 
         networkingManager.game.currentPlayer = networkingManager.game.p1;
-        Debug.Log("Assigned Current Player: " + networkingManager.game.currentPlayer);
     }
 
+    // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcSendMove(byte direction)
     {
-        networkingManager.game.makeMove((char)direction);
+        networkingManager.game.ApplyMove((char)direction);
     }
 
+    // Called by server
     public static IEnumerator WaitForClientConfirmation(Action OnComplete)
     {
         while (!NetworkingManager.GameSetUp)
@@ -120,13 +109,21 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
             yield return new WaitForSeconds(0.1f);
         }
 
-        Debug.Log("Client says GTG");
+        Debug.Log("Client says game is set up!");
         OnComplete();
     }
 
+    // Called by client
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcSendClientConfirmation()
     {
         NetworkingManager.GameSetUp = true;
+    }
+
+    // Called by both client and server
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RpcSetChosenPiece(int row, int col)
+    {
+        networkingManager.game.chosenPiece = networkingManager.game.gameBoard[row, col].GetComponent<PieceLogic>();
     }
 }

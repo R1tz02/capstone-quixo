@@ -21,9 +21,10 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
+    private int PlayerTurn = 1;
 
     //Event for sending chosen piece to the NetworkingManager
-    public delegate void ChosenPieceEvent(PieceLogic piece);
+    public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
     
     // Start is called before the first frame update
@@ -53,7 +54,7 @@ public class GameCore : MonoBehaviour
         }
     }
 
-    void StartNetworkedGame(string gameType)
+    public void StartNetworkedGame(string gameType)
     {
         if (gameType != "Host" && gameType != "Client")
         {
@@ -72,7 +73,7 @@ public class GameCore : MonoBehaviour
         }
     }
 
-    void StartLocalGame()
+    public void StartLocalGame()
     {
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
@@ -250,7 +251,7 @@ public class GameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
     }
 
-    private void shiftBoard(char dir, char currentPiece)
+    public void shiftBoard(char dir, char currentPiece)
     {
         Debug.Log(dir);
         gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; //F: [0,5] is permanently used as a temp index in which we hold the selected piece
@@ -307,6 +308,37 @@ public class GameCore : MonoBehaviour
 
     public void makeMove(char c)
     {
+        Debug.Log("Player " + PlayerTurn + " is making a move");
+
+        // Used to prevent the player from making a move when it is not their turn. Used for networking, does nothing for local game
+        if (currentPlayer.PlayerNumber != PlayerTurn){
+            Debug.Log("It is not your turn");
+            return;
+        }
+
+        Debug.Log("Player " + PlayerTurn + " made a move");
+
+        PlayerTurn = PlayerTurn == 1 ? 2 : 1;
+
+        ApplyMove(c);
+
+        // Only change the current player in makeMove not ApplyMove for networking purposes.
+        // This won't matter if a player wins.
+        if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }; 
+    }
+
+    // Applies the move to the game board
+    // Used for networking as a networked player should not be able to make a move locally when it is not their turn
+    // In a networked game, the local player will make a move and then send the move to the other player
+    public void ApplyMove(char c)
+    {
         if (gamePaused)
         {
             return;
@@ -325,7 +357,6 @@ public class GameCore : MonoBehaviour
                 return;
             }
             //F: TODO - work on validmove error handling
-            else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
         }
     }
 
@@ -370,7 +401,7 @@ public class GameCore : MonoBehaviour
             {
                 chosenPiece = piece;
 
-                OnChosenPiece?.Invoke(chosenPiece);
+                OnChosenPiece?.Invoke(row, col);
 
                 return true;
             }

@@ -44,9 +44,12 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public List<KeyValuePair<PlayerRef, NetworkedPlayer>> _players = new();
 
-    public static bool GameSetUp { get; set; } = false;
+    public static bool GameSetUp = false;
 
     [SerializeField] private NetworkPrefabRef _playerPrefab;
+
+    // TODO: add field like 'gameboardPopulated' to check if the gameboard has been populated
+    // This will be needed to make sure the host doesn't populate the gameboard again if a client disconnects and reconnects
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -85,6 +88,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             runner.Despawn(networkedPlayer.GetComponent<NetworkObject>());
             _players.RemoveAt(playerIndex);
         }
+
+        // TODO: If the same player joins back, they join as player 3
+        // They need to join back as player 2
+        // Find way to clear them out from Photon and reassign them as player 2
     }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
@@ -107,6 +114,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkRunner _runner;
     public GameCore game;
     public GameState gameState;
+    private int PlayerTurn = 1;
 
     public async void StartGame(GameMode mode)
     {
@@ -127,6 +135,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             SessionName = "TestRoom",
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            // TODO: Might be possible to specify how many players are allowed in the room here
         });
 
         Debug.Log("Game started");
@@ -134,9 +143,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private void SyncBoard()
     {
-        Debug.Log("Syncing board...");
         UpdateSerializableObject();
-        Debug.Log("Serialized game state: " + gameState.Serialize());
 
         GetNetworkedPlayer(_runner.LocalPlayer).RpcUpdateGameState(gameState.Serialize());
     }
@@ -220,10 +227,13 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void SendMove(char direction)
     {
-        Debug.Log("Sending move: " + direction);
-        Debug.Log("Is Server: " + _runner.IsServer);
+        if (GetNetworkedPlayer(_runner.LocalPlayer).PlayerNumber != PlayerTurn) return;
+
         byte move = (byte)direction;
+
         GetNetworkedPlayer(_runner.LocalPlayer).RpcSendMove(move);
+
+        PlayerTurn = PlayerTurn == 1 ? 2 : 1;
     }
 
     public void OnDestroy()
@@ -232,8 +242,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameCore.OnChosenPiece -= SetChosenPiece;
     }
 
-    public void SetChosenPiece(PieceLogic piece)
+    public void SetChosenPiece(int row, int col)
     {
-        game.chosenPiece = piece;
+        GetNetworkedPlayer(_runner.LocalPlayer).RpcSetChosenPiece(row, col);
     }
 }
