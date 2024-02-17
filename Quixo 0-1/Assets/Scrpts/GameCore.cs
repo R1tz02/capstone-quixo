@@ -21,7 +21,6 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
-    private int PlayerTurn = 1;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -75,6 +74,8 @@ public class GameCore : MonoBehaviour
 
     public void StartLocalGame()
     {
+        winScreen.enabled = false;
+        
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
         p1.Initialize('X');
@@ -306,42 +307,11 @@ public class GameCore : MonoBehaviour
         }
     }
 
-    public void makeMove(char c)
-    {
-        Debug.Log("Player " + PlayerTurn + " is making a move");
-
-        // Used to prevent the player from making a move when it is not their turn. Used for networking, does nothing for local game
-        if (currentPlayer.PlayerNumber != PlayerTurn){
-            Debug.Log("It is not your turn");
-            return;
-        }
-
-        Debug.Log("Player " + PlayerTurn + " made a move");
-
-        PlayerTurn = PlayerTurn == 1 ? 2 : 1;
-
-        ApplyMove(c);
-
-        // Only change the current player in makeMove not ApplyMove for networking purposes.
-        // This won't matter if a player wins.
-        if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }; 
-    }
-
-    // Applies the move to the game board
-    // Used for networking as a networked player should not be able to make a move locally when it is not their turn
-    // In a networked game, the local player will make a move and then send the move to the other player
-    public void ApplyMove(char c)
+    public bool makeMove(char c)
     {
         if (gamePaused)
         {
-            return;
+            return false;
         }
         if (validPiece(chosenPiece.row, chosenPiece.col))
         {
@@ -354,9 +324,18 @@ public class GameCore : MonoBehaviour
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
-                return;
+                return true;
             }
             //F: TODO - work on validmove error handling
+
+            currentPlayer = currentPlayer == p1 ? p2 : p1;
+
+            return true;
+        }
+
+        else
+        {
+            return false;
         }
     }
 

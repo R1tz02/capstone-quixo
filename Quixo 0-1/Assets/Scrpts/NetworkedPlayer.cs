@@ -13,7 +13,6 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Networked]
     public PlayerRef PlayerRef { get; set; }
     private static int TotalPlayers = 0;
-    public int PlayerNumber { get; set; }
 
     private NetworkingManager networkingManager;
 
@@ -31,6 +30,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         // Potentially a race condition where the client doesn't have the networked players created yet
         // Server will wait until the client's networked players are both created
+        // Client calls Start when the networked player is created
         if (networkingManager._runner.IsClient && TotalPlayers == 2)
         {
             Debug.Log("Client is good");
@@ -73,12 +73,10 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         {
             if (player.PlayerRef == p1Ref)
             {
-                player.PlayerNumber = 1;
                 networkingManager.game.p1 = player;
             }
             else if (player.PlayerRef == p2Ref)
             {
-                player.PlayerNumber = 2;
                 networkingManager.game.p2 = player;
             }
             else
@@ -98,7 +96,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcSendMove(byte direction)
     {
-        networkingManager.game.ApplyMove((char)direction);
+        networkingManager.game.makeMove((char)direction);
     }
 
     // Called by server

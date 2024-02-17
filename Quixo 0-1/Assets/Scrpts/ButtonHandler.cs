@@ -12,6 +12,7 @@ public class ButtonHandler : MonoBehaviour
     public Button up;
     public Button down;
     public GameCore game;
+    public NetworkingManager networkingManager;
 
     // Create Event so that we can add a listener to any other class that wants to know when a move was made
     public delegate void MoveMade(char direction);
@@ -24,13 +25,23 @@ public class ButtonHandler : MonoBehaviour
         down.onClick.AddListener(delegate { doOnClick('d'); }); // representing what arrow was clicked
         left.onClick.AddListener(delegate { doOnClick('l'); });
         right.onClick.AddListener(delegate { doOnClick('r'); });
-    }
 
+        networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+    }
 
     private void doOnClick(char dir)
     {
-        game.makeMove(dir); //F: make a move
-        OnMoveMade?.Invoke(dir); // Call the event to let other classes know that a move was made
+        // Prevent networked players from making a move on their local game if it's not their turn
+        if (networkingManager != null && networkingManager._runner != null) {
+            NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
+            if (localPlayer.piece != game.currentPlayer.piece) return;
+        }
+
+        bool success = game.makeMove(dir);
+
+        if (success) {
+            OnMoveMade?.Invoke(dir); // Call the event to let other classes know that a move was made
+        }
     }
 
     public void changeArrowsBack() //F: we change the arrows back to white

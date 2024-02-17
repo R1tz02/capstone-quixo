@@ -48,9 +48,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField] private NetworkPrefabRef _playerPrefab;
 
-    // TODO: add field like 'gameboardPopulated' to check if the gameboard has been populated
-    // This will be needed to make sure the host doesn't populate the gameboard again if a client disconnects and reconnects
-
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         _players.Add(new KeyValuePair<PlayerRef, NetworkedPlayer>(player, null));
@@ -63,10 +60,15 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
 
-        game.populateBoard();
+        if (!GameSetUp)
+        {
+            game.populateBoard();
+        }
 
         if (runner.IsServer)
         {
+            // AssignPlayers might need to check if the game is set up
+            // If so, it will just skip creating new players on host
             AssignPlayers(() =>
             {
                 GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key);
@@ -96,8 +98,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+
+    #pragma warning disable UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
+
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+
+    #pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
+
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
@@ -114,7 +122,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkRunner _runner;
     public GameCore game;
     public GameState gameState;
-    private int PlayerTurn = 1;
 
     public async void StartGame(GameMode mode)
     {
@@ -161,7 +168,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    private NetworkedPlayer GetNetworkedPlayer(PlayerRef playerRef)
+    public NetworkedPlayer GetNetworkedPlayer(PlayerRef playerRef)
     {
         int playerIndex = _players.FindIndex(p => p.Key == playerRef);
         if (playerIndex != -1)
@@ -227,13 +234,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void SendMove(char direction)
     {
-        if (GetNetworkedPlayer(_runner.LocalPlayer).PlayerNumber != PlayerTurn) return;
-
         byte move = (byte)direction;
 
         GetNetworkedPlayer(_runner.LocalPlayer).RpcSendMove(move);
-
-        PlayerTurn = PlayerTurn == 1 ? 2 : 1;
     }
 
     public void OnDestroy()
