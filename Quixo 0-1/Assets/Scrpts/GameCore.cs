@@ -16,8 +16,6 @@ public class GameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
-    // TODO: This is just a temp place holder for testing networking. Please remove this when you are done.
-    public bool isGameStarted = false;
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
@@ -29,32 +27,13 @@ public class GameCore : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        winScreen.enabled = false;
+        
     }
 
-    public void OnGUI(){
-        // TODO: Please remove this whole function
-        if (isGameStarted) return;
-
-        if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
-        {
-            isGameStarted = true;
-            StartNetworkedGame("Host");
-        }
-        if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
-        {
-            isGameStarted = true;
-            StartNetworkedGame("Client");
-        }
-        if (GUI.Button(new Rect(0, 80, 200, 40), "Local"))
-        {
-            isGameStarted = true;
-            StartLocalGame();
-        }
-    }
-
-    public void StartNetworkedGame(string gameType)
+    public async void StartNetworkedGame(string gameType)
     {
+        winScreen.enabled = false;
+
         if (gameType != "Host" && gameType != "Client")
         {
             throw new System.Exception("Not a valid game type");
@@ -64,11 +43,11 @@ public class GameCore : MonoBehaviour
 
         if (gameType == "Host")
         {
-            networkingManager.StartGame(GameMode.Host);
+            await networkingManager.StartGame(GameMode.Host);
         }
         else
         {
-            networkingManager.StartGame(GameMode.Client);
+            await networkingManager.StartGame(GameMode.Client);
         }
     }
 

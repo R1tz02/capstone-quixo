@@ -4,6 +4,7 @@ using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 [Serializable]
 public struct PieceData
@@ -89,6 +90,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             NetworkedPlayer networkedPlayer = _players[playerIndex].Value;
             runner.Despawn(networkedPlayer.GetComponent<NetworkObject>());
             _players.RemoveAt(playerIndex);
+            GameObject.Destroy(networkedPlayer.gameObject);
         }
 
         // TODO: If the same player joins back, they join as player 3
@@ -123,7 +125,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public GameCore game;
     public GameState gameState;
 
-    public async void StartGame(GameMode mode)
+    public async Task StartGame(GameMode mode)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
 
@@ -204,7 +206,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        for (int playerIndex = 0; playerIndex < 2; playerIndex++)
+        int playerIndex = 0;
+
+        if (GetNetworkedPlayer(_runner.LocalPlayer) != null)
+        {
+            playerIndex = 1;
+        }
+
+        for (; playerIndex < 2; playerIndex++)
         {
             var player = _players[playerIndex];
 
