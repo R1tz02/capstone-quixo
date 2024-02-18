@@ -1,14 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
-using static UnityEngine.Rendering.DebugUI.Table;
-
-public class Player
-{
-    public char piece;
-    public bool won = false;
-}
+using Fusion;
 
 public class GameCore : MonoBehaviour
 {
@@ -18,23 +10,61 @@ public class GameCore : MonoBehaviour
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
     private PieceLogic pieceLogic;
-    private PieceLogic chosenPiece;
-    private GameObject[,] gameBoard = new GameObject[5, 6];
+    public PieceLogic chosenPiece;
+    public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
-    public Player currentPlayer = new Player();
-    public Player p1 = new Player();
-    public Player p2 = new Player();
+    public IPlayer currentPlayer;
+    public IPlayer p1;
+    public IPlayer p2;
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
 
+    //Event for sending chosen piece to the NetworkingManager
+    public delegate void ChosenPieceEvent(int row, int col);
+    public static event ChosenPieceEvent OnChosenPiece;
+    
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    public async void StartNetworkedGame(string gameType)
+    {
         winScreen.enabled = false;
-        p1.piece = 'X'; //F: assign X to player one
-        currentPlayer = p1; //F: make X the first player/move
-        p2.piece = 'O'; //F: assign O to player two
+
+        if (gameType != "Host" && gameType != "Client")
+        {
+            throw new System.Exception("Not a valid game type");
+        }
+
+        NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+        if (gameType == "Host")
+        {
+            await networkingManager.StartGame(GameMode.Host);
+        }
+        else
+        {
+            await networkingManager.StartGame(GameMode.Client);
+        }
+    }
+
+    public void StartLocalGame()
+    {
+        winScreen.enabled = false;
+        
+        GameObject player1Object = new GameObject("Player1");
+        p1 = player1Object.AddComponent<LocalPlayer>();
+        p1.Initialize('X');
+
+        GameObject player2Object = new GameObject("Player2");
+        p2 = player2Object.AddComponent<LocalPlayer>();
+        p2.Initialize('O');
+
+        currentPlayer = p1;
+
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
         populateBoard(); //Initialize board
     }
@@ -201,7 +231,7 @@ public class GameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
     }
 
-    private void shiftBoard(char dir, char currentPiece)
+    public void shiftBoard(char dir, char currentPiece)
     {
         Debug.Log(dir);
         gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; //F: [0,5] is permanently used as a temp index in which we hold the selected piece
@@ -256,11 +286,11 @@ public class GameCore : MonoBehaviour
         }
     }
 
-    public void makeMove(char c)
+    public bool makeMove(char c)
     {
         if (gamePaused)
         {
-            return;
+            return false;
         }
         if (validPiece(chosenPiece.row, chosenPiece.col))
         {
@@ -273,10 +303,18 @@ public class GameCore : MonoBehaviour
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
-                return;
+                return true;
             }
             //F: TODO - work on validmove error handling
-            else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
+
+            currentPlayer = currentPlayer == p1 ? p2 : p1;
+
+            return true;
+        }
+
+        else
+        {
+            return false;
         }
     }
 
@@ -320,14 +358,17 @@ public class GameCore : MonoBehaviour
             if (piece.player == '-' || currentPlayer.piece == piece.player)
             {
                 chosenPiece = piece;
+
+                OnChosenPiece?.Invoke(row, col);
+
                 return true;
             }
         }
         return false;
     }
 
-    //fills the board with GamePiece Objects and sets the important feilds
-    void populateBoard()
+    //fills the board with GamePiece Objects and sets the important fields
+    public void populateBoard() 
     {
         int x = -40;
         int z = -40;
