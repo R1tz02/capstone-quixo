@@ -19,7 +19,7 @@ public class GameCore : MonoBehaviour
     public ButtonHandler buttonHandler;
     private PieceLogic pieceLogic;
     private PieceLogic chosenPiece;
-    private GameObject[,] gameBoard = new GameObject[5, 6];
+    public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
     public Player currentPlayer = new Player();
     public Player p1 = new Player();
