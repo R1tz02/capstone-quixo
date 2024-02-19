@@ -14,6 +14,8 @@ public class MenuController : MonoBehaviour
     public Canvas multiCanvas;
     public Canvas storyCanvas;
     public Canvas hostJoinCanvas;
+    public Canvas HelpCanvas;
+    public Canvas overlayCanvas;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
@@ -28,12 +30,32 @@ public class MenuController : MonoBehaviour
         multiCanvas.enabled = false;
         storyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
+        HelpCanvas.enabled = false;
     }
 
     public void HostJoin()
     {
         multiCanvas.enabled = false;
         hostJoinCanvas.enabled = true;
+    }
+
+    public void openHelpMenu()
+    {
+        Time.timeScale = 0;
+        HelpCanvas.enabled = true;
+        overlayCanvas.enabled = false;
+    }
+
+    public void closeHelpMenu()
+    {
+        Time.timeScale = 1;
+        HelpCanvas.enabled = false;
+        overlayCanvas.enabled = true;
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     IEnumerator MoveToLocation()
