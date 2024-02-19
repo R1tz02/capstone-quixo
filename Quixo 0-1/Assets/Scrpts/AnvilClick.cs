@@ -1,11 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using Unity.VisualScripting.ReorderableList;
-using UnityEditor.SearchService;
 using UnityEngine;
-using UnityEditor.UI;
 
 public class AnvilClick : MonoBehaviour
 {

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using System;
 
 public class MenuController : MonoBehaviour
 {
@@ -75,8 +76,78 @@ public class MenuController : MonoBehaviour
         }
     }
 
-        public void NewEasyGame() 
+    public void NewEasyGame()
     {
-        SceneManager.LoadScene(1);
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Debug.Log("Looking for GameMaster object...");
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                Debug.Log("GameMaster found. Starting networked game...");
+                gameMaster.GetComponent<GameCore>().StartLocalGame();
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+
+            //Maybe destroy the menu controller here if needed @R1tz02
+        }));
+    }
+
+    public void JoinNetworkedGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Debug.Log("Looking for GameMaster object...");
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                Debug.Log("GameMaster found. Starting networked game...");
+                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Client");
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+
+            //Maybe destroy the menu controller here if needed @R1tz02
+        }));
+    }
+
+    public void HostNetworkedGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Debug.Log("Looking for GameMaster object...");
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                Debug.Log("GameMaster found. Starting networked game...");
+                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Host");
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+
+            //Maybe destroy the menu controller here if needed @R1tz02
+        }));
+    }
+
+    public IEnumerator AsyncLoadGameScene(Action onSceneLoaded)
+    {
+        // Needed so that the callbacks can be called after the scene is loaded
+        DontDestroyOnLoad(this.gameObject);
+
+        Debug.Log("Loading game scene...");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+
+        while (!asyncLoad.isDone){
+            yield return null;
+        }
+
+        onSceneLoaded?.Invoke();
     }
 }
