@@ -3,7 +3,11 @@ guid: f7c939140451a424d8d5b0ae47b72222
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - endMarker: {instanceID: 0}
+  - currentCam: {instanceID: 0}
+  - currentCanvas: {instanceID: 0}
+  - highlightMaterial: {fileID: 2100000, guid: ef5de84caea1c994397664cc86dec135, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -6,6 +6,9 @@ public class AnvilClick : MonoBehaviour
     public Transform endMarker;
     public Camera currentCam;
     public Canvas currentCanvas;
+    public Material highlightMaterial;
+
+    GameObject menuItem;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
@@ -18,7 +21,20 @@ public class AnvilClick : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+        menuItem = GameObject.FindGameObjectWithTag("MenuItem");
+    }
+
+    void OnMouseOver()
+    {
+        // Change the material to the highlight material when the mouse is over the object
+        if (!hasBeenClicked)
+        {
+            Renderer rend = menuItem.GetComponent<Renderer>();
+            if (rend != null && highlightMaterial != null)
+            {
+                rend.material = highlightMaterial;
+            }
+        }
     }
 
     void OnMouseDown()
