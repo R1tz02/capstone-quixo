@@ -192,20 +192,6 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
-    /*private void moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
-    {
-        GameObject piece = gameBoard[row, col]; // Get the game object representing the piece
-        Rigidbody rb = piece.AddComponent<Rigidbody>(); // Add Rigidbody component to the piece
-        rb.useGravity = false; // Disable gravity for smooth movement
-        rb.isKinematic = true; // Make the Rigidbody kinematic to control movement manually
-
-        // Set other properties of the piece
-        piece.GetComponent<PieceLogic>().player = currentPiece;
-        piece.GetComponent<Renderer>().material = pieceColor;
-        piece.transform.position = new Vector3(x, y, z);
-        piece.GetComponent<PieceLogic>().row = row;
-        piece.GetComponent<PieceLogic>().col = col;
-    }*/
 
     private void shiftBoard(char dir, char currentPiece)
     {
@@ -298,6 +284,7 @@ public class GameCore : MonoBehaviour
         StartCoroutine(MovePieceSmoothly(gameBoard[row, col], target));
         gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
+        gameBoard[row, col].GetComponent<Rigidbody>().mass = 100.0f;
         gameBoard[row, col].GetComponent<Rigidbody>().useGravity = true;
     }
 
@@ -388,6 +375,7 @@ public class GameCore : MonoBehaviour
                 gameBoard[i, j].GetComponent<PieceLogic>().player = '-';
                 gameBoard[i, j].GetComponent<PieceLogic>().game = this;
                 gameBoard[i, j].GetComponent<Rigidbody>().useGravity = true;
+                gameBoard[i, j].GetComponent<Rigidbody>().mass = 100.0f;
                 z += 20;
             }
             x += 20;
