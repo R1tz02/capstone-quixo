@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.36301878, g: 0.3668124, b: 0.3255641, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -869,7 +869,7 @@ Transform:
   m_GameObject: {fileID: 203844586}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: -2856.1, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1507,7 +1507,7 @@ Transform:
   m_GameObject: {fileID: 564914451}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2805, y: 0, z: 0}
   m_LocalScale: {x: 150, y: 150, z: 150}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2281,7 +2281,7 @@ Transform:
   m_GameObject: {fileID: 961739749}
   serializedVersion: 2
   m_LocalRotation: {x: -0.3492981, y: 0.61480963, z: -0.34929806, w: -0.61480963}
-  m_LocalPosition: {x: 66.4, y: 221.2, z: -3}
+  m_LocalPosition: {x: -2789.7002, y: 221.2, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2390,7 +2390,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4101375885591954, guid: b1dc659cfd4354efda37ac00ecb21789, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -78
+      value: -2934.1
       objectReference: {fileID: 0}
     - target: {fileID: 4101375885591954, guid: b1dc659cfd4354efda37ac00ecb21789, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2705,7 +2705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4192270513175714, guid: c0520cc37ab734d928fd481537b557bf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -86.9
+      value: -2943
       objectReference: {fileID: 0}
     - target: {fileID: 4192270513175714, guid: c0520cc37ab734d928fd481537b557bf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2950,7 +2950,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4313603736463554, guid: c747b9ecef4b441d8ab2a63554ffced0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 73.6
+      value: -2782.5
       objectReference: {fileID: 0}
     - target: {fileID: 4313603736463554, guid: c747b9ecef4b441d8ab2a63554ffced0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3056,7 +3056,6 @@ MonoBehaviour:
   playerTwoSpace: {fileID: 2100000, guid: 79c652c7ea7abe2499dd1d416d9cdb24, type: 2}
   buttonHandler: {fileID: 0}
   chosenPiece: {fileID: 0}
-  isGameStarted: 0
   counter: 0
   gamePaused: 0
   winScreen: {fileID: 2039624279}
@@ -3309,7 +3308,7 @@ Transform:
   m_GameObject: {fileID: 1431306961}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 91, z: 0}
+  m_LocalPosition: {x: -2856.1, y: 91, z: 0}
   m_LocalScale: {x: 10, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3793,7 +3792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4350640267059436, guid: 2423d83c2aede4944886bfdee43b3c29, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 58.85217
+      value: -2797.248
       objectReference: {fileID: 0}
     - target: {fileID: 4350640267059436, guid: 2423d83c2aede4944886bfdee43b3c29, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3894,7 +3893,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4754606451656344, guid: a75a4481a4eb94e4b905e2b10e2afb87, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2856.1
       objectReference: {fileID: 0}
     - target: {fileID: 4754606451656344, guid: a75a4481a4eb94e4b905e2b10e2afb87, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4805,7 +4804,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4926646137358334, guid: 9134954293c3048aeb50f90dfaceb19b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.1
+      value: -2862.2002
       objectReference: {fileID: 0}
     - target: {fileID: 4926646137358334, guid: 9134954293c3048aeb50f90dfaceb19b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5207,7 +5206,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2039624277
 MonoBehaviour:
   m_ObjectHideFlags: 0

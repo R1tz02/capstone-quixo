@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Fusion;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class GameCore : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class GameCore : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        winScreen.enabled = false;
     }
 
     public async void StartNetworkedGame(string gameType)
@@ -249,7 +250,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = currentPieceObject;
             }
-            moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, -40, 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+            moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
         }
         else if (dir == 'd')
         {
@@ -261,7 +262,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = currentPieceObject;
             }
-            moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, 40, 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+            moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
         }
         else if (dir == 'r')
         {
@@ -411,7 +412,7 @@ public class GameCore : MonoBehaviour
             z = -40;
             for (int j = 0; j < 5; j++)
             {
-                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3(x, 100f, z), Quaternion.identity);
+                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3((-2856 + x), 100f, z), Quaternion.identity);
                 gameBoard[i, j].GetComponent<PieceLogic>().row = i;
                 gameBoard[i, j].GetComponent<PieceLogic>().col = j;
                 gameBoard[i, j].GetComponent<PieceLogic>().player = '-';
