@@ -12,6 +12,8 @@ public class ButtonHandler : MonoBehaviour
     public Button up;
     public Button down;
     public GameCore game;
+    
+
 
 
     void Start()
