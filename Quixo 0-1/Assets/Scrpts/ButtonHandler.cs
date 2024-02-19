@@ -18,10 +18,17 @@ public class ButtonHandler : MonoBehaviour
     void Start()
     {
         game = GameObject.FindObjectOfType<GameCore>();
+<<<<<<< Updated upstream
         up.onClick.AddListener(delegate { doOnClick('u'); });   //F: Give each arrow an on click event listener that calls doOnClick and we pass it a char
         down.onClick.AddListener(delegate { doOnClick('d'); }); // representing what arrow was clicked
         left.onClick.AddListener(delegate { doOnClick('l'); }); 
         right.onClick.AddListener(delegate { doOnClick('r'); });
+=======
+        up.onClick.AddListener(delegate { doOnClick('U'); });   //F: Give each arrow an on click event listener that calls doOnClick and we pass it a char
+        down.onClick.AddListener(delegate { doOnClick('D'); }); // representing what arrow was clicked
+        left.onClick.AddListener(delegate { doOnClick('L'); });
+        right.onClick.AddListener(delegate { doOnClick('R'); });
+>>>>>>> Stashed changes
     }
 
 
@@ -59,9 +66,9 @@ public class ButtonHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow)) { doOnClick('u'); }
-        if (Input.GetKeyDown(KeyCode.DownArrow)) { doOnClick('d'); }
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) { doOnClick('l'); }
-        if (Input.GetKeyDown(KeyCode.RightArrow)) { doOnClick('r'); }
+        if (Input.GetKeyDown(KeyCode.UpArrow)) { doOnClick('U'); }
+        if (Input.GetKeyDown(KeyCode.DownArrow)) { doOnClick('D'); }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) { doOnClick('L'); }
+        if (Input.GetKeyDown(KeyCode.RightArrow)) { doOnClick('R'); }
     }
 }

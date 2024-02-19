@@ -1,5 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+<<<<<<< Updated upstream
+=======
+using System.Threading;
+using TMPro;
+>>>>>>> Stashed changes
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI.Table;
 
@@ -193,6 +198,106 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
+<<<<<<< Updated upstream
+=======
+    /*private void moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
+    {
+        GameObject piece = gameBoard[row, col]; // Get the game object representing the piece
+        Rigidbody rb = piece.AddComponent<Rigidbody>(); // Add Rigidbody component to the piece
+        rb.useGravity = false; // Disable gravity for smooth movement
+        rb.isKinematic = true; // Make the Rigidbody kinematic to control movement manually
+
+        // Set other properties of the piece
+        piece.GetComponent<PieceLogic>().player = currentPiece;
+        piece.GetComponent<Renderer>().material = pieceColor;
+        piece.transform.position = new Vector3(x, y, z);
+        piece.GetComponent<PieceLogic>().row = row;
+        piece.GetComponent<PieceLogic>().col = col;
+    }*/
+
+    private void shiftBoard(char dir, char currentPiece)
+    {
+        Debug.Log(dir);
+        gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; // Store the selected piece temporarily
+
+        Material pieceColor;
+        switch (currentPiece)
+        {
+            case 'X':
+                pieceColor = playerOneSpace;
+                break;
+            default:
+                pieceColor = playerTwoSpace;
+                break;
+        }
+
+        if (dir == 'U')
+        {
+            for (int i = chosenPiece.row; i > 0; i--)
+            {
+                GameObject currentPieceObject = gameBoard[i - 1, chosenPiece.col];
+                currentPieceObject.GetComponent<PieceLogic>().row = i;
+                Vector3 newPosition = currentPieceObject.transform.position + new Vector3(20, 0, 0);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[i, chosenPiece.col] = currentPieceObject;
+            }
+            moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, -40, 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+        }
+        else if (dir == 'D')
+        {
+            for (int i = chosenPiece.row; i < 4; i++)
+            {
+                GameObject currentPieceObject = gameBoard[i + 1, chosenPiece.col];
+                currentPieceObject.GetComponent<PieceLogic>().row = i;
+                Vector3 newPosition = currentPieceObject.transform.position - new Vector3(20, 0, 0);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[i, chosenPiece.col] = currentPieceObject;
+            }
+            moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, 40, 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+        }
+        else if (dir == 'R')
+        {
+            for (int i = chosenPiece.col; i < 4; i++)
+            {
+                GameObject currentPieceObject = gameBoard[chosenPiece.row, i + 1];
+                currentPieceObject.GetComponent<PieceLogic>().col = i;
+                Vector3 newPosition = currentPieceObject.transform.position - new Vector3(0, 0, 20);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[chosenPiece.row, i] = currentPieceObject;
+            }
+            moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40);
+        }
+        else if (dir == 'L')
+        {
+            for (int i = chosenPiece.col; i > 0; i--)
+            {
+                GameObject currentPieceObject = gameBoard[chosenPiece.row, i - 1];
+                currentPieceObject.GetComponent<PieceLogic>().col = i;
+                Vector3 newPosition = currentPieceObject.transform.position + new Vector3(0, 0, 20);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[chosenPiece.row, i] = currentPieceObject;
+            }
+            moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40);
+        }
+    }
+
+    private IEnumerator MovePieceSmoothly(GameObject piece, Vector3 targetPosition)
+    {
+        float duration = 0.5f; // Adjust as needed
+        Vector3 startPosition = piece.transform.position;
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            piece.transform.position = Vector3.Lerp(startPosition, targetPosition, (elapsedTime / duration));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        piece.transform.position = targetPosition; // Ensure it reaches the target position precisely
+    }
+  
+>>>>>>> Stashed changes
     private void moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
     {
         gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
@@ -259,7 +364,15 @@ public class GameCore : MonoBehaviour
 
     public void makeMove(char c)
     {
+<<<<<<< Updated upstream
         if (validPiece(chosenPiece.row, chosenPiece.col))
+=======
+        if (gamePaused)
+        {
+            return;
+        }
+        if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
+>>>>>>> Stashed changes
         {
             shiftBoard(c, currentPlayer.piece);
             counter++;
@@ -278,6 +391,10 @@ public class GameCore : MonoBehaviour
             //F: TODO - work on validmove error handling
             else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
         }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+        
 >>>>>>> Stashed changes
     }
 
