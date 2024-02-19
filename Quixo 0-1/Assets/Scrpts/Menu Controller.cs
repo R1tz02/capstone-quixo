@@ -13,6 +13,7 @@ public class MenuController : MonoBehaviour
     public Canvas quickCanvas;
     public Canvas multiCanvas;
     public Canvas storyCanvas;
+    public Canvas hostJoinCanvas;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
@@ -26,6 +27,13 @@ public class MenuController : MonoBehaviour
         quickCanvas.enabled = false;
         multiCanvas.enabled = false;
         storyCanvas.enabled = false;
+        hostJoinCanvas.enabled = false;
+    }
+
+    public void HostJoin()
+    {
+        multiCanvas.enabled = false;
+        hostJoinCanvas.enabled = true;
     }
 
     IEnumerator MoveToLocation()
@@ -60,7 +68,6 @@ public class MenuController : MonoBehaviour
         currentCam.transform.rotation = targetRotation;
         rotating = false;
     }
-
     public void goBack()
     {
         quickCanvas.enabled = false;
