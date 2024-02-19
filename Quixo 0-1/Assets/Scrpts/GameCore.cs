@@ -289,7 +289,7 @@ public class GameCore : MonoBehaviour
         }
     }
 
-    private IEnumerator MovePieceSmoothly(GameObject piece, Vector3 targetPosition)
+    System.Collections.IEnumerator MovePieceSmoothly(GameObject piece, Vector3 targetPosition)
     {
         float duration = 0.5f; // Adjust as needed
         Vector3 startPosition = piece.transform.position;
