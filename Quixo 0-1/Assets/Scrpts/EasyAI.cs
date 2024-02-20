@@ -334,139 +334,45 @@ public class EasyAI : MonoBehaviour
     public int Evaluate(char[,] board)
     {
         int score = 0;
-        score += (getHorizontalScore(board) + getVerticalScore(board) + getDiagonalScore(board) + getPieceCount(board));
-        return score;
+        for (int i = 0; i< 5; i++)
+        {
+            score += EvalLine(board[i, 0], board[i, 1], board[i, 2], board[i, 3], board[i, 4]);
+            score += EvalLine(board[0, i], board[1, i], board[2, i], board[3, i], board[4, i]);
+        }
+        score += EvalLine(board[0, 0], board[1, 1], board[2, 2], board[3, 3], board[4, 4]);
+        score += EvalLine(board[0, 4], board[1, 3], board[2, 2], board[3, 2], board[4, 0]);
+
+        return score; 
     }
 
 
-    private int getPieceCount(char[,] board)
+    private int EvalLine(params char[] pieces)
     {
         int count = 0;
-        int opponentCount = 0;
-        int score = 0;
-        for (int i = 0; i < 5; i++)
+        int opponentCount= 0;
+
+        foreach(char piece in pieces)
         {
-            for (int j = 0; j < 5; j++)
-            {
-                if (board[i, j] == 'O')
-                {
-                    count++;
-                }
-                if (board[i, j] == '-')
-                {
-                    count = count;
-                }
-                else
-                {
-                    opponentCount++;
-                }
-            }
-        }
-        score = count - opponentCount;
-        return score / 2;
-    }
-    private int getHorizontalScore(char[,] board)
-    {
-        int count = 0;
-        int opponentCount = 0;
-        int score = 0;
-        for (int i = 0; i < 5; i++)
-        {
-            count = 0;
-            for (int j = 0; j < 5; j++)
-            {
-                if ('O' == board[i, j])
-                {
-                    count++;
-                    score += count ^ 2;
-                }
-                if (board[i, j] == '-')
-                {
-                    score += 0;
-                }
-                else
-                {
-                    opponentCount++;
-                    score += -(opponentCount ^ 2);
-                }
-            }
-        }
-        return score;
-    }
-    private int getVerticalScore(char[,] board)
-    {
-        int count = 0;
-        int opponentCount = 0;
-        int score = 0;
-        for (int i = 0; i < 5; i++)
-        {
-            count = 0;
-            for (int j = 0; j < 5; j++)
-            {
-                if ('O' == board[j, i])
-                {
-                    count++;
-                    score += count ^ 2;
-                }
-                if (board[j, i] == '-')
-                {
-                    score += 0;
-                }
-                else
-                {
-                    opponentCount++;
-                    score += -(opponentCount ^ 2);
-                }
-            }
-        }
-        return score;
-    }
-    private int getDiagonalScore(char[,] board)
-    {
-        int count = 0;
-        int opponentCount = 0;
-        int score = 0;
-        for (int i = 0; i < 5; i++)
-        {
-            count = 0;
-            if ('O' == board[i, i])
+            if(piece == 'O')
             {
                 count++;
-                score += count ^ 2;
             }
-            if (board[i, i] == '-')
-            {
-                score += 0;
-            }
-            else
+            else if(piece == 'X')
             {
                 opponentCount++;
-                score += -(opponentCount ^ 2);
             }
         }
-        count = 0;
-
-        for (int i = 0; i < 5; i++)
+        if (opponentCount > 0 && count < opponentCount)
         {
-
-            if ('O' == board[i, i])
-            {
-                count++;
-                score += count ^ 2;
-            }
-            if (board[i, i] == '-')
-            {
-                score += 0;
-            }
-            else
-            {
-                opponentCount++;
-                score += -(opponentCount ^ 2);
-            }
+            return -(int)Math.Pow(10, opponentCount);
         }
-        return score;
+        else if (count > 0 && opponentCount < count)
+        {
+            return (int)Math.Pow(10, count);
+        }
+        else
+            return 0;
     }
-
 
 
 
@@ -500,7 +406,7 @@ public class EasyAI : MonoBehaviour
 
 
     //
-    public int Minimax(quixoModel model, int depth, bool aiTurn)
+    public int Minimax(quixoModel model, int depth, bool aiTurn, int alpha, int beta)
     {
         quixoModel copyModel = new quixoModel();
         copyModel.board = (char[,])model.board.Clone();
@@ -514,7 +420,12 @@ public class EasyAI : MonoBehaviour
             foreach ((Piece, char) move in PossibleMoves(copyModel))
             {
                 copyModel.makeMove(move.Item1, move.Item2);
-                maxEval = Math.Max(maxEval, Minimax(copyModel, depth - 1, false));
+                maxEval = Math.Max(maxEval, Minimax(copyModel, depth - 1, false, alpha, beta));
+                alpha = Math.Max(alpha, maxEval);
+                if(beta <= alpha)
+                {
+                    break;
+                }
             }
             return maxEval;
 
@@ -525,13 +436,21 @@ public class EasyAI : MonoBehaviour
             foreach ((Piece, char) move in PossibleMoves(copyModel))
             {
                 copyModel.makeMove(move.Item1, move.Item2);
-                minEval = Math.Min(minEval, Minimax(copyModel, depth - 1, true));
+                minEval = Math.Min(minEval, Minimax(copyModel, depth - 1, true, alpha, beta));
+                beta = Math.Min(beta, minEval);
+                if(beta <= alpha)
+                {
+                    break;
+                }
             }
             return minEval;
         }
     }
 
-
+    public int MinimaxAlphaBeta(quixoModel board, int depth, bool aiTurn)
+    {
+        return Minimax(board, depth, aiTurn, int.MinValue, int.MaxValue);
+    }
     //looks through all possible moves and finds the one that has will end with the highest possible score, whent he opponent
     //is also trying to maximize their score
 
@@ -540,7 +459,6 @@ public class EasyAI : MonoBehaviour
 
         (Piece, char) bestMove = (null, ' ');
         int bestEval = int.MinValue;
-
         quixoModel newBoard = new quixoModel();
         newBoard.board = model;
         newBoard.playerOneTurn = false;
@@ -549,7 +467,7 @@ public class EasyAI : MonoBehaviour
 
             newBoard.makeMove(move.Item1, move.Item2);
 
-            int evalScore = Minimax(newBoard, depth, true);
+            int evalScore = MinimaxAlphaBeta(newBoard, depth, true);
 
             if (evalScore > bestEval)
             {
@@ -558,7 +476,6 @@ public class EasyAI : MonoBehaviour
             }
             newBoard.board = model; 
         }
-
         return bestMove;
 
         // Update is called once per frame
