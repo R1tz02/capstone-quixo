@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using System;
 
 public class MenuController : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class MenuController : MonoBehaviour
     public Canvas quickCanvas;
     public Canvas multiCanvas;
     public Canvas storyCanvas;
+    public Canvas hostJoinCanvas;
+    public Canvas HelpCanvas;
+    public Canvas overlayCanvas;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
@@ -25,6 +29,33 @@ public class MenuController : MonoBehaviour
         quickCanvas.enabled = false;
         multiCanvas.enabled = false;
         storyCanvas.enabled = false;
+        hostJoinCanvas.enabled = false;
+        HelpCanvas.enabled = false;
+    }
+
+    public void HostJoin()
+    {
+        multiCanvas.enabled = false;
+        hostJoinCanvas.enabled = true;
+    }
+
+    public void openHelpMenu()
+    {
+        Time.timeScale = 0;
+        HelpCanvas.enabled = true;
+        overlayCanvas.enabled = false;
+    }
+
+    public void closeHelpMenu()
+    {
+        Time.timeScale = 1;
+        HelpCanvas.enabled = false;
+        overlayCanvas.enabled = true;
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     IEnumerator MoveToLocation()
@@ -59,7 +90,6 @@ public class MenuController : MonoBehaviour
         currentCam.transform.rotation = targetRotation;
         rotating = false;
     }
-
     public void goBack()
     {
         quickCanvas.enabled = false;
@@ -75,8 +105,78 @@ public class MenuController : MonoBehaviour
         }
     }
 
-        public void NewEasyGame() 
+    public void NewEasyGame()
     {
-        SceneManager.LoadScene(1);
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Debug.Log("Looking for GameMaster object...");
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                Debug.Log("GameMaster found. Starting networked game...");
+                gameMaster.GetComponent<GameCore>().StartLocalGame();
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+
+            //Maybe destroy the menu controller here if needed @R1tz02
+        }));
+    }
+
+    public void JoinNetworkedGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Debug.Log("Looking for GameMaster object...");
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                Debug.Log("GameMaster found. Starting networked game...");
+                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Client");
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+
+            //Maybe destroy the menu controller here if needed @R1tz02
+        }));
+    }
+
+    public void HostNetworkedGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Debug.Log("Looking for GameMaster object...");
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                Debug.Log("GameMaster found. Starting networked game...");
+                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Host");
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+
+            //Maybe destroy the menu controller here if needed @R1tz02
+        }));
+    }
+
+    public IEnumerator AsyncLoadGameScene(Action onSceneLoaded)
+    {
+        // Needed so that the callbacks can be called after the scene is loaded
+        DontDestroyOnLoad(this.gameObject);
+
+        Debug.Log("Loading game scene...");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+
+        while (!asyncLoad.isDone){
+            yield return null;
+        }
+
+        onSceneLoaded?.Invoke();
     }
 }

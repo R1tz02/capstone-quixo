@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
+using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 
 public class Player
@@ -9,7 +9,6 @@ public class Player
     public char piece;
     public bool won = false;
 }
-
 
 public class GameCore : MonoBehaviour
 {
@@ -24,14 +23,18 @@ public class GameCore : MonoBehaviour
     public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
-    public Player currentPlayer = new Player();
-    public Player p1 = new Player();
-    public Player p2 = new Player();
+    public IPlayer currentPlayer;
+    public IPlayer p1;
+    public IPlayer p2;
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
     private EasyAI easyAI;
 
+    //Event for sending chosen piece to the NetworkingManager
+    public delegate void ChosenPieceEvent(int row, int col);
+    public static event ChosenPieceEvent OnChosenPiece;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,46 @@ public class GameCore : MonoBehaviour
         p1.piece = 'X'; //F: assign X to player one
         currentPlayer = p1; //F: make X the first player/move
         p2.piece = 'O'; //F: assign O to player two
+        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
+        populateBoard(); //Initialize board
+    }
+
+    public async void StartNetworkedGame(string gameType)
+    {
+        winScreen.enabled = false;
+
+        if (gameType != "Host" && gameType != "Client")
+        {
+            throw new System.Exception("Not a valid game type");
+        }
+
+        NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+        if (gameType == "Host")
+        {
+            await networkingManager.StartGame(GameMode.Host);
+        }
+        else
+        {
+            await networkingManager.StartGame(GameMode.Client);
+        }
+    }
+
+    public void StartLocalGame()
+    {
+        winScreen.enabled = false;
+        
+        GameObject player1Object = new GameObject("Player1");
+        p1 = player1Object.AddComponent<LocalPlayer>();
+        p1.Initialize('X');
+
+        GameObject player2Object = new GameObject("Player2");
+        p2 = player2Object.AddComponent<LocalPlayer>();
+        p2.Initialize('O');
+
+        currentPlayer = p1;
+
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
@@ -196,56 +239,56 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
-    private void moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
-    {
-        gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
-        gameBoard[row, col].GetComponent<PieceLogic>().player = currentPiece; //F: changing the moved piece's symbol to the current
-        gameBoard[row, col].GetComponent<Renderer>().material = pieceColor; //F: changing the moved piece's material (color) 
-        gameBoard[row, col].transform.position = new Vector3(x, y, z); //F: physically move the selected piece
-        gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
-        gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
-    }
 
-    private void shiftBoard(char dir, char currentPiece)
+    public void shiftBoard(char dir, char currentPiece)
     {
         Debug.Log(dir);
-        gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; //F: [0,5] is permanently used as a temp index in which we hold the selected piece
-        Material pieceColor; //F: Made a variable to change the material of the piece depending on the currentPlayer
+        gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; // Store the selected piece temporarily
+
+        Material pieceColor;
         switch (currentPiece)
         {
             case 'X':
                 pieceColor = playerOneSpace;
                 break;
-            default: pieceColor = playerTwoSpace; break;
+            default:
+                pieceColor = playerTwoSpace;
+                break;
         }
 
         if (dir == 'u')
         {
             for (int i = chosenPiece.row; i > 0; i--)
             {
-                gameBoard[i - 1, chosenPiece.col].GetComponent<PieceLogic>().row = i; //F: Change the piece's underlying variable holding its row
-                gameBoard[i - 1, chosenPiece.col].transform.position = new Vector3(gameBoard[i - 1, chosenPiece.col].transform.position.x + 20, 100f, gameBoard[i - 1, chosenPiece.col].transform.position.z); //F: Physically move every piece in the row/col
-                gameBoard[i, chosenPiece.col] = gameBoard[i - 1, chosenPiece.col]; //F: updating the array (low level implementation of the game)
+                GameObject currentPieceObject = gameBoard[i - 1, chosenPiece.col];
+                currentPieceObject.GetComponent<PieceLogic>().row = i;
+                Vector3 newPosition = currentPieceObject.transform.position + new Vector3(20, 0, 0);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[i, chosenPiece.col] = currentPieceObject;
             }
-            moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, -40, 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+            moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
         }
         else if (dir == 'd')
         {
             for (int i = chosenPiece.row; i < 4; i++)
             {
-                gameBoard[i + 1, chosenPiece.col].GetComponent<PieceLogic>().row = i;
-                gameBoard[i + 1, chosenPiece.col].transform.position = new Vector3(gameBoard[i + 1, chosenPiece.col].transform.position.x - 20, 100f, gameBoard[i + 1, chosenPiece.col].transform.position.z);
-                gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col];
+                GameObject currentPieceObject = gameBoard[i + 1, chosenPiece.col];
+                currentPieceObject.GetComponent<PieceLogic>().row = i;
+                Vector3 newPosition = currentPieceObject.transform.position - new Vector3(20, 0, 0);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[i, chosenPiece.col] = currentPieceObject;
             }
-            moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, 40, 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+            moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
         }
         else if (dir == 'r')
         {
             for (int i = chosenPiece.col; i < 4; i++)
             {
-                gameBoard[chosenPiece.row, i + 1].GetComponent<PieceLogic>().col = i;
-                gameBoard[chosenPiece.row, i + 1].transform.position = new Vector3(gameBoard[chosenPiece.row, i + 1].transform.position.x, 100f, gameBoard[chosenPiece.row, i + 1].transform.position.z - 20);
-                gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
+                GameObject currentPieceObject = gameBoard[chosenPiece.row, i + 1];
+                currentPieceObject.GetComponent<PieceLogic>().col = i;
+                Vector3 newPosition = currentPieceObject.transform.position - new Vector3(0, 0, 20);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[chosenPiece.row, i] = currentPieceObject;
             }
             moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40);
         }
@@ -253,19 +296,52 @@ public class GameCore : MonoBehaviour
         {
             for (int i = chosenPiece.col; i > 0; i--)
             {
-                gameBoard[chosenPiece.row, i - 1].GetComponent<PieceLogic>().col = i;
-                gameBoard[chosenPiece.row, i - 1].transform.position = new Vector3(gameBoard[chosenPiece.row, i - 1].transform.position.x, 100f, gameBoard[chosenPiece.row, i - 1].transform.position.z + 20);
-                gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
+                GameObject currentPieceObject = gameBoard[chosenPiece.row, i - 1];
+                currentPieceObject.GetComponent<PieceLogic>().col = i;
+                Vector3 newPosition = currentPieceObject.transform.position + new Vector3(0, 0, 20);
+                StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                gameBoard[chosenPiece.row, i] = currentPieceObject;
             }
             moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40);
         }
     }
 
-    public void makeMove(char c)
+    System.Collections.IEnumerator MovePieceSmoothly(GameObject piece, Vector3 targetPosition)
+    {
+        float duration = 0.5f; // Adjust as needed
+        Vector3 startPosition = piece.transform.position;
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            piece.transform.position = Vector3.Lerp(startPosition, targetPosition, (elapsedTime / duration));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        piece.transform.position = targetPosition; // Ensure it reaches the target position precisely
+    }
+  
+    private void moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
+    {
+        gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
+        gameBoard[row, col].GetComponent<PieceLogic>().player = currentPiece; //F: changing the moved piece's symbol to the current
+        gameBoard[row, col].GetComponent<Renderer>().material = pieceColor; //F: changing the moved piece's material (color) 
+        Vector3 target = new Vector3(x, y + 15, z);
+        StartCoroutine(MovePieceSmoothly(gameBoard[row, col], target));
+        gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
+        gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
+        gameBoard[row, col].GetComponent<Rigidbody>().mass = 100.0f;
+        gameBoard[row, col].GetComponent<Rigidbody>().useGravity = true;
+    }
+
+
+
+    public bool makeMove(char c)
     {
         if (gamePaused)
         {
-            return;
+            return false;
         }
         if (validPiece(chosenPiece.row, chosenPiece.col))
         {
@@ -278,10 +354,18 @@ public class GameCore : MonoBehaviour
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
-                return;
+                return true;
             }
             //F: TODO - work on validmove error handling
-            else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
+
+            currentPlayer = currentPlayer == p1 ? p2 : p1;
+
+            return true;
+        }
+
+        else
+        {
+            return false;
         }
         if (playAI)
         {
@@ -289,7 +373,7 @@ public class GameCore : MonoBehaviour
             {
                 Debug.Log("Fernando's mother");
 
-                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 4);
+                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 2);
                 validPiece(move.Item1.row, move.Item1.col);
                 shiftBoard(move.Item2, currentPlayer.piece);
                 counter++;
@@ -347,14 +431,17 @@ public class GameCore : MonoBehaviour
             if (piece.player == '-' || currentPlayer.piece == piece.player)
             {
                 chosenPiece = piece;
+
+                OnChosenPiece?.Invoke(row, col);
+
                 return true;
             }
         }
         return false;
     }
 
-    //fills the board with GamePiece Objects and sets the important feilds
-    void populateBoard()
+    //fills the board with GamePiece Objects and sets the important fields
+    public void populateBoard() 
     {
         int x = -40;
         int z = -40;
@@ -363,12 +450,13 @@ public class GameCore : MonoBehaviour
             z = -40;
             for (int j = 0; j < 5; j++)
             {
-                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3(x, 100f, z), Quaternion.identity);
+                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3((-2856 + x), 100f, z), Quaternion.identity);
                 gameBoard[i, j].GetComponent<PieceLogic>().row = i;
                 gameBoard[i, j].GetComponent<PieceLogic>().col = j;
                 gameBoard[i, j].GetComponent<PieceLogic>().player = '-';
                 gameBoard[i, j].GetComponent<PieceLogic>().game = this;
                 gameBoard[i, j].GetComponent<Rigidbody>().useGravity = true;
+                gameBoard[i, j].GetComponent<Rigidbody>().mass = 100.0f;
                 z += 20;
             }
             x += 20;
