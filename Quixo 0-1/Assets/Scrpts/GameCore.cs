@@ -4,21 +4,14 @@ using UnityEngine;
 using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 
-public class Player
-{
-    public char piece;
-    public bool won = false;
-}
-
 public class GameCore : MonoBehaviour
 {
-    private bool playAI = true; 
     public GameObject piecePrefab;
     public GameObject winnerText;
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
-    public GameObject AI; 
+    public GameObject AI;
     private PieceLogic pieceLogic;
     public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
@@ -29,7 +22,9 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
+
     private EasyAI easyAI;
+    private bool playAI = true;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -38,13 +33,7 @@ public class GameCore : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        winScreen.enabled = false;
-        p1.piece = 'X'; //F: assign X to player one
-        currentPlayer = p1; //F: make X the first player/move
-        p2.piece = 'O'; //F: assign O to player two
-        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
-        populateBoard(); //Initialize board
+       
     }
 
     public async void StartNetworkedGame(string gameType)
@@ -68,6 +57,24 @@ public class GameCore : MonoBehaviour
         }
     }
 
+    public void StartAIGame()
+    {
+        GameObject player1Object = new GameObject("Player1");
+        p1 = player1Object.AddComponent<LocalPlayer>();
+        p1.Initialize('X');
+
+        GameObject player2Object = new GameObject("Player2");
+        p2 = player2Object.AddComponent<LocalPlayer>();
+        p2.Initialize('O');
+
+        winScreen.enabled = false;
+
+        currentPlayer = p1; //F: make X the first player/move
+        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
+        populateBoard(); //Initialize board
+    }
+
     public void StartLocalGame()
     {
         winScreen.enabled = false;
@@ -83,7 +90,6 @@ public class GameCore : MonoBehaviour
         currentPlayer = p1;
 
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
     }
 
@@ -357,15 +363,7 @@ public class GameCore : MonoBehaviour
                 return true;
             }
             //F: TODO - work on validmove error handling
-
-            currentPlayer = currentPlayer == p1 ? p2 : p1;
-
-            return true;
-        }
-
-        else
-        {
-            return false;
+            else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
         }
         if (playAI)
         {
@@ -383,12 +381,13 @@ public class GameCore : MonoBehaviour
                     Time.timeScale = 0;
                     gamePaused = true;
                     Debug.Log(currentPlayer.piece + " won!");
-                    return;
+                    return true;
                 }
                 currentPlayer = p1;
                 //F: if not won, we change the currentPlayer
             }
         }
+        return false;
     }
 
     public List<char> moveOptions(int row, int col)
@@ -462,9 +461,10 @@ public class GameCore : MonoBehaviour
             x += 20;
         }
     }
+
     public char[,] translateBoard()
     {
-        char[,] aiBoard = new char[5,5];
+        char[,] aiBoard = new char[5, 5];
         for (int i = 0; i < 5; i++)
         {
             for (int j = 0; j < 5; j++)
@@ -475,10 +475,6 @@ public class GameCore : MonoBehaviour
 
         return aiBoard;
     }
-
-
-
-
 
     // Update is called once per frame
     void Update()
