@@ -289,10 +289,20 @@ public class GameCore : MonoBehaviour
             {
                 Debug.Log("Fernando's mother");
 
-                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 3);
+                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 4);
                 validPiece(move.Item1.row, move.Item1.col);
                 shiftBoard(move.Item2, currentPlayer.piece);
-                currentPlayer = p1; //F: if not won, we change the currentPlayer
+                counter++;
+                if (counter > 8 && won()) //F: TODO add counter 
+                {
+                    winScreen.enabled = true;
+                    Time.timeScale = 0;
+                    gamePaused = true;
+                    Debug.Log(currentPlayer.piece + " won!");
+                    return;
+                }
+                currentPlayer = p1;
+                //F: if not won, we change the currentPlayer
             }
         }
     }
