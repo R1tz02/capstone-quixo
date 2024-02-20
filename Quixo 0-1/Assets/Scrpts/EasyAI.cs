@@ -373,12 +373,12 @@ public class EasyAI : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             count = 0;
+            opponentCount = 0;
             for (int j = 0; j < 5; j++)
             {
                 if ('O' == board[i, j])
                 {
                     count++;
-                    score += count ^ 2;
                 }
                 if (board[i, j] == '-')
                 {
@@ -387,9 +387,11 @@ public class EasyAI : MonoBehaviour
                 else
                 {
                     opponentCount++;
-                    score += -(opponentCount ^ 2);
                 }
             }
+            score += count ^ 2;
+            score += -(opponentCount ^ 2);
+
         }
         return score;
     }
@@ -401,12 +403,12 @@ public class EasyAI : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             count = 0;
+            opponentCount = 0;
             for (int j = 0; j < 5; j++)
             {
                 if ('O' == board[j, i])
                 {
                     count++;
-                    score += count ^ 2;
                 }
                 if (board[j, i] == '-')
                 {
@@ -415,9 +417,11 @@ public class EasyAI : MonoBehaviour
                 else
                 {
                     opponentCount++;
-                    score += -(opponentCount ^ 2);
                 }
             }
+            score += count ^ 2;
+            score += -(opponentCount ^ 2);
+
         }
         return score;
     }
@@ -428,11 +432,10 @@ public class EasyAI : MonoBehaviour
         int score = 0;
         for (int i = 0; i < 5; i++)
         {
-            count = 0;
+
             if ('O' == board[i, i])
             {
                 count++;
-                score += count ^ 2;
             }
             if (board[i, i] == '-')
             {
@@ -441,29 +444,31 @@ public class EasyAI : MonoBehaviour
             else
             {
                 opponentCount++;
-                score += -(opponentCount ^ 2);
             }
         }
-        count = 0;
+        score += count ^ 2;
+        score += -(opponentCount ^ 2);
 
+        count = 0;
+        opponentCount = 0;
         for (int i = 0; i < 5; i++)
         {
 
-            if ('O' == board[i, i])
+            if ('O' == board[i, 4-i])
             {
                 count++;
-                score += count ^ 2;
             }
-            if (board[i, i] == '-')
+            else if (board[i, 4-i] == '-')
             {
                 score += 0;
             }
-            else
+            else if (board[i, 4-i] == 'X')
             {
                 opponentCount++;
-                score += -(opponentCount ^ 2);
             }
         }
+        score += count ^ 2;
+        score += -(opponentCount ^ 2);
         return score;
     }
 
@@ -500,7 +505,7 @@ public class EasyAI : MonoBehaviour
 
 
     //
-    public int Minimax(quixoModel model, int depth, bool aiTurn)
+    public int Minimax(quixoModel model, int depth, bool aiTurn, int alpha, int beta)
     {
         quixoModel copyModel = new quixoModel();
         copyModel.board = (char[,])model.board.Clone();
@@ -514,7 +519,12 @@ public class EasyAI : MonoBehaviour
             foreach ((Piece, char) move in PossibleMoves(copyModel))
             {
                 copyModel.makeMove(move.Item1, move.Item2);
-                maxEval = Math.Max(maxEval, Minimax(copyModel, depth - 1, false));
+                maxEval = Math.Max(maxEval, Minimax(copyModel, depth - 1, false, alpha, beta));
+                alpha = Math.Max(alpha, maxEval);
+                if(beta <= alpha)
+                {
+                    break;
+                }
             }
             return maxEval;
 
@@ -525,13 +535,21 @@ public class EasyAI : MonoBehaviour
             foreach ((Piece, char) move in PossibleMoves(copyModel))
             {
                 copyModel.makeMove(move.Item1, move.Item2);
-                minEval = Math.Min(minEval, Minimax(copyModel, depth - 1, true));
+                minEval = Math.Min(minEval, Minimax(copyModel, depth - 1, true, alpha, beta));
+                beta = Math.Min(beta, minEval);
+                if(beta <= alpha)
+                {
+                    break;
+                }
             }
             return minEval;
         }
     }
 
-
+    public int MinimaxAlphaBeta(quixoModel board, int depth, bool aiTurn)
+    {
+        return Minimax(board, depth, aiTurn, int.MinValue, int.MaxValue);
+    }
     //looks through all possible moves and finds the one that has will end with the highest possible score, whent he opponent
     //is also trying to maximize their score
 
@@ -540,7 +558,8 @@ public class EasyAI : MonoBehaviour
 
         (Piece, char) bestMove = (null, ' ');
         int bestEval = int.MinValue;
-
+        int eval = Evaluate(model);
+        Debug.Log("Current Eval: " + eval);
         quixoModel newBoard = new quixoModel();
         newBoard.board = model;
         newBoard.playerOneTurn = false;
@@ -549,7 +568,7 @@ public class EasyAI : MonoBehaviour
 
             newBoard.makeMove(move.Item1, move.Item2);
 
-            int evalScore = Minimax(newBoard, depth, true);
+            int evalScore = MinimaxAlphaBeta(newBoard, depth, true);
 
             if (evalScore > bestEval)
             {
@@ -558,6 +577,9 @@ public class EasyAI : MonoBehaviour
             }
             newBoard.board = model; 
         }
+        newBoard.makeMove(bestMove.Item1, bestMove.Item2);
+        eval = Evaluate(newBoard.board);
+        Debug.Log("Best Move Eval: " + eval);
 
         return bestMove;
 
