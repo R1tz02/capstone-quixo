@@ -366,6 +366,7 @@ public class GameCore : MonoBehaviour
             }
             //F: TODO - work on validmove error handling
             else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
+            return true;
         }
         if (playAI)
         {
