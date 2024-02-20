@@ -10,15 +10,18 @@ public class Player
     public bool won = false;
 }
 
+
 public class GameCore : MonoBehaviour
 {
+    private bool playAI = true; 
     public GameObject piecePrefab;
     public GameObject winnerText;
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
+    public GameObject AI; 
     private PieceLogic pieceLogic;
-    private PieceLogic chosenPiece;
+    public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
     public Player currentPlayer = new Player();
@@ -27,6 +30,7 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
+    private EasyAI easyAI;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +40,7 @@ public class GameCore : MonoBehaviour
         currentPlayer = p1; //F: make X the first player/move
         p2.piece = 'O'; //F: assign O to player two
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
     }
 
@@ -278,6 +283,18 @@ public class GameCore : MonoBehaviour
             //F: TODO - work on validmove error handling
             else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
         }
+        if (playAI)
+        {
+            if (easyAI)
+            {
+                Debug.Log("Fernando's mother");
+
+                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 3);
+                validPiece(move.Item1.row, move.Item1.col);
+                shiftBoard(move.Item2, currentPlayer.piece);
+                currentPlayer = p1; //F: if not won, we change the currentPlayer
+            }
+        }
     }
 
     public List<char> moveOptions(int row, int col)
@@ -347,6 +364,23 @@ public class GameCore : MonoBehaviour
             x += 20;
         }
     }
+    public char[,] translateBoard()
+    {
+        char[,] aiBoard = new char[5,5];
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                aiBoard[i, j] = gameBoard[i, j].GetComponent<PieceLogic>().player;
+            }
+        }
+
+        return aiBoard;
+    }
+
+
+
+
 
     // Update is called once per frame
     void Update()
