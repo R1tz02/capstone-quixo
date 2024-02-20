@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
+using System.Threading;
 
 public class GameCore : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class GameCore : MonoBehaviour
     public async void StartNetworkedGame(string gameType)
     {
         winScreen.enabled = false;
+        playAI = false;
 
         if (gameType != "Host" && gameType != "Client")
         {
@@ -369,27 +371,38 @@ public class GameCore : MonoBehaviour
         {
             if (easyAI)
             {
-                Debug.Log("Fernando's mother");
+                StartCoroutine(AIMove(easyAI));
 
-                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 2);
-                validPiece(move.Item1.row, move.Item1.col);
-                shiftBoard(move.Item2, currentPlayer.piece);
-                counter++;
-                if (counter > 8 && won()) //F: TODO add counter 
-                {
-                    winScreen.enabled = true;
-                    Time.timeScale = 0;
-                    gamePaused = true;
-                    Debug.Log(currentPlayer.piece + " won!");
-                    return true;
-                }
-                currentPlayer = p1;
                 //F: if not won, we change the currentPlayer
             }
         }
         return false;
     }
 
+    System.Collections.IEnumerator AIMove(EasyAI easyAI)
+    {
+        Debug.Log("Fernando's mother");
+        //WaitFor(5);
+        yield return new WaitForSeconds(3);
+        (Piece, char) move = easyAI.FindBestMove(translateBoard(), 2);
+        validPiece(move.Item1.row, move.Item1.col);
+        shiftBoard(move.Item2, currentPlayer.piece);
+        counter++;
+        if (counter > 8 && won()) //F: TODO add counter 
+        {
+            winScreen.enabled = true;
+            Time.timeScale = 0;
+            gamePaused = true;
+            Debug.Log(currentPlayer.piece + " won!");
+        }
+        currentPlayer = p1;
+
+    }
+
+    System.Collections.IEnumerator WaitFor(int time)
+    {
+        yield return new WaitForSeconds(time);
+    }
     public List<char> moveOptions(int row, int col)
     {
         buttonHandler.changeArrowsBack();
