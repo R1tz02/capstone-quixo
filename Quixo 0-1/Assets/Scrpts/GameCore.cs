@@ -4,13 +4,20 @@ using UnityEngine;
 using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 
+public class Player
+{
+    public char piece;
+    public bool won = false;
+}
 public class GameCore : MonoBehaviour
 {
+    private bool playAI = true; 
     public GameObject piecePrefab;
     public GameObject winnerText;
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
+    public GameObject AI; 
     private PieceLogic pieceLogic;
     public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
@@ -21,6 +28,7 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
+    private EasyAI easyAI;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -68,6 +76,7 @@ public class GameCore : MonoBehaviour
         currentPlayer = p1;
 
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
     }
 
@@ -351,6 +360,28 @@ public class GameCore : MonoBehaviour
         {
             return false;
         }
+        if (playAI)
+        {
+            if (easyAI)
+            {
+                Debug.Log("Fernando's mother");
+
+                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 4);
+                validPiece(move.Item1.row, move.Item1.col);
+                shiftBoard(move.Item2, currentPlayer.piece);
+                counter++;
+                if (counter > 8 && won()) //F: TODO add counter 
+                {
+                    winScreen.enabled = true;
+                    Time.timeScale = 0;
+                    gamePaused = true;
+                    Debug.Log(currentPlayer.piece + " won!");
+                    return;
+                }
+                currentPlayer = p1;
+                //F: if not won, we change the currentPlayer
+            }
+        }
     }
 
     public List<char> moveOptions(int row, int col)
@@ -424,6 +455,23 @@ public class GameCore : MonoBehaviour
             x += 20;
         }
     }
+    public char[,] translateBoard()
+    {
+        char[,] aiBoard = new char[5,5];
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                aiBoard[i, j] = gameBoard[i, j].GetComponent<PieceLogic>().player;
+            }
+        }
+
+        return aiBoard;
+    }
+
+
+
+
 
     // Update is called once per frame
     void Update()
