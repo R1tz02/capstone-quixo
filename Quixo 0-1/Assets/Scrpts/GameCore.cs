@@ -22,6 +22,9 @@ public class GameCore : MonoBehaviour
     public bool gamePaused;
     public Canvas winScreen;
 
+    private EasyAI easyAI;
+    private bool playAI = true;
+
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
@@ -30,6 +33,12 @@ public class GameCore : MonoBehaviour
     void Start()
     {
         winScreen.enabled = false;
+        p1.piece = 'X'; //F: assign X to player one
+        currentPlayer = p1; //F: make X the first player/move
+        p2.piece = 'O'; //F: assign O to player two
+        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
+        populateBoard(); //Initialize board
     }
 
     public async void StartNetworkedGame(string gameType)
@@ -321,11 +330,11 @@ public class GameCore : MonoBehaviour
 
 
 
-    public bool makeMove(char c)
+    public void makeMove(char c)
     {
         if (gamePaused)
         {
-            return false;
+            return;
         }
         if (validPiece(chosenPiece.row, chosenPiece.col))
         {
@@ -338,18 +347,32 @@ public class GameCore : MonoBehaviour
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
-                return true;
+                return;
             }
             //F: TODO - work on validmove error handling
-
-            currentPlayer = currentPlayer == p1 ? p2 : p1;
-
-            return true;
+            else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
         }
-
-        else
+        if (playAI)
         {
-            return false;
+            if (easyAI)
+            {
+                Debug.Log("Fernando's mother");
+
+                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 4);
+                validPiece(move.Item1.row, move.Item1.col);
+                shiftBoard(move.Item2, currentPlayer.piece);
+                counter++;
+                if (counter > 8 && won()) //F: TODO add counter 
+                {
+                    winScreen.enabled = true;
+                    Time.timeScale = 0;
+                    gamePaused = true;
+                    Debug.Log(currentPlayer.piece + " won!");
+                    return;
+                }
+                currentPlayer = p1;
+                //F: if not won, we change the currentPlayer
+            }
         }
     }
 
@@ -423,6 +446,20 @@ public class GameCore : MonoBehaviour
             }
             x += 20;
         }
+    }
+
+    public char[,] translateBoard()
+    {
+        char[,] aiBoard = new char[5, 5];
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                aiBoard[i, j] = gameBoard[i, j].GetComponent<PieceLogic>().player;
+            }
+        }
+
+        return aiBoard;
     }
 
     // Update is called once per frame
