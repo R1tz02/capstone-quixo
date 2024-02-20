@@ -6,10 +6,12 @@ using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
+using UnityEditor.Overlays;
 
 public class PauseButton : MonoBehaviour
 {
     public Canvas pauseMenu;
+    public Canvas helpMenu;
     public Button pauseButton;
     public GameObject gameMaster;
 
@@ -17,6 +19,7 @@ public class PauseButton : MonoBehaviour
     void Start()
     {
         pauseMenu.enabled = false;
+        helpMenu.enabled = false;
     }
 
     public void openMenu()
@@ -41,13 +44,21 @@ public class PauseButton : MonoBehaviour
         SceneManager.LoadScene(0);   
     }
 
+    public void openHelpMenu()
+    {
+        pauseMenu.enabled = false;
+        helpMenu.enabled = true;
+    }
+
+    public void closeHelpMenu()
+    {
+        helpMenu.enabled = false;
+        pauseMenu.enabled = true;
+    }
+
     public void restartGame()
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void openHelp()
-    { 
     }
 }
