@@ -114,7 +114,7 @@ public class MenuController : MonoBehaviour
             if (gameMaster != null)
             {
                 Debug.Log("GameMaster found. Starting networked game...");
-                gameMaster.GetComponent<GameCore>().StartLocalGame();
+                gameMaster.GetComponent<GameCore>().StartAIGame();
             }
             else
             {

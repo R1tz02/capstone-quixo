@@ -11,6 +11,7 @@ public class GameCore : MonoBehaviour
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
+    public GameObject AI;
     private PieceLogic pieceLogic;
     public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
@@ -32,13 +33,7 @@ public class GameCore : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        winScreen.enabled = false;
-        p1.piece = 'X'; //F: assign X to player one
-        currentPlayer = p1; //F: make X the first player/move
-        p2.piece = 'O'; //F: assign O to player two
-        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
-        populateBoard(); //Initialize board
+       
     }
 
     public async void StartNetworkedGame(string gameType)
@@ -60,6 +55,24 @@ public class GameCore : MonoBehaviour
         {
             await networkingManager.StartGame(GameMode.Client);
         }
+    }
+
+    public void StartAIGame()
+    {
+        GameObject player1Object = new GameObject("Player1");
+        p1 = player1Object.AddComponent<LocalPlayer>();
+        p1.Initialize('X');
+
+        GameObject player2Object = new GameObject("Player2");
+        p2 = player2Object.AddComponent<LocalPlayer>();
+        p2.Initialize('O');
+
+        winScreen.enabled = false;
+
+        currentPlayer = p1; //F: make X the first player/move
+        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
+        populateBoard(); //Initialize board
     }
 
     public void StartLocalGame()
@@ -330,11 +343,11 @@ public class GameCore : MonoBehaviour
 
 
 
-    public void makeMove(char c)
+    public bool makeMove(char c)
     {
         if (gamePaused)
         {
-            return;
+            return false;
         }
         if (validPiece(chosenPiece.row, chosenPiece.col))
         {
@@ -347,7 +360,7 @@ public class GameCore : MonoBehaviour
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
-                return;
+                return true;
             }
             //F: TODO - work on validmove error handling
             else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
@@ -358,7 +371,7 @@ public class GameCore : MonoBehaviour
             {
                 Debug.Log("Fernando's mother");
 
-                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 4);
+                (Piece, char) move = easyAI.FindBestMove(translateBoard(), 2);
                 validPiece(move.Item1.row, move.Item1.col);
                 shiftBoard(move.Item2, currentPlayer.piece);
                 counter++;
@@ -368,12 +381,13 @@ public class GameCore : MonoBehaviour
                     Time.timeScale = 0;
                     gamePaused = true;
                     Debug.Log(currentPlayer.piece + " won!");
-                    return;
+                    return true;
                 }
                 currentPlayer = p1;
                 //F: if not won, we change the currentPlayer
             }
         }
+        return false;
     }
 
     public List<char> moveOptions(int row, int col)
