@@ -109,19 +109,31 @@ public class MenuController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
-            Debug.Log("Looking for GameMaster object...");
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
-                Debug.Log("GameMaster found. Starting networked game...");
                 gameMaster.GetComponent<GameCore>().StartAIGame();
             }
             else
             {
                 Debug.Log("GameMaster not found.");
             }
+        }));
+    }
 
-            //Maybe destroy the menu controller here if needed @R1tz02
+    public void LocalGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<GameCore>().StartLocalGame();
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
         }));
     }
 
@@ -140,8 +152,6 @@ public class MenuController : MonoBehaviour
             {
                 Debug.Log("GameMaster not found.");
             }
-
-            //Maybe destroy the menu controller here if needed @R1tz02
         }));
     }
 
@@ -160,8 +170,6 @@ public class MenuController : MonoBehaviour
             {
                 Debug.Log("GameMaster not found.");
             }
-
-            //Maybe destroy the menu controller here if needed @R1tz02
         }));
     }
 

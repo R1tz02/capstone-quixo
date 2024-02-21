@@ -25,7 +25,7 @@ public class GameCore : MonoBehaviour
     public Canvas winScreen;
 
     private EasyAI easyAI;
-    private bool playAI = true;
+    private bool playAI = false;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -34,13 +34,12 @@ public class GameCore : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+
     }
 
     public async void StartNetworkedGame(string gameType)
     {
         winScreen.enabled = false;
-        playAI = false;
 
         if (gameType != "Host" && gameType != "Client")
         {
@@ -61,6 +60,8 @@ public class GameCore : MonoBehaviour
 
     public void StartAIGame()
     {
+        playAI = true;
+
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
         p1.Initialize('X');
@@ -365,17 +366,23 @@ public class GameCore : MonoBehaviour
                 return true;
             }
             //F: TODO - work on validmove error handling
-            else if (currentPlayer.piece == 'X') { currentPlayer = p2; } else { currentPlayer = p1; }; //F: if not won, we change the currentPlayer
-            return true;
-        }
-        if (playAI)
-        {
-            if (easyAI)
-            {
-                StartCoroutine(AIMove(easyAI));
-
-                //F: if not won, we change the currentPlayer
+            //F: if not won, we change the currentPlayer
+            else if (currentPlayer.piece == 'X') {
+                currentPlayer = p2; 
             }
+            else {
+                currentPlayer = p1; 
+            } 
+
+            if (playAI)
+            {
+                if (easyAI)
+                {
+                    StartCoroutine(AIMove(easyAI));
+                }
+            }
+
+            return true;
         }
         return false;
     }
@@ -383,9 +390,8 @@ public class GameCore : MonoBehaviour
     System.Collections.IEnumerator AIMove(EasyAI easyAI)
     {
         Debug.Log("Fernando's mother");
-        //WaitFor(5);
-        yield return new WaitForSeconds(3);
-        (Piece, char) move = easyAI.FindBestMove(translateBoard(), 2);
+        (Piece, char) move = easyAI.FindBestMove(translateBoard(), 4);
+        yield return new WaitForSeconds(2);
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         counter++;
@@ -404,6 +410,7 @@ public class GameCore : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
     }
+
     public List<char> moveOptions(int row, int col)
     {
         buttonHandler.changeArrowsBack();
@@ -488,11 +495,5 @@ public class GameCore : MonoBehaviour
         }
 
         return aiBoard;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
