@@ -391,7 +391,7 @@ public class GameCore : MonoBehaviour
     {
         Debug.Log("Fernando's mother");
         yield return new WaitForSeconds(2);
-        (Piece, char) move = easyAI.FindBestMove(translateBoard(), 2);
+        (Piece, char) move = easyAI.FindBestMove(translateBoard(), 1);
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
