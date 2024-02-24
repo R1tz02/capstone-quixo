@@ -390,10 +390,11 @@ public class GameCore : MonoBehaviour
     System.Collections.IEnumerator AIMove(EasyAI easyAI)
     {
         Debug.Log("Fernando's mother");
-        (Piece, char) move = easyAI.FindBestMove(translateBoard(), 4);
         yield return new WaitForSeconds(2);
+        (Piece, char) move = easyAI.FindBestMove(translateBoard(), 2);
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
+        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         counter++;
         if (counter > 8 && won()) //F: TODO add counter 
         {
