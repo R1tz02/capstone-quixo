@@ -265,7 +265,7 @@ public class GameCore : MonoBehaviour
                 break;
         }
 
-        if (dir == 'u')
+        if (dir == 'U')
         {
             for (int i = chosenPiece.row; i > 0; i--)
             {
@@ -277,7 +277,7 @@ public class GameCore : MonoBehaviour
             }
             moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
         }
-        else if (dir == 'd')
+        else if (dir == 'D')
         {
             for (int i = chosenPiece.row; i < 4; i++)
             {
@@ -289,7 +289,7 @@ public class GameCore : MonoBehaviour
             }
             moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
         }
-        else if (dir == 'r')
+        else if (dir == 'R')
         {
             for (int i = chosenPiece.col; i < 4; i++)
             {
@@ -301,7 +301,7 @@ public class GameCore : MonoBehaviour
             }
             moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40);
         }
-        else if (dir == 'l')
+        else if (dir == 'L')
         {
             for (int i = chosenPiece.col; i > 0; i--)
             {
@@ -340,8 +340,8 @@ public class GameCore : MonoBehaviour
         StartCoroutine(MovePieceSmoothly(gameBoard[row, col], target));
         gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
-        gameBoard[row, col].GetComponent<Rigidbody>().mass = 100.0f;
-        gameBoard[row, col].GetComponent<Rigidbody>().useGravity = true;
+        /*gameBoard[row, col].GetComponent<Rigidbody>().mass = 100.0f;
+        gameBoard[row, col].GetComponent<Rigidbody>().useGravity = true;*/
     }
 
 
@@ -352,7 +352,7 @@ public class GameCore : MonoBehaviour
         {
             return false;
         }
-        if (validPiece(chosenPiece.row, chosenPiece.col))
+        if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
             counter++;
@@ -475,8 +475,8 @@ public class GameCore : MonoBehaviour
                 gameBoard[i, j].GetComponent<PieceLogic>().col = j;
                 gameBoard[i, j].GetComponent<PieceLogic>().player = '-';
                 gameBoard[i, j].GetComponent<PieceLogic>().game = this;
-                gameBoard[i, j].GetComponent<Rigidbody>().useGravity = true;
-                gameBoard[i, j].GetComponent<Rigidbody>().mass = 100.0f;
+                /*gameBoard[i, j].GetComponent<Rigidbody>().useGravity = true;
+                gameBoard[i, j].GetComponent<Rigidbody>().mass = 100.0f;*/
                 z += 20;
             }
             x += 20;
