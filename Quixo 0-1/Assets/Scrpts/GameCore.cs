@@ -356,7 +356,7 @@ public class GameCore : MonoBehaviour
             shiftBoard(c, currentPlayer.piece);
             counter++;
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
-            if (counter > 8 && won()) //F: TODO add counter 
+            if (counter > 8 && won()) 
             {
                 winScreen.enabled = true;
                 Time.timeScale = 0;
@@ -364,7 +364,6 @@ public class GameCore : MonoBehaviour
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
             }
-            //F: TODO - work on validmove error handling
             //F: if not won, we change the currentPlayer
             else if (currentPlayer.piece == 'X') {
                 currentPlayer = p2; 
@@ -394,7 +393,7 @@ public class GameCore : MonoBehaviour
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         counter++;
-        if (counter > 8 && won()) //F: TODO add counter 
+        if (counter > 8 && won()) 
         {
             winScreen.enabled = true;
             Time.timeScale = 0;
