@@ -5,6 +5,8 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
+using System.Collections;
 
 [Serializable]
 public struct PieceData
@@ -55,6 +57,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_players.Count != 2) return;
 
+        NetworkedPlayer.TotalPlayers = 0;
+
         game = GameObject.Find("GameMaster").GetComponent<GameCore>();
 
         gameState = GameState.Create();
@@ -99,14 +103,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {
+        Debug.Log("Shutting down");
+        Destroy(this.gameObject);
+    }
 
-    #pragma warning disable UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
+#pragma warning disable UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
 
-    #pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
+#pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
@@ -125,7 +132,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public GameCore game;
     public GameState gameState;
 
-    public async Task StartGame(GameMode mode)
+    public async Task StartGame(GameMode mode, string sessionName = "Default")
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
 
@@ -138,16 +145,53 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
         }
 
-        await _runner.StartGame(new StartGameArgs()
+        string lobbyName = sessionName;
+
+        if (mode == GameMode.Host)
+        {
+            System.Random res = new System.Random();
+
+            // String of alphabets  
+            String str = "abcdefghijklmnopqrstuvwxyz";
+            int size = 10;
+
+            // Initializing the empty string 
+            String ran = "";
+
+            for (int i = 0; i < size; i++)
+            {
+                // Selecting a index randomly 
+                ran += str[res.Next(26)];
+            }
+
+            //lobbyName = ran;
+
+            // TODO: Display this room name on the host's screen
+        }
+
+        var result = await _runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
-            SessionName = "TestRoom",
+            SessionName = lobbyName,
             Scene = scene,
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
-            // TODO: Might be possible to specify how many players are allowed in the room here
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+            PlayerCount = 2,
+            EnableClientSessionCreation = false,
         });
 
-        Debug.Log("Game started");
+        if (!result.Ok)
+        {
+            Debug.LogError("Failed to start game: " + result);
+
+            DisconnectFromPhoton();
+
+            SceneManager.LoadScene(0);
+            // TODO: Display error message on main menu about not being able to connect
+        }
+        else
+        {
+            Debug.Log("Game started");
+        }
     }
 
     private void SyncBoard()
@@ -257,5 +301,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public void SetChosenPiece(int row, int col)
     {
         GetNetworkedPlayer(_runner.LocalPlayer).RpcSetChosenPiece(row, col);
+    }
+
+    public void DisconnectFromPhoton()
+    {
+        _runner.Shutdown();
     }
 }

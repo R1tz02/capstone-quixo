@@ -186,5 +186,7 @@ public class MenuController : MonoBehaviour
         }
 
         onSceneLoaded?.Invoke();
+
+        Destroy(this.gameObject);
     }
 }

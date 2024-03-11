@@ -31,16 +31,13 @@ public class GameCore : MonoBehaviour
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
     
-    // Start is called before the first frame update
     void Start()
     {
-
+        winScreen.enabled = false;
     }
 
     public async void StartNetworkedGame(string gameType)
     {
-        winScreen.enabled = false;
-
         if (gameType != "Host" && gameType != "Client")
         {
             throw new System.Exception("Not a valid game type");
@@ -69,8 +66,6 @@ public class GameCore : MonoBehaviour
         GameObject player2Object = new GameObject("Player2");
         p2 = player2Object.AddComponent<LocalPlayer>();
         p2.Initialize('O');
-
-        winScreen.enabled = false;
 
         currentPlayer = p1; //F: make X the first player/move
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();

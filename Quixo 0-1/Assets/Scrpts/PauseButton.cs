@@ -40,8 +40,15 @@ public class PauseButton : MonoBehaviour
 
     public void returnToMain()
     {
+        GameObject networkingManger = GameObject.Find("NetworkManager");
+
+        if (networkingManger != null)
+        {
+            networkingManger.GetComponent<NetworkingManager>().DisconnectFromPhoton();
+        }
+
         Time.timeScale = 1;
-        SceneManager.LoadScene(0);   
+        SceneManager.LoadScene(0);
     }
 
     public void openHelpMenu()
