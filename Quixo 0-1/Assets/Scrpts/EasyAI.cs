@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -17,9 +18,30 @@ public class quixoModel
                                     { '-', '-', '-', '-', '-' },
                                     { '-', '-', '-', '-', '-' }
         };
-    public bool playerOneTurn = true;
+    public bool playerOneTurn;
 
 
+    public quixoModel Clone()
+    {
+            quixoModel copy = new quixoModel();
+            char[,] clonedBoard = {    { '-', '-', '-', '-', '-' },
+                                    { '-', '-', '-', '-', '-' },
+                                    { '-', '-', '-', '-', '-' },
+                                    { '-', '-', '-', '-', '-' },
+                                    { '-', '-', '-', '-', '-' }
+        };
+        for(int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                clonedBoard[i, j] = board[i, j];
+
+            }
+        }
+        copy.board = clonedBoard;
+        copy.playerOneTurn = playerOneTurn;
+        return copy;
+}
 
 
     public void movePiece(Piece piece, char dir)
@@ -52,6 +74,8 @@ public class quixoModel
             }
         }
     }
+
+
 
     private void shiftBoard(Piece piece, char dir, char currentTurn)
     {
@@ -346,6 +370,7 @@ public class EasyAI : MonoBehaviour
     {
         int count = 0;
         int opponentCount= 0;
+        
 
         foreach(char piece in pieces)
         {
@@ -360,7 +385,7 @@ public class EasyAI : MonoBehaviour
         }
         if (opponentCount > 0 && count < opponentCount)
         {
-            return -(int)Math.Pow(10, opponentCount);
+            return -(int)Math.Pow(10, opponentCount) - 5;
         }
         else if (count > 0 && opponentCount < count)
         {
@@ -402,21 +427,27 @@ public class EasyAI : MonoBehaviour
 
 
     //
-    public int Minimax(quixoModel model, int depth, bool aiTurn, int alpha, int beta)
+    public int Minimax(quixoModel board, int depth, bool maximizing, int alpha, int beta)
     {
-        quixoModel copyModel = new quixoModel();
-        copyModel.board = (char[,])model.board.Clone();
-        if (copyModel.checkForWin() != '-' || depth == 0)
+        quixoModel copy = board.Clone();
+        if (board.checkForWin() != '-' || depth == 0)
         {
-            return Evaluate(copyModel.board);
+            return Evaluate(board.board);
         }
-        if (aiTurn)
+        if (maximizing)
         {
+            
             int maxEval = int.MinValue;
-            foreach ((Piece, char) move in PossibleMoves(copyModel))
+            copy.playerOneTurn = false;
+            foreach ((Piece, char) move in PossibleMoves(copy))
             {
-                copyModel.makeMove(move.Item1, move.Item2);
-                maxEval = Math.Max(maxEval, Minimax(copyModel, depth - 1, false, alpha, beta));
+                copy.playerOneTurn = false;
+                copy.makeMove(move.Item1, move.Item2);
+
+                Debug.Log("Check");
+
+                maxEval = Math.Max(maxEval, Minimax(copy.Clone(), depth - 1, false, alpha, beta));
+                copy = board.Clone();
                 alpha = Math.Max(alpha, maxEval);
                 if(beta <= alpha)
                 {
@@ -426,13 +457,18 @@ public class EasyAI : MonoBehaviour
             return maxEval;
 
         }
-        else
+        else if(!maximizing)
         {
+            copy.playerOneTurn = true;
+
             int minEval = int.MaxValue;
-            foreach ((Piece, char) move in PossibleMoves(copyModel))
-            {
-                copyModel.makeMove(move.Item1, move.Item2);
-                minEval = Math.Min(minEval, Minimax(copyModel, depth - 1, true, alpha, beta));
+            foreach ((Piece, char) move in PossibleMoves(copy)) {
+                copy.playerOneTurn = true;
+
+                copy.makeMove(move.Item1, move.Item2);
+                Debug.Log("Check");
+                minEval = Math.Min(minEval, Minimax(copy.Clone(), depth - 1, true, alpha, beta));
+                copy = board.Clone();
                 beta = Math.Min(beta, minEval);
                 if(beta <= alpha)
                 {
@@ -440,6 +476,10 @@ public class EasyAI : MonoBehaviour
                 }
             }
             return minEval;
+        }
+        else
+        {
+            return 0;
         }
     }
 
@@ -456,21 +496,20 @@ public class EasyAI : MonoBehaviour
         (Piece, char) bestMove = (null, ' ');
         int bestEval = int.MinValue;
         quixoModel newBoard = new quixoModel();
-        newBoard.board = model;
+        newBoard.board = (char[,])model.Clone();
         newBoard.playerOneTurn = false;
         foreach ((Piece, char) move in PossibleMoves(newBoard))
         {
-
-            newBoard.makeMove(move.Item1, move.Item2);
-
-            int evalScore = MinimaxAlphaBeta(newBoard, depth, true);
+            quixoModel copy = newBoard.Clone();
+            copy.makeMove(move.Item1, move.Item2);
+            copy.playerOneTurn = true;
+            int evalScore = MinimaxAlphaBeta(copy, depth-1, true);
 
             if (evalScore > bestEval)
             {
                 bestEval = evalScore;
                 bestMove = move;
             }
-            newBoard.board = model; 
         }
         return bestMove;
 
