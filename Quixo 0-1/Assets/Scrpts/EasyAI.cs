@@ -385,7 +385,7 @@ public class EasyAI : MonoBehaviour
         }
         if (opponentCount > 0 && count < opponentCount)
         {
-            return -(int)Math.Pow(10, opponentCount) + 5;
+            return -(int)Math.Pow(10, opponentCount) - 5;
         }
         else if (count > 0 && opponentCount < count)
         {
