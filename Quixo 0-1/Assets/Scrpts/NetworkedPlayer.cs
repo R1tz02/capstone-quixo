@@ -12,7 +12,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public bool won { get; set; } = false;
     [Networked]
     public PlayerRef PlayerRef { get; set; }
-    private static int TotalPlayers = 0;
+    public static int TotalPlayers = 0;
 
     private NetworkingManager networkingManager;
 
