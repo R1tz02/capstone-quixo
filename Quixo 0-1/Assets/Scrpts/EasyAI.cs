@@ -370,7 +370,8 @@ public class EasyAI : MonoBehaviour
     {
         int count = 0;
         int opponentCount= 0;
-        
+        int score = 0;
+        int oppScore = 0;
 
         foreach(char piece in pieces)
         {
@@ -383,16 +384,12 @@ public class EasyAI : MonoBehaviour
                 opponentCount++;
             }
         }
-        if (opponentCount > 0 && count < opponentCount)
-        {
-            return -(int)Math.Pow(10, opponentCount) - 5;
-        }
-        else if (count > 0 && opponentCount < count)
-        {
-            return (int)Math.Pow(10, count);
-        }
-        else
-            return 0;
+
+        score = (int)Math.Pow(10, count);
+        oppScore = -(int)Math.Pow(10, opponentCount) - 5;
+
+        return score + oppScore;
+
     }
 
 
