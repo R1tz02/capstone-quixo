@@ -136,19 +136,19 @@ public class quixoModel
         List<char> moveList = new List<char>();
         if (piece.row > 0)
         {
-            moveList.Add('u');
+            moveList.Add('U');
         }
         if (piece.row < 4)
         {
-            moveList.Add('d');
+            moveList.Add('D');
         }
         if (piece.col > 0)
         {
-            moveList.Add('l');
+            moveList.Add('L');
         }
         if (piece.col < 4)
         {
-            moveList.Add('r');
+            moveList.Add('R');
         }
         return moveList;
     }
@@ -438,10 +438,8 @@ public class EasyAI : MonoBehaviour
         {
             
             int maxEval = int.MinValue;
-            copy.playerOneTurn = false;
             foreach ((Piece, char) move in PossibleMoves(copy))
             {
-                copy.playerOneTurn = false;
                 copy.makeMove(move.Item1, move.Item2);
 
                 Debug.Log("Check");
@@ -459,11 +457,9 @@ public class EasyAI : MonoBehaviour
         }
         else if(!maximizing)
         {
-            copy.playerOneTurn = true;
 
             int minEval = int.MaxValue;
             foreach ((Piece, char) move in PossibleMoves(copy)) {
-                copy.playerOneTurn = true;
 
                 copy.makeMove(move.Item1, move.Item2);
                 Debug.Log("Check");
@@ -503,7 +499,7 @@ public class EasyAI : MonoBehaviour
             quixoModel copy = newBoard.Clone();
             copy.makeMove(move.Item1, move.Item2);
             copy.playerOneTurn = true;
-            int evalScore = MinimaxAlphaBeta(copy, depth-1, true);
+            int evalScore = MinimaxAlphaBeta(copy, depth-1, false);
 
             if (evalScore > bestEval)
             {
