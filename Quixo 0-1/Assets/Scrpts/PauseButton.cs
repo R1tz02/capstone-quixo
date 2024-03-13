@@ -42,7 +42,8 @@ public class PauseButton : MonoBehaviour
     {
         GameObject networkingManger = GameObject.Find("NetworkManager");
 
-        if (networkingManger != null)
+        // Disconnect from photon if the game is being played online
+        if (networkingManger != null && networkingManger.GetComponent<NetworkingManager>()._runner)
         {
             networkingManger.GetComponent<NetworkingManager>().DisconnectFromPhoton();
         }

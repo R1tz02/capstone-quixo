@@ -65,8 +65,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
 
-        if (!GameSetUp)
+        if (!GameObject.Find("GamePiece(Clone)"))
         {
+            GameSetUp = false;
+
             game.populateBoard();
         }
 
@@ -77,6 +79,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             AssignPlayers(() =>
             {
                 GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key);
+
                 SyncBoard();
             });
 
@@ -181,7 +184,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (!result.Ok)
         {
-            Debug.LogError("Failed to start game: " + result);
+            Debug.Log("Failed to start game: " + result);
 
             DisconnectFromPhoton();
 
@@ -210,6 +213,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
                 int index = i * (GameState.Cols - 1) + j;
                 PieceData piece = gameState.piecesData[index];
                 game.gameBoard[piece.row, piece.col].GetComponent<PieceLogic>().player = piece.player;
+
+                // Sync colors based on player piece
+                switch (piece.player)
+                {
+                    case 'X':
+                        game.gameBoard[piece.row, piece.col].GetComponent<Renderer>().material = game.playerOneSpace;
+                        break;
+                    case 'O':
+                        game.gameBoard[piece.row, piece.col].GetComponent<Renderer>().material = game.playerTwoSpace;
+                        break;
+                }
             }
         }
     }
@@ -306,5 +320,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public void DisconnectFromPhoton()
     {
         _runner.Shutdown();
+
+        GameSetUp = false;
     }
 }

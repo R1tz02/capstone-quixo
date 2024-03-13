@@ -13,6 +13,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Networked]
     public PlayerRef PlayerRef { get; set; }
     public static int TotalPlayers = 0;
+    [Networked]
+    public int playerTurn { get; set; }
 
     private NetworkingManager networkingManager;
 
@@ -61,6 +63,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     }
 
     // Called by both client and server
+    // Pass in current player piece to set the current player turn if a game was already in progress (i.e the client disconnected and is back now)
+    // Needs to be passed in as a byte because the RPC can't take a char
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcAssignPlayers(PlayerRef p1Ref, PlayerRef p2Ref)
     {
@@ -89,19 +93,27 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
             playerIndex++;
         }
 
-        networkingManager.game.currentPlayer = networkingManager.game.p1;
+        networkingManager.game.currentPlayer = playerTurn == 2 ? networkingManager.game.p2 : networkingManager.game.p1;
     }
 
     // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcSendMove(byte direction)
     {
+        NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
+
+        if (localPlayer.piece == networkingManager.game.currentPlayer.piece) return;
+
         networkingManager.game.makeMove((char)direction);
+
+        playerTurn = networkingManager.game.currentPlayer.piece == 'X' ? 1 : 2;
     }
 
     // Called by server
     public static IEnumerator WaitForClientConfirmation(Action OnComplete)
     {
+        NetworkingManager.GameSetUp = false;
+
         while (!NetworkingManager.GameSetUp)
         {
             yield return new WaitForSeconds(0.1f);
