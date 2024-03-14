@@ -102,11 +102,12 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     {
         NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
 
-        //if (localPlayer.piece == networkingManager.game.currentPlayer.piece) return;
+        if (localPlayer.piece != networkingManager.game.currentPlayer.piece)
+        {
+            networkingManager.game.makeMove((char)direction);
+        }
 
-        networkingManager.game.makeMove((char)direction);
-
-        playerTurn = networkingManager.game.currentPlayer.piece == 'X' ? 1 : 2;
+        playerTurn = networkingManager.game.currentPlayer.piece == 'O' ? 2 : 1;
     }
 
     // Called by server

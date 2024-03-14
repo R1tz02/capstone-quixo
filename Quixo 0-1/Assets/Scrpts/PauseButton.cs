@@ -38,14 +38,14 @@ public class PauseButton : MonoBehaviour
         gameMaster.GetComponent<GameCore>().gamePaused = false;
     }
 
-    public void returnToMain()
+    public async void returnToMain()
     {
         GameObject networkingManger = GameObject.Find("NetworkManager");
 
         // Disconnect from photon if the game is being played online
         if (networkingManger != null && networkingManger.GetComponent<NetworkingManager>()._runner)
         {
-            networkingManger.GetComponent<NetworkingManager>().DisconnectFromPhoton();
+            await networkingManger.GetComponent<NetworkingManager>().DisconnectFromPhoton();
         }
 
         Time.timeScale = 1;

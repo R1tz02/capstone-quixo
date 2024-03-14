@@ -68,6 +68,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
 
+        Debug.Log("Runner local player at start: " + runner.LocalPlayer);
+
         if (!GameObject.Find("GamePiece(Clone)"))
         {
             GameSetUp = false;
@@ -104,11 +106,16 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             _players.RemoveAt(playerIndex);
             GameObject.Destroy(networkedPlayer.gameObject);
         }
+
+        ButtonHandler.OnMoveMade -= SendMove;
+
+        GameCore.OnChosenPiece -= SetChosenPiece;
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
         Debug.Log("Shutting down");
         Destroy(this.gameObject);
     }
@@ -116,7 +123,13 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 #pragma warning disable UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
     public void OnConnectedToServer(NetworkRunner runner) { }
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        Debug.Log("Disconnected from server");
+
+        SceneManager.LoadScene(0);
+        //TODO: Display error message on main menu about being disconnected
+    }
 
 #pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
@@ -188,7 +201,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("Failed to start game: " + result);
 
-            DisconnectFromPhoton();
+            await DisconnectFromPhoton();
 
             SceneManager.LoadScene(0);
             // TODO: Display error message on main menu about not being able to connect
@@ -215,8 +228,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
                 int index = i * (GameState.Cols - 1) + j;
                 PieceData piece = gameState.piecesData[index];
                 game.gameBoard[i, j].GetComponent<PieceLogic>().player = piece.player;
-                game.gameBoard[i, j].GetComponent<PieceLogic>().row = piece.row;
-                game.gameBoard[i, j].GetComponent<PieceLogic>().col = piece.col;
 
                 // Sync colors based on player piece
                 switch (piece.player)
@@ -321,11 +332,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         GetNetworkedPlayer(_runner.LocalPlayer).RpcSetChosenPiece(row, col);
     }
-
-    public void DisconnectFromPhoton()
+    public async Task DisconnectFromPhoton()
     {
-        _runner.Shutdown();
-
         GameSetUp = false;
+
+        await _runner.Shutdown();
     }
 }
