@@ -66,7 +66,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     // Pass in current player piece to set the current player turn if a game was already in progress (i.e the client disconnected and is back now)
     // Needs to be passed in as a byte because the RPC can't take a char
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcAssignPlayers(PlayerRef p1Ref, PlayerRef p2Ref)
+    public void RpcAssignPlayers(PlayerRef p1Ref, PlayerRef p2Ref, int playerTurnLocal)
     {
         // Get all NetworkedPlayer instances in the scene
         NetworkedPlayer[] allPlayers = GameObject.FindObjectsOfType<NetworkedPlayer>();
@@ -93,7 +93,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
             playerIndex++;
         }
 
-        networkingManager.game.currentPlayer = playerTurn == 2 ? networkingManager.game.p2 : networkingManager.game.p1;
+        networkingManager.game.currentPlayer = playerTurnLocal == 2 ? networkingManager.game.p2 : networkingManager.game.p1;
     }
 
     // Called by both client and server
@@ -102,7 +102,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     {
         NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
 
-        if (localPlayer.piece == networkingManager.game.currentPlayer.piece) return;
+        //if (localPlayer.piece == networkingManager.game.currentPlayer.piece) return;
 
         networkingManager.game.makeMove((char)direction);
 

@@ -349,9 +349,9 @@ public class GameCore : MonoBehaviour
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
-            counter++;
+            //counter++;
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
-            if (counter > 8 && won()) 
+            if (won()) 
             {
                 winScreen.enabled = true;
                 Time.timeScale = 0;

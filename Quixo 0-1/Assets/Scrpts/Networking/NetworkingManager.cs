@@ -49,6 +49,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public static bool GameSetUp = false;
 
+    // Only used in the case of disconnects and reconnects - will be 0 otherwise and set to 0 after use
+    public int currentTurn = 0;
+
     [SerializeField] private NetworkPrefabRef _playerPrefab;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -78,7 +81,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             // If so, it will just skip creating new players on host
             AssignPlayers(() =>
             {
-                GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key);
+                GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key, currentTurn);
+
+                currentTurn = 0;
 
                 SyncBoard();
             });
@@ -99,11 +104,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             _players.RemoveAt(playerIndex);
             GameObject.Destroy(networkedPlayer.gameObject);
         }
-
-        // TODO: If the same player joins back, they join as player 3
-        // They need to join back as player 2
-        // Find way to clear them out from Photon and reassign them as player 2
     }
+
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {
@@ -212,7 +214,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             {
                 int index = i * (GameState.Cols - 1) + j;
                 PieceData piece = gameState.piecesData[index];
-                game.gameBoard[piece.row, piece.col].GetComponent<PieceLogic>().player = piece.player;
+                game.gameBoard[i, j].GetComponent<PieceLogic>().player = piece.player;
+                game.gameBoard[i, j].GetComponent<PieceLogic>().row = piece.row;
+                game.gameBoard[i, j].GetComponent<PieceLogic>().col = piece.col;
 
                 // Sync colors based on player piece
                 switch (piece.player)
@@ -264,14 +268,15 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        int playerIndex = 0;
-
         if (GetNetworkedPlayer(_runner.LocalPlayer) != null)
         {
-            playerIndex = 1;
+            NetworkedPlayer networkedPlayer = GetNetworkedPlayer(_runner.LocalPlayer);
+            currentTurn = networkedPlayer.playerTurn;
+            _runner.Despawn(networkedPlayer.GetComponent<NetworkObject>());
+            GameObject.Destroy(networkedPlayer.gameObject);
         }
 
-        for (; playerIndex < 2; playerIndex++)
+        for (int playerIndex = 0; playerIndex < 2; playerIndex++)
         {
             var player = _players[playerIndex];
 
