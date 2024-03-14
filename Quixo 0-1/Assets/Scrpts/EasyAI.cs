@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -439,7 +440,6 @@ public class EasyAI : MonoBehaviour
             {
                 copy.makeMove(move.Item1, move.Item2);
 
-                Debug.Log("Check");
 
                 maxEval = Math.Max(maxEval, Minimax(copy.Clone(), depth - 1, false, alpha, beta));
                 copy = board.Clone();
@@ -459,7 +459,6 @@ public class EasyAI : MonoBehaviour
             foreach ((Piece, char) move in PossibleMoves(copy)) {
 
                 copy.makeMove(move.Item1, move.Item2);
-                Debug.Log("Check");
                 minEval = Math.Min(minEval, Minimax(copy.Clone(), depth - 1, true, alpha, beta));
                 copy = board.Clone();
                 beta = Math.Min(beta, minEval);
@@ -483,7 +482,7 @@ public class EasyAI : MonoBehaviour
     //looks through all possible moves and finds the one that has will end with the highest possible score, whent he opponent
     //is also trying to maximize their score
 
-    public (Piece, char) FindBestMove(char[,] model, int depth)
+    public Task<(Piece, char)> FindBestMove(char[,] model, int depth)
     {
 
         (Piece, char) bestMove = (null, ' ');
@@ -504,7 +503,7 @@ public class EasyAI : MonoBehaviour
                 bestMove = move;
             }
         }
-        return bestMove;
+        return Task.FromResult(bestMove);
 
         // Update is called once per frame
     }
