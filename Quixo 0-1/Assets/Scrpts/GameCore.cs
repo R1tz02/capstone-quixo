@@ -20,6 +20,7 @@ public class GameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
+    public int SMLvl = 0;
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
@@ -236,10 +237,24 @@ public class GameCore : MonoBehaviour
 
     public bool won()
     {
-        if (horizontalWin()) return true;
-        if (verticalWin()) return true;
-        if (leftDiagonalWin()) return true; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) return true;
+        if (SMLvl == 0)
+        {
+            if (horizontalWin()) return true;
+            if (verticalWin()) return true;
+            if (leftDiagonalWin()) return true; //separated checkDiagonalWin into two separate functions
+            if (rightDiagonalWin()) return true;
+            return false;
+        }
+        else
+        {
+            switch(SMLvl)
+            {
+                case 1: if (verticalWin()) return true; break;
+                case 2: if (horizontalWin()) return true; break;
+                case 3: if (leftDiagonalWin() || rightDiagonalWin()) return true; break;
+                default: return false;
+            }
+        }
         return false;
     }
 
@@ -251,7 +266,7 @@ public class GameCore : MonoBehaviour
 
         Material pieceColor;
         switch (currentPiece)
-        {
+        { 
             case 'X':
                 pieceColor = playerOneSpace;
                 break;
@@ -396,7 +411,14 @@ public class GameCore : MonoBehaviour
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
         }
-        currentPlayer = p1;
+        else if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
 
     }
 

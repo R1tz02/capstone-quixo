@@ -10,7 +10,6 @@ public class PieceLogic : MonoBehaviour
     public char player;
     public GameCore game;
     private ButtonHandler buttonHandler;
-
     private bool isSelected = false;
     // private Rigidbody rb;
     private List<char> moveList;

@@ -121,6 +121,23 @@ public class MenuController : MonoBehaviour
         }));
     }
 
+    public void StoryModeLevel1()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<GameCore>().StartAIGame();
+                gameMaster.GetComponent<GameCore>().SMLvl = 1;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+
     public void LocalGame()
     {
         StartCoroutine(AsyncLoadGameScene(() =>
