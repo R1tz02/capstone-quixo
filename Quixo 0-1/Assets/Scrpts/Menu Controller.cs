@@ -125,17 +125,20 @@ public class MenuController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
+            GameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            if (gameMaster != null)
+            gcComponent = gameMaster.GetComponent<GameCore>();
+            if (gcComponent != null)
             {
-                gameMaster.GetComponent<GameCore>().StartAIGame();
-                gameMaster.GetComponent<GameCore>().SMLvl = 1;
+                gcComponent.StartAIGame();
+                gcComponent.SMLvl=1;
             }
             else
             {
                 Debug.Log("GameMaster not found.");
             }
         }));
+        
     }
 
     public void LocalGame()
