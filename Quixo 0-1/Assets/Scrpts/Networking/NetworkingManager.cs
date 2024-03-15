@@ -96,10 +96,21 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameCore.OnChosenPiece += SetChosenPiece;
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
         
+        if (runner.IsClient && player != runner.LocalPlayer)
+        {
+            await DisconnectFromPhoton();
+
+            SceneManager.LoadScene(0);
+
+            // TODO @R1tz02: Display error message on main menu about the host leaving the game
+
+            return;
+        }
+
         if (runner.IsServer && player != runner.LocalPlayer)
         {
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
@@ -134,7 +145,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         Debug.Log("Disconnected from server");
 
         SceneManager.LoadScene(0);
-        //TODO: Display error message on main menu about being disconnected
+
+        //TODO @R1tz02: Display vague error message on main menu about being disconnected
     }
 
 #pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
@@ -210,7 +222,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             await DisconnectFromPhoton();
 
             SceneManager.LoadScene(0);
-            // TODO: Display error message on main menu about not being able to connect
+            // TODO @R1tz02: Display error message on main menu about not being able to connect
         }
         else
         {
