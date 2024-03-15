@@ -51,6 +51,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
+    public NetworkChat chat;
 
     [SerializeField] private NetworkPrefabRef _playerPrefab;
 
@@ -94,6 +95,20 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         ButtonHandler.OnMoveMade += SendMove;
         GameCore.OnChosenPiece += SetChosenPiece;
+
+        GameObject chatObject = GameObject.Find("NetworkChat");
+
+        // If chat object hasn't been created yet, create it
+        if (chatObject.GetComponent<NetworkChat>() == null)
+        {
+            chat = chatObject.AddComponent<NetworkChat>();
+        }
+
+        // Sync up the chat log if the client disconnected and came back
+        if (runner.IsServer)
+        {
+            chat.RpcSyncChat(chat.chatLog);
+        }
     }
 
     public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -354,5 +369,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameSetUp = false;
 
         await _runner.Shutdown();
+    }
+
+    public void SendChat(string message)
+    {
+        chat.SendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
     }
 }
