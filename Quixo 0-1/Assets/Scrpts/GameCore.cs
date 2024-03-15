@@ -25,7 +25,8 @@ public class GameCore : MonoBehaviour
     public bool gamePaused;
     public Canvas winScreen;
     public Canvas SMLvl2;
-
+    public Canvas SMLvl3;
+    public Canvas SMLvl4;
     private EasyAI easyAI;
     private bool playAI = false;
 
@@ -37,6 +38,8 @@ public class GameCore : MonoBehaviour
     {
 
         SMLvl2.enabled = false;
+        SMLvl3.enabled = false;
+        SMLvl4.enabled = false;
         winScreen.enabled = false;
        
     }
@@ -239,6 +242,33 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
+    private bool helmetWin(){
+        Debug.Log("check helmet win");
+
+        //check for top left to bottom right win
+        char helmetPart1 = gameBoard[3, 1].GetComponent<PieceLogic>().player;
+        char helmetPart2 = gameBoard[2, 1].GetComponent<PieceLogic>().player;
+        char helmetPart3 = gameBoard[1, 2].GetComponent<PieceLogic>().player;
+        char helmetPart4 = gameBoard[2, 3].GetComponent<PieceLogic>().player;
+        char helmetPart5 = gameBoard[3, 3].GetComponent<PieceLogic>().player;
+              
+        if (helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5)
+        {
+            if (p1.piece == helmetPart1)
+            {
+                p1.won = true;
+                currentPlayer = p1;
+            }
+            else
+            {
+                p2.won = true;
+                currentPlayer = p2;
+            }
+            return true;
+        }
+
+        return false;
+    }
     public bool won()
     {
         if (SMLvl == 0)
@@ -254,8 +284,9 @@ public class GameCore : MonoBehaviour
             switch(SMLvl)
             {
                 case 1: if (verticalWin()) {SMLvl2.enabled = true; return true;} break;
-                case 2: if (horizontalWin()) return true; break;
-                case 3: if (leftDiagonalWin() || rightDiagonalWin()) return true; break;
+                case 2: if (horizontalWin()) {SMLvl3.enabled = true; return true;} break;
+                case 3: if (leftDiagonalWin() || rightDiagonalWin()){SMLvl4.enabled = true; return true;} break;
+                case 4: if (helmetWin()) {winScreen.enabled = true; return true;} break;
                 default: return false;
             }
         }
