@@ -138,7 +138,6 @@ public class MenuController : MonoBehaviour
                 Debug.Log("GameMaster not found.");
             }
         }));
-        
     }
 
     public void LocalGame()

@@ -24,6 +24,7 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public Canvas winScreen;
+    public Canvas SMLvl2;
 
     private EasyAI easyAI;
     private bool playAI = false;
@@ -34,7 +35,10 @@ public class GameCore : MonoBehaviour
     
     void Start()
     {
+
+        SMLvl2.enabled = false;
         winScreen.enabled = false;
+       
     }
 
     public async void StartNetworkedGame(string gameType)
@@ -249,7 +253,7 @@ public class GameCore : MonoBehaviour
         {
             switch(SMLvl)
             {
-                case 1: if (verticalWin()) return true; break;
+                case 1: if (verticalWin()) {SMLvl2.enabled = true; return true;} break;
                 case 2: if (horizontalWin()) return true; break;
                 case 3: if (leftDiagonalWin() || rightDiagonalWin()) return true; break;
                 default: return false;
@@ -352,9 +356,6 @@ public class GameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
         StartCoroutine(WaitFor(5));   
     }
-
-
-
     public bool makeMove(char c)
     {
         if (gamePaused)
@@ -368,7 +369,7 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (counter > 8 && won()) 
             {
-                winScreen.enabled = true;
+                //winPopup.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -406,7 +407,6 @@ public class GameCore : MonoBehaviour
         counter++;
         if (counter > 8 && won()) 
         {
-            winScreen.enabled = true;
             Time.timeScale = 0;
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
