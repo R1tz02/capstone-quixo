@@ -1,29 +1,49 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 
 public class NetworkChat : NetworkBehaviour
 {
-    public string chatMessage = "";
-    public List<KeyValuePair<string, PlayerRef>> chatLog = new();
-
     // Subscribe to this event to receive the updated chat log
-    public delegate void NetworkChatUpdated(string chatLog);
+    public delegate void NetworkChatUpdated(ChatMessage chatMessage);
     public static event NetworkChatUpdated OnNetworkChatUpdated;
+    public List<ChatMessage> chatLog = new();
+
+    public struct MaxStorage : IFixedStorage
+    {
+        public readonly int Capacity => 256;
+    }
+
+    [Serializable]
+    public struct ChatMessage : INetworkStruct
+    {
+        public NetworkString<MaxStorage> message;
+        public PlayerRef playerRef;
+    }
 
     public void SendChatMessage(string message, PlayerRef playerRef)
     {
-        RpcSendChatMessage(message, playerRef);
+        ChatMessage chatMessage = new ChatMessage
+        {
+            message = new NetworkString<MaxStorage>(message),
+            playerRef = playerRef
+        };
+
+        RpcSendChatMessage(chatMessage);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcSendChatMessage(string message, PlayerRef playerRef)
+    public void RpcSendChatMessage(ChatMessage chatMessage)
     {
-        chatLog.Add(new KeyValuePair<string, PlayerRef>(message, playerRef));
+        chatLog.Add(chatMessage);
+
+        OnNetworkChatUpdated?.Invoke(chatMessage);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcSyncChat(List<KeyValuePair<string, PlayerRef>> hostChatLog)
+    public void RpcSyncChat(ChatMessage[] chatLog)
     {
-        chatLog = hostChatLog;
+        this.chatLog = chatLog.ToList();
     }
 }

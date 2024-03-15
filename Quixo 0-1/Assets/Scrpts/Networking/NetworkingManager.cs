@@ -107,7 +107,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         // Sync up the chat log if the client disconnected and came back
         if (runner.IsServer)
         {
-            chat.RpcSyncChat(chat.chatLog);
+            chat.RpcSyncChat(chat.chatLog.ToArray());
         }
     }
 
