@@ -49,7 +49,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public static bool GameSetUp = false;
 
-    // Only used in the case of disconnects and reconnects - will be 0 otherwise and set to 0 after use
+    // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
 
     [SerializeField] private NetworkPrefabRef _playerPrefab;
@@ -99,6 +99,12 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
+        
+        if (runner.IsServer && player != runner.LocalPlayer)
+        {
+            currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
+        }
+
         if (playerIndex != -1)
         {
             NetworkedPlayer networkedPlayer = _players[playerIndex].Value;
@@ -282,7 +288,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         if (GetNetworkedPlayer(_runner.LocalPlayer) != null)
         {
             NetworkedPlayer networkedPlayer = GetNetworkedPlayer(_runner.LocalPlayer);
-            currentTurn = networkedPlayer.playerTurn;
             _runner.Despawn(networkedPlayer.GetComponent<NetworkObject>());
             GameObject.Destroy(networkedPlayer.gameObject);
         }

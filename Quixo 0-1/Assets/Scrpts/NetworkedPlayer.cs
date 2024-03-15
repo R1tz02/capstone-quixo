@@ -13,8 +13,6 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Networked]
     public PlayerRef PlayerRef { get; set; }
     public static int TotalPlayers = 0;
-    [Networked]
-    public int playerTurn { get; set; }
 
     private NetworkingManager networkingManager;
 
@@ -106,8 +104,6 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         {
             networkingManager.game.makeMove((char)direction);
         }
-
-        playerTurn = networkingManager.game.currentPlayer.piece == 'O' ? 2 : 1;
     }
 
     // Called by server
