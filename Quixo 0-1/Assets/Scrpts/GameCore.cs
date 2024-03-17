@@ -38,7 +38,7 @@ public class GameCore : MonoBehaviour
 
     public async void StartNetworkedGame(string gameType)
     {
-        if (gameType != "Host" && gameType != "Client")
+        if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {
             throw new System.Exception("Not a valid game type");
         }
@@ -48,6 +48,10 @@ public class GameCore : MonoBehaviour
         if (gameType == "Host")
         {
             await networkingManager.StartGame(GameMode.Host);
+        }
+        else if (gameType == "AutoHostOrClient")
+        {
+            await networkingManager.StartGame(GameMode.AutoHostOrClient);
         }
         else
         {
