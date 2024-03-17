@@ -191,12 +191,31 @@ public class MenuController : MonoBehaviour
         Debug.Log("Loading game scene...");
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
 
-        while (!asyncLoad.isDone){
+        while (!asyncLoad.isDone)
+        {
             yield return null;
         }
 
         onSceneLoaded?.Invoke();
 
         Destroy(this.gameObject);
+    }
+
+    public void QuickPlayGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Debug.Log("Looking for GameMaster object...");
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                Debug.Log("GameMaster found. Starting networked game...");
+                gameMaster.GetComponent<GameCore>().StartNetworkedGame("AutoHostOrClient");
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
     }
 }

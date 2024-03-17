@@ -51,6 +51,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
+    public NetworkChat chat;
 
     [SerializeField] private NetworkPrefabRef _playerPrefab;
 
@@ -59,6 +60,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         _players.Add(new KeyValuePair<PlayerRef, NetworkedPlayer>(player, null));
 
         if (_players.Count != 2) return;
+
+        runner.SessionInfo.IsOpen = false;
 
         NetworkedPlayer.TotalPlayers = 0;
 
@@ -94,6 +97,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         ButtonHandler.OnMoveMade += SendMove;
         GameCore.OnChosenPiece += SetChosenPiece;
+
+        GameObject chatObject = GameObject.Find("NetworkChat");
+
+        // If chat object hasn't been created yet, create it
+        chatObject.GetOrAddComponent<NetworkChat>();
+
+        // Sync up the chat log if the client disconnected and came back
+        if (runner.IsServer)
+        {
+            chat.RpcSyncChat(chat.chatLog.ToArray());
+        }
     }
 
     public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -127,6 +141,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         ButtonHandler.OnMoveMade -= SendMove;
 
         GameCore.OnChosenPiece -= SetChosenPiece;
+
+        runner.SessionInfo.IsOpen = true;
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
@@ -174,6 +190,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         _runner.ProvideInput = true;
 
+        bool enableClientSessionCreation = false;
+        bool isOpen = true;
+
         var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
         var sceneInfo = new NetworkSceneInfo();
         if (scene.IsValid)
@@ -185,13 +204,13 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (mode == GameMode.Host)
         {
+            isOpen = false;
+
             System.Random res = new System.Random();
 
-            // String of alphabets  
             String str = "abcdefghijklmnopqrstuvwxyz";
             int size = 10;
 
-            // Initializing the empty string 
             String ran = "";
 
             for (int i = 0; i < size; i++)
@@ -200,9 +219,15 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
                 ran += str[res.Next(26)];
             }
 
-            //lobbyName = ran;
+            lobbyName = ran;
 
             // TODO: Display this room name on the host's screen
+        }
+
+        if (mode == GameMode.AutoHostOrClient)
+        {
+            enableClientSessionCreation = true;
+            lobbyName = null;
         }
 
         var result = await _runner.StartGame(new StartGameArgs()
@@ -212,7 +237,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
             PlayerCount = 2,
-            EnableClientSessionCreation = false,
+            EnableClientSessionCreation = enableClientSessionCreation,
+            IsOpen = isOpen,
         });
 
         if (!result.Ok)
@@ -354,5 +380,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameSetUp = false;
 
         await _runner.Shutdown();
+    }
+
+    public void SendChat(string message)
+    {
+        chat.SendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
     }
 }
