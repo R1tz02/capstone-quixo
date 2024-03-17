@@ -320,7 +320,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = gameBoard[i - 1, chosenPiece.col];
             }
-            moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+            StartCoroutine(moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
         }
         else if (dir == 'D')
         {
@@ -332,7 +332,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col]; 
             }
-            moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+             StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
         }
         else if (dir == 'R')
         {
@@ -344,7 +344,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
             }
-            moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40);
+             StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
         }
         else if (dir == 'L')
         {
@@ -356,7 +356,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
             }
-            moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40);
+             StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
         }
     }
 
@@ -376,16 +376,17 @@ public class GameCore : MonoBehaviour
         piece.transform.position = targetPosition; // Ensure it reaches the target position precisely
     }
   
-    private void moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
+    private System.Collections.IEnumerator moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
     {
         gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
         gameBoard[row, col].GetComponent<PieceLogic>().player = currentPiece; //F: changing the moved piece's symbol to the current
         gameBoard[row, col].GetComponent<Renderer>().material = pieceColor; //F: changing the moved piece's material (color) 
         Vector3 target = new Vector3(x, y + 15, z);
-        StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), target));
+        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), target));
+        //StartCoroutine(WaitFor(5));   
         gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
-        StartCoroutine(WaitFor(5));   
+        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), new Vector3(target.x, 96f, target.z)));
     }
     public bool makeMove(char c)
     {

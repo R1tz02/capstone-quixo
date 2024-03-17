@@ -49,6 +49,10 @@ public class PieceLogic : MonoBehaviour
         }
     }
 
+    public void SimulateOnMouseDown(){
+        OnMouseDown();
+    }
+
 
 
 
