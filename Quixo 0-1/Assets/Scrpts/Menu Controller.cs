@@ -16,9 +16,10 @@ public class MenuController : MonoBehaviour
     public Canvas hostJoinCanvas;
     public Canvas HelpCanvas;
     public Canvas overlayCanvas;
+    public Canvas joinLobbyCanvas;
 
-    public float moveDuration = 1f;
-    public float rotaionDuration = 1f;
+    public float moveDuration;
+    public float rotaionDuration;
 
     bool rotating;
     bool moving;
@@ -31,12 +32,19 @@ public class MenuController : MonoBehaviour
         storyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
         HelpCanvas.enabled = false;
+        joinLobbyCanvas.enabled = false;
     }
 
     public void HostJoin()
     {
         multiCanvas.enabled = false;
         hostJoinCanvas.enabled = true;
+    }
+
+    public void JoinLobby()
+    {
+        hostJoinCanvas.enabled = false;
+        joinLobbyCanvas.enabled = true;
     }
 
     public void openHelpMenu()
@@ -95,6 +103,8 @@ public class MenuController : MonoBehaviour
         quickCanvas.enabled = false;
         multiCanvas.enabled = false;
         storyCanvas.enabled = false;
+        joinLobbyCanvas.enabled = false;
+        hostJoinCanvas.enabled = false;
         if (!moving)
         {
             StartCoroutine(MoveToLocation());
