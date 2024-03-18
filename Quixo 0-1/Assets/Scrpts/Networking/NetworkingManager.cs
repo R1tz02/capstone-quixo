@@ -49,6 +49,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public static bool GameSetUp = false;
 
+    // Only used in the case of disconnects and reconnects
+    public int currentTurn = 0;
+    public NetworkChat chat;
+
     [SerializeField] private NetworkPrefabRef _playerPrefab;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -56,6 +60,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         _players.Add(new KeyValuePair<PlayerRef, NetworkedPlayer>(player, null));
 
         if (_players.Count != 2) return;
+
+        runner.SessionInfo.IsOpen = false;
 
         NetworkedPlayer.TotalPlayers = 0;
 
@@ -65,8 +71,12 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
 
-        if (!GameSetUp)
+        Debug.Log("Runner local player at start: " + runner.LocalPlayer);
+
+        if (!GameObject.Find("GamePiece(Clone)"))
         {
+            GameSetUp = false;
+
             game.populateBoard();
         }
 
@@ -76,7 +86,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             // If so, it will just skip creating new players on host
             AssignPlayers(() =>
             {
-                GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key);
+                GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key, currentTurn);
+
+                currentTurn = 0;
+
                 SyncBoard();
             });
 
@@ -84,11 +97,39 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         ButtonHandler.OnMoveMade += SendMove;
         GameCore.OnChosenPiece += SetChosenPiece;
+
+        GameObject chatObject = GameObject.Find("NetworkChat");
+
+        // If chat object hasn't been created yet, create it
+        chatObject.GetOrAddComponent<NetworkChat>();
+
+        // Sync up the chat log if the client disconnected and came back
+        if (runner.IsServer)
+        {
+            chat.RpcSyncChat(chat.chatLog.ToArray());
+        }
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
+        
+        if (runner.IsClient && player != runner.LocalPlayer)
+        {
+            await DisconnectFromPhoton();
+
+            SceneManager.LoadScene(0);
+
+            // TODO @R1tz02: Display error message on main menu about the host leaving the game
+
+            return;
+        }
+
+        if (runner.IsServer && player != runner.LocalPlayer)
+        {
+            currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
+        }
+
         if (playerIndex != -1)
         {
             NetworkedPlayer networkedPlayer = _players[playerIndex].Value;
@@ -97,13 +138,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             GameObject.Destroy(networkedPlayer.gameObject);
         }
 
-        // TODO: If the same player joins back, they join as player 3
-        // They need to join back as player 2
-        // Find way to clear them out from Photon and reassign them as player 2
+        ButtonHandler.OnMoveMade -= SendMove;
+
+        GameCore.OnChosenPiece -= SetChosenPiece;
+
+        runner.SessionInfo.IsOpen = true;
     }
+
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
         Debug.Log("Shutting down");
         Destroy(this.gameObject);
     }
@@ -111,7 +156,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 #pragma warning disable UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
     public void OnConnectedToServer(NetworkRunner runner) { }
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        Debug.Log("Disconnected from server");
+
+        SceneManager.LoadScene(0);
+
+        //TODO @R1tz02: Display vague error message on main menu about being disconnected
+    }
 
 #pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
@@ -138,6 +190,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         _runner.ProvideInput = true;
 
+        bool enableClientSessionCreation = false;
+        bool isOpen = true;
+
         var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
         var sceneInfo = new NetworkSceneInfo();
         if (scene.IsValid)
@@ -149,13 +204,13 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (mode == GameMode.Host)
         {
+            isOpen = false;
+
             System.Random res = new System.Random();
 
-            // String of alphabets  
             String str = "abcdefghijklmnopqrstuvwxyz";
             int size = 10;
 
-            // Initializing the empty string 
             String ran = "";
 
             for (int i = 0; i < size; i++)
@@ -164,9 +219,15 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
                 ran += str[res.Next(26)];
             }
 
-            //lobbyName = ran;
+            lobbyName = ran;
 
             // TODO: Display this room name on the host's screen
+        }
+
+        if (mode == GameMode.AutoHostOrClient)
+        {
+            enableClientSessionCreation = true;
+            lobbyName = null;
         }
 
         var result = await _runner.StartGame(new StartGameArgs()
@@ -176,17 +237,18 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
             PlayerCount = 2,
-            EnableClientSessionCreation = false,
+            EnableClientSessionCreation = enableClientSessionCreation,
+            IsOpen = isOpen,
         });
 
         if (!result.Ok)
         {
-            Debug.LogError("Failed to start game: " + result);
+            Debug.Log("Failed to start game: " + result);
 
-            DisconnectFromPhoton();
+            await DisconnectFromPhoton();
 
             SceneManager.LoadScene(0);
-            // TODO: Display error message on main menu about not being able to connect
+            // TODO @R1tz02: Display error message on main menu about not being able to connect
         }
         else
         {
@@ -209,7 +271,18 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             {
                 int index = i * (GameState.Cols - 1) + j;
                 PieceData piece = gameState.piecesData[index];
-                game.gameBoard[piece.row, piece.col].GetComponent<PieceLogic>().player = piece.player;
+                game.gameBoard[i, j].GetComponent<PieceLogic>().player = piece.player;
+
+                // Sync colors based on player piece
+                switch (piece.player)
+                {
+                    case 'X':
+                        game.gameBoard[piece.row, piece.col].GetComponent<Renderer>().material = game.playerOneSpace;
+                        break;
+                    case 'O':
+                        game.gameBoard[piece.row, piece.col].GetComponent<Renderer>().material = game.playerTwoSpace;
+                        break;
+                }
             }
         }
     }
@@ -250,14 +323,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        int playerIndex = 0;
-
         if (GetNetworkedPlayer(_runner.LocalPlayer) != null)
         {
-            playerIndex = 1;
+            NetworkedPlayer networkedPlayer = GetNetworkedPlayer(_runner.LocalPlayer);
+            _runner.Despawn(networkedPlayer.GetComponent<NetworkObject>());
+            GameObject.Destroy(networkedPlayer.gameObject);
         }
 
-        for (; playerIndex < 2; playerIndex++)
+        for (int playerIndex = 0; playerIndex < 2; playerIndex++)
         {
             var player = _players[playerIndex];
 
@@ -302,9 +375,15 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         GetNetworkedPlayer(_runner.LocalPlayer).RpcSetChosenPiece(row, col);
     }
-
-    public void DisconnectFromPhoton()
+    public async Task DisconnectFromPhoton()
     {
-        _runner.Shutdown();
+        GameSetUp = false;
+
+        await _runner.Shutdown();
+    }
+
+    public void SendChat(string message)
+    {
+        chat.SendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
     }
 }
