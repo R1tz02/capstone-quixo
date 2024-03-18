@@ -23,6 +23,8 @@ public class GameCore : MonoBehaviour
     public int SMLvl = 0;
     public int counter = 0;
     public bool gamePaused;
+
+    public Canvas loseScreen;
     public Canvas winScreen;
     public Canvas SMLvl2;
     public Canvas SMLvl3;
@@ -41,6 +43,7 @@ public class GameCore : MonoBehaviour
         SMLvl3.enabled = false;
         SMLvl4.enabled = false;
         winScreen.enabled = false;
+        loseScreen.enabled = false;
        
     }
 
@@ -269,24 +272,44 @@ public class GameCore : MonoBehaviour
 
         return false;
     }
+    
+    private void chooseCanvasAndWinner(ref Canvas canvasToShow){
+        if(playAI){ //AI game, either SM or normal
+            if (currentPlayer == p1)
+            {
+                canvasToShow.enabled = true;
+            }
+            else
+            {
+                loseScreen.enabled = true;
+            }        
+        }
+        else{ //Local game
+            GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
+            TMP_Text text = congrats.GetComponent<TMP_Text>();
+            text.text = "Congrats "+ currentPlayer.piece + " won!";
+            winScreen.enabled = true;
+        }
+    }
+
     public bool won()
     {
         if (SMLvl == 0)
         {
-            if (horizontalWin()) return true;
-            if (verticalWin()) return true;
-            if (leftDiagonalWin()) return true; //separated checkDiagonalWin into two separate functions
-            if (rightDiagonalWin()) return true;
+            if (horizontalWin())    {chooseCanvasAndWinner(ref winScreen); return true;};
+            if (verticalWin())      {chooseCanvasAndWinner(ref winScreen); return true;};
+            if (leftDiagonalWin())  {chooseCanvasAndWinner(ref winScreen); return true;}; //separated checkDiagonalWin into two separate functions
+            if (rightDiagonalWin()) {chooseCanvasAndWinner(ref winScreen); return true;};
             return false;
         }
         else
         {
             switch(SMLvl)
             {
-                case 1: if (verticalWin()) {SMLvl2.enabled = true; return true;} break;
-                case 2: if (horizontalWin()) {SMLvl3.enabled = true; return true;} break;
-                case 3: if (leftDiagonalWin() || rightDiagonalWin()){SMLvl4.enabled = true; return true;} break;
-                case 4: if (helmetWin()) {winScreen.enabled = true; return true;} break;
+                case 1: if (verticalWin()) {chooseCanvasAndWinner(ref SMLvl2); return true;} break;
+                case 2: if (horizontalWin()) {chooseCanvasAndWinner(ref SMLvl3); return true;} break;
+                case 3: if (leftDiagonalWin() || rightDiagonalWin()) {chooseCanvasAndWinner(ref SMLvl4); return true;} break;
+                case 4: if (helmetWin()) {chooseCanvasAndWinner(ref winScreen); return true;} break;
                 default: return false;
             }
         }
@@ -402,7 +425,6 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (counter > 8 && won()) 
             {
-                //winPopup.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
