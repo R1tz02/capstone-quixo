@@ -10,7 +10,10 @@ public class StoryController : MonoBehaviour
 {
     public Camera currentCam;
 
-   
+    void Start(){
+        GameObject tempMenu = GameObject.Find("Menu Manager");
+        tempMenu.GetComponent<PauseButton>().closeMenu();
+    }
     public void StoryModeLevel2()
     {
         StartCoroutine(AsyncLoadGameScene(() =>
