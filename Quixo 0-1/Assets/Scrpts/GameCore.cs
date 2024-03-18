@@ -20,10 +20,15 @@ public class GameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
+    public int SMLvl = 0;
     public int counter = 0;
     public bool gamePaused;
-    public Canvas winScreen;
 
+    public Canvas loseScreen;
+    public Canvas winScreen;
+    public Canvas SMLvl2;
+    public Canvas SMLvl3;
+    public Canvas SMLvl4;
     private EasyAI easyAI;
     private bool playAI = false;
 
@@ -33,7 +38,13 @@ public class GameCore : MonoBehaviour
     
     void Start()
     {
+
+        SMLvl2.enabled = false;
+        SMLvl3.enabled = false;
+        SMLvl4.enabled = false;
         winScreen.enabled = false;
+        loseScreen.enabled = false;
+       
     }
 
     public async void StartNetworkedGame(string gameType)
@@ -238,12 +249,74 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
+    private bool helmetWin(){
+        Debug.Log("check helmet win");
+
+        //check for top left to bottom right win
+        char helmetPart1 = gameBoard[3, 1].GetComponent<PieceLogic>().player;
+        char helmetPart2 = gameBoard[2, 1].GetComponent<PieceLogic>().player;
+        char helmetPart3 = gameBoard[1, 2].GetComponent<PieceLogic>().player;
+        char helmetPart4 = gameBoard[2, 3].GetComponent<PieceLogic>().player;
+        char helmetPart5 = gameBoard[3, 3].GetComponent<PieceLogic>().player;
+              
+        if (helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5)
+        {
+            if (p1.piece == helmetPart1)
+            {
+                p1.won = true;
+                currentPlayer = p1;
+            }
+            else
+            {
+                p2.won = true;
+                currentPlayer = p2;
+            }
+            return true;
+        }
+
+        return false;
+    }
+    
+    private void chooseCanvasAndWinner(ref Canvas canvasToShow){
+        if(playAI){ //AI game, either SM or normal
+            if (currentPlayer == p1)
+            {
+                canvasToShow.enabled = true;
+            }
+            else
+            {
+                loseScreen.enabled = true;
+            }        
+        }
+        else{ //Local game
+            GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
+            TMP_Text text = congrats.GetComponent<TMP_Text>();
+            text.text = "Congrats "+ currentPlayer.piece + " won!";
+            winScreen.enabled = true;
+        }
+    }
+
     public bool won()
     {
-        if (horizontalWin()) return true;
-        if (verticalWin()) return true;
-        if (leftDiagonalWin()) return true; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) return true;
+        if (SMLvl == 0)
+        {
+            if (horizontalWin())    {chooseCanvasAndWinner(ref winScreen); return true;};
+            if (verticalWin())      {chooseCanvasAndWinner(ref winScreen); return true;};
+            if (leftDiagonalWin())  {chooseCanvasAndWinner(ref winScreen); return true;}; //separated checkDiagonalWin into two separate functions
+            if (rightDiagonalWin()) {chooseCanvasAndWinner(ref winScreen); return true;};
+            return false;
+        }
+        else
+        {
+            switch(SMLvl)
+            {
+                case 1: if (verticalWin()) {chooseCanvasAndWinner(ref SMLvl2); return true;} break;
+                case 2: if (horizontalWin()) {chooseCanvasAndWinner(ref SMLvl3); return true;} break;
+                case 3: if (leftDiagonalWin() || rightDiagonalWin()) {chooseCanvasAndWinner(ref SMLvl4); return true;} break;
+                case 4: if (helmetWin()) {chooseCanvasAndWinner(ref winScreen); return true;} break;
+                default: return false;
+            }
+        }
         return false;
     }
 
@@ -254,8 +327,9 @@ public class GameCore : MonoBehaviour
         gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; // Store the selected piece temporarily
 
         Material pieceColor;
+        gamePaused = true;
         switch (currentPiece)
-        {
+        { 
             case 'X':
                 pieceColor = playerOneSpace;
                 break;
@@ -274,7 +348,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = gameBoard[i - 1, chosenPiece.col];
             }
-            moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+            StartCoroutine(moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
         }
         else if (dir == 'D')
         {
@@ -286,7 +360,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col]; 
             }
-            moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z);
+             StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
         }
         else if (dir == 'R')
         {
@@ -298,7 +372,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
             }
-            moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40);
+             StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
         }
         else if (dir == 'L')
         {
@@ -310,7 +384,7 @@ public class GameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
             }
-            moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40);
+             StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
         }
     }
 
@@ -330,20 +404,18 @@ public class GameCore : MonoBehaviour
         piece.transform.position = targetPosition; // Ensure it reaches the target position precisely
     }
   
-    private void moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
+    private System.Collections.IEnumerator moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
     {
         gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
         gameBoard[row, col].GetComponent<PieceLogic>().player = currentPiece; //F: changing the moved piece's symbol to the current
         gameBoard[row, col].GetComponent<Renderer>().material = pieceColor; //F: changing the moved piece's material (color) 
         Vector3 target = new Vector3(x, y + 15, z);
-        StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), target));
+        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), target));
         gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
-        StartCoroutine(WaitFor(5));   
+        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), new Vector3(target.x, 96f, target.z)));
+        gamePaused = false;
     }
-
-
-
     public bool makeMove(char c)
     {
         if (gamePaused)
@@ -356,7 +428,6 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
-                winScreen.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -387,19 +458,25 @@ public class GameCore : MonoBehaviour
     {
         Debug.Log("Fernando's mother");
         yield return new WaitForSeconds(2);
-        (Piece, char) move = easyAI.FindBestMove(translateBoard(),1);
+        (Piece, char) move = easyAI.FindBestMove(translateBoard(),3);
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         counter++;
         if (counter > 8 && won()) 
         {
-            winScreen.enabled = true;
             Time.timeScale = 0;
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
         }
-        currentPlayer = p1;
+        else if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
 
     }
 

@@ -17,7 +17,7 @@ public class PauseButton : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {        
         pauseMenu.enabled = false;
         helpMenu.enabled = false;
     }

@@ -10,7 +10,6 @@ public class PieceLogic : MonoBehaviour
     public char player;
     public GameCore game;
     private ButtonHandler buttonHandler;
-
     private bool isSelected = false;
     // private Rigidbody rb;
     private List<char> moveList;
@@ -48,6 +47,10 @@ public class PieceLogic : MonoBehaviour
                 game.MovePieceSmoothly(selectedPiece, new Vector3(selectedPiece.transform.position.x, 96f, selectedPiece.transform.position.z));
               }
         }
+    }
+
+    public void SimulateOnMouseDown(){
+        OnMouseDown();
     }
 
 
