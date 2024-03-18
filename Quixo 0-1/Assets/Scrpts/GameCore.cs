@@ -4,6 +4,7 @@ using UnityEngine;
 using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
+using System.Threading.Tasks;
 
 public class GameCore : MonoBehaviour
 {
@@ -445,7 +446,7 @@ public class GameCore : MonoBehaviour
             {
                 if (easyAI)
                 {
-                    StartCoroutine(AIMove(easyAI));
+                    AIMove(easyAI);
                 }
             }
 
@@ -454,11 +455,11 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
-    System.Collections.IEnumerator AIMove(EasyAI easyAI)
+    async void AIMove(EasyAI easyAI)
     {
         Debug.Log("Fernando's mother");
-        yield return new WaitForSeconds(2);
-        (Piece, char) move = easyAI.FindBestMove(translateBoard(),3);
+        char[,] board = translateBoard();
+        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,3));
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
@@ -477,7 +478,6 @@ public class GameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-
     }
 
     public System.Collections.IEnumerator WaitFor(int time)
