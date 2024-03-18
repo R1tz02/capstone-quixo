@@ -300,6 +300,7 @@ public class GameCore : MonoBehaviour
         gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; // Store the selected piece temporarily
 
         Material pieceColor;
+        gamePaused = true;
         switch (currentPiece)
         { 
             case 'X':
@@ -383,10 +384,10 @@ public class GameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<Renderer>().material = pieceColor; //F: changing the moved piece's material (color) 
         Vector3 target = new Vector3(x, y + 15, z);
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), target));
-        //StartCoroutine(WaitFor(5));   
         gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), new Vector3(target.x, 96f, target.z)));
+        gamePaused = false;
     }
     public bool makeMove(char c)
     {
