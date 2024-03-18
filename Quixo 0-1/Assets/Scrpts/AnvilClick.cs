@@ -24,18 +24,18 @@ public class AnvilClick : MonoBehaviour
         menuItem = GameObject.FindGameObjectWithTag("MenuItem");
     }
 
-    void OnMouseOver()
-    {
-        // Change the material to the highlight material when the mouse is over the object
-        if (!hasBeenClicked)
-        {
-            Renderer rend = menuItem.GetComponent<Renderer>();
-            if (rend != null && highlightMaterial != null)
-            {
-                rend.material = highlightMaterial;
-            }
-        }
-    }
+    //void OnMouseOver()
+    //{
+    //    // Change the material to the highlight material when the mouse is over the object
+    //    if (!hasBeenClicked)
+    //    {
+    //        Renderer rend = menuItem.GetComponent<Renderer>();
+    //        if (rend != null && highlightMaterial != null)
+    //        {
+    //            rend.material = highlightMaterial;
+    //        }
+    //    }
+    //}
 
     void OnMouseDown()
     {

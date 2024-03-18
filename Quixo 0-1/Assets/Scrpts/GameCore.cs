@@ -416,6 +416,7 @@ public class GameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), new Vector3(target.x, 96f, target.z)));
         gamePaused = false;
+
     }
     public bool makeMove(char c)
     {
