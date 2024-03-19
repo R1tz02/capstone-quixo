@@ -8,7 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
 //using UnityEditor.Overlays;
 
-public class PauseButton : MonoBehaviour
+public class TutPauseButton : MonoBehaviour
 {
     public Canvas pauseMenu;
     public Canvas helpMenu;
@@ -17,9 +17,10 @@ public class PauseButton : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {        
-        pauseMenu.enabled = false;
-        helpMenu.enabled = false;
+    {
+        openHelpMenu();
+        pauseMenu.enabled = false;  
+        closeMenu();    
     }
 
     public void openMenu()

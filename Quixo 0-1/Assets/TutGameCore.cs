@@ -18,6 +18,7 @@ public class TutGameCore : MonoBehaviour
     public IPlayer p1;
     public IPlayer p2;
     public int TutLvl = 0;
+    
     void Start() {
         winScreen.enabled = false;
     }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -573,8 +573,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: TutPauseButton, Assembly-CSharp
         m_MethodName: closeMenu
         m_Mode: 1
         m_Arguments:
@@ -1929,8 +1929,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: TutPauseButton, Assembly-CSharp
         m_MethodName: returnToMain
         m_Mode: 1
         m_Arguments:
@@ -2062,7 +2062,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
         m_MethodName: returnToMain
         m_Mode: 1
@@ -2194,8 +2194,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: TutPauseButton, Assembly-CSharp
         m_MethodName: closeHelpMenu
         m_Mode: 1
         m_Arguments:
@@ -2401,8 +2401,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: TutPauseButton, Assembly-CSharp
         m_MethodName: openMenu
         m_Mode: 1
         m_Arguments:
@@ -2460,7 +2460,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 789017401}
-  - component: {fileID: 789017400}
+  - component: {fileID: 789017402}
   m_Layer: 0
   m_Name: Menu Manager
   m_TagString: Untagged
@@ -2468,22 +2468,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &789017400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 789017399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d53be8197ae4834799a3aa5ec816fbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 1982665530}
-  helpMenu: {fileID: 1458110360}
-  pauseButton: {fileID: 754616625}
-  gameMaster: {fileID: 1407541393}
 --- !u!4 &789017401
 Transform:
   m_ObjectHideFlags: 0
@@ -2499,6 +2483,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &789017402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789017399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ccaa1a7c243d24c8b453b00fb7a7ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseMenu: {fileID: 1982665530}
+  helpMenu: {fileID: 1458110360}
+  pauseButton: {fileID: 754616625}
+  gameMaster: {fileID: 1407541393}
 --- !u!224 &891386100 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 505594884081892932, guid: 25faf3cad2629954db2939ba813bf8a4,
@@ -3862,8 +3862,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6c45129f080654fa9379f680a23a01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerOneSpace: {fileID: 2100000, guid: 4c6b620b115807049bde38a1827deb87, type: 2}
+  playerTwoSpace: {fileID: 2100000, guid: 3ee1f85925abf294d995976b22fe1a06, type: 2}
   piecePrefab: {fileID: 9075320395111789681, guid: 302d85e3780aa984d83043a6c0e2007e,
     type: 3}
+  chosenPiece: {fileID: 0}
+  winScreen: {fileID: 2039624279}
+  gamePaused: 0
+  buttonHandler: {fileID: 0}
+  TutLvl: 0
 --- !u!1 &1429386287
 GameObject:
   m_ObjectHideFlags: 0
@@ -4184,7 +4191,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &1458110361
 RectTransform:
@@ -5025,8 +5032,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: TutPauseButton, Assembly-CSharp
         m_MethodName: restartGame
         m_Mode: 1
         m_Arguments:
@@ -5415,8 +5422,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: TutPauseButton, Assembly-CSharp
         m_MethodName: openHelpMenu
         m_Mode: 1
         m_Arguments:
@@ -6011,7 +6018,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017400}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
         m_MethodName: restartGame
         m_Mode: 1
@@ -6243,51 +6250,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &2037154631
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2037154632}
-  - component: {fileID: 2037154633}
-  m_Layer: 0
-  m_Name: StoryManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2037154632
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2037154631}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 540, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2037154633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2037154631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 081ac4e3224f4ce44971fc33bbd05461, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentCam: {fileID: 961739752}
 --- !u!1 &2039624276
 GameObject:
   m_ObjectHideFlags: 0
@@ -6608,7 +6570,6 @@ SceneRoots:
   - {fileID: 961739753}
   - {fileID: 203844589}
   - {fileID: 1431306965}
-  - {fileID: 2037154632}
   - {fileID: 1407541395}
   - {fileID: 144873842}
   - {fileID: 1850532869}
