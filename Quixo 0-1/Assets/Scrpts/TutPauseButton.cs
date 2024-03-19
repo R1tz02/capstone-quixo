@@ -18,9 +18,8 @@ public class TutPauseButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        openHelpMenu();
-        pauseMenu.enabled = false;  
-        closeMenu();    
+        pauseMenu.enabled = false;
+        helpMenu.enabled = true;
     }
 
     public void openMenu()
@@ -63,6 +62,7 @@ public class TutPauseButton : MonoBehaviour
     {
         helpMenu.enabled = false;
         pauseMenu.enabled = true;
+        closeMenu();
     }
 
     public void restartGame()
