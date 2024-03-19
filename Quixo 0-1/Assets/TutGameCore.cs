@@ -1,113 +1,28 @@
+using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using Fusion;
-using static UnityEngine.Rendering.DebugUI.Table;
-using System.Threading;
-using System.Threading.Tasks;
 
-public class GameCore : MonoBehaviour
+public class TutGameCore : MonoBehaviour
 {
-    public GameObject piecePrefab;
-
     public Material playerOneSpace;
     public Material playerTwoSpace;
-    public ButtonHandler buttonHandler;
-    public GameObject AI;
-    private PieceLogic pieceLogic;
-    public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
-    private Renderer rd;
-    public IPlayer currentPlayer;
-    public IPlayer p1;
-    public IPlayer p2;
-    public int SMLvl = 0;
-    public int counter = 0;
-    public bool gamePaused;
-
-    public Canvas loseScreen;
+    public GameObject piecePrefab;
+    public TutPieceLogic chosenPiece;
     public Canvas winScreen;
-    public Canvas SMLvl2;
-    public Canvas SMLvl3;
-    public Canvas SMLvl4;
-    private EasyAI easyAI;
-    private bool playAI = false;
-
-    //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
-    
-    void Start()
-    {
-
-        SMLvl2.enabled = false;
-        SMLvl3.enabled = false;
-        SMLvl4.enabled = false;
+    public IPlayer currentPlayer;
+    public bool gamePaused;
+    public ButtonHandler buttonHandler;
+    public IPlayer p1;
+    public IPlayer p2;
+    public int TutLvl = 0;
+    void Start() {
         winScreen.enabled = false;
-        loseScreen.enabled = false;
-       
     }
 
-    public async void StartNetworkedGame(string gameType)
-    {
-        if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
-        {
-            throw new System.Exception("Not a valid game type");
-        }
-
-        NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
-
-        if (gameType == "Host")
-        {
-            await networkingManager.StartGame(GameMode.Host);
-        }
-        else if (gameType == "AutoHostOrClient")
-        {
-            await networkingManager.StartGame(GameMode.AutoHostOrClient);
-        }
-        else
-        {
-            await networkingManager.StartGame(GameMode.Client);
-        }
-    }
-
-    public void StartAIGame()
-    {
-        playAI = true;
-
-        GameObject player1Object = new GameObject("Player1");
-        p1 = player1Object.AddComponent<LocalPlayer>();
-        p1.Initialize('X');
-
-        GameObject player2Object = new GameObject("Player2");
-        p2 = player2Object.AddComponent<LocalPlayer>();
-        p2.Initialize('O');
-
-        currentPlayer = p1; //F: make X the first player/move
-        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
-        populateBoard(); //Initialize board
-    }
-
-    public void StartLocalGame()
-    {
-        winScreen.enabled = false;
-        
-        GameObject player1Object = new GameObject("Player1");
-        p1 = player1Object.AddComponent<LocalPlayer>();
-        p1.Initialize('X');
-
-        GameObject player2Object = new GameObject("Player2");
-        p2 = player2Object.AddComponent<LocalPlayer>();
-        p2.Initialize('O');
-
-        currentPlayer = p1;
-
-        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-        populateBoard(); //Initialize board
-    }
-
-    private bool horizontalWin()
+     private bool horizontalWin()
     {
         Debug.Log("checking for horizontal win");
         bool success;
@@ -116,10 +31,10 @@ public class GameCore : MonoBehaviour
         for (int row = 0; row < 5; row++)
         {
             success = true;
-            baseSymbol = gameBoard[row, 0].GetComponent<PieceLogic>().player; //F: first value of every row is base
+            baseSymbol = gameBoard[row, 0].GetComponent<TutPieceLogic>().player; //F: first value of every row is base
             for (int col = 0; col < 5; col++)
             {
-                pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
+                pieceToCheck = gameBoard[row, col].GetComponent<TutPieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
                     success = false; //F: if changed, not same symbols
@@ -153,10 +68,10 @@ public class GameCore : MonoBehaviour
         for (int col = 0; col < 5; col++)
         {
             success = true;
-            baseSymbol = gameBoard[0, col].GetComponent<PieceLogic>().player; ;
+            baseSymbol = gameBoard[0, col].GetComponent<TutPieceLogic>().player; ;
             for (int row = 0; row < 5; row++)
             {
-                pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player;
+                pieceToCheck = gameBoard[row, col].GetComponent<TutPieceLogic>().player;
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
                     success = false;
@@ -189,10 +104,10 @@ public class GameCore : MonoBehaviour
         char pieceToCheck = '-';
         bool success = true;
         //check for top left to bottom right win
-        baseSymbol = gameBoard[0, 0].GetComponent<PieceLogic>().player; ;
+        baseSymbol = gameBoard[0, 0].GetComponent<TutPieceLogic>().player; ;
         for (int i = 1; i < 5; i++)
         {
-            pieceToCheck = gameBoard[i, i].GetComponent<PieceLogic>().player;
+            pieceToCheck = gameBoard[i, i].GetComponent<TutPieceLogic>().player;
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -221,11 +136,11 @@ public class GameCore : MonoBehaviour
     {
         //check for bottom left to top right 
         char pieceToCheck = '-';
-        char baseSymbol = gameBoard[0, 4].GetComponent<PieceLogic>().player;
+        char baseSymbol = gameBoard[0, 4].GetComponent<TutPieceLogic>().player;
         bool success = true;
         for (int i = 0; i < 5; i++)
         {
-            pieceToCheck = gameBoard[i, 4 - i].GetComponent<PieceLogic>().player;
+            pieceToCheck = gameBoard[i, 4 - i].GetComponent<TutPieceLogic>().player;
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -250,77 +165,18 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
-    private bool helmetWin(){
-        Debug.Log("check helmet win");
-
-        //check for top left to bottom right win
-        char helmetPart1 = gameBoard[3, 1].GetComponent<PieceLogic>().player;
-        char helmetPart2 = gameBoard[2, 1].GetComponent<PieceLogic>().player;
-        char helmetPart3 = gameBoard[1, 2].GetComponent<PieceLogic>().player;
-        char helmetPart4 = gameBoard[2, 3].GetComponent<PieceLogic>().player;
-        char helmetPart5 = gameBoard[3, 3].GetComponent<PieceLogic>().player;
-              
-        if (helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5)
-        {
-            if (p1.piece == helmetPart1)
-            {
-                p1.won = true;
-                currentPlayer = p1;
-            }
-            else
-            {
-                p2.won = true;
-                currentPlayer = p2;
-            }
-            return true;
-        }
-
-        return false;
-    }
-    
-    private void chooseCanvasAndWinner(ref Canvas canvasToShow){
-        if(playAI){ //AI game, either SM or normal
-            if (currentPlayer == p1)
-            {
-                canvasToShow.enabled = true;
-            }
-            else
-            {
-                loseScreen.enabled = true;
-            }        
-        }
-        else{ //Local game
-            GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
-            TMP_Text text = congrats.GetComponent<TMP_Text>();
-            text.text = "Congrats "+ currentPlayer.piece + " won!";
-            winScreen.enabled = true;
-        }
-    }
-
     public bool won()
     {
-        if (SMLvl == 0)
-        {
-            if (horizontalWin())    {chooseCanvasAndWinner(ref winScreen); return true;};
-            if (verticalWin())      {chooseCanvasAndWinner(ref winScreen); return true;};
-            if (leftDiagonalWin())  {chooseCanvasAndWinner(ref winScreen); return true;}; //separated checkDiagonalWin into two separate functions
-            if (rightDiagonalWin()) {chooseCanvasAndWinner(ref winScreen); return true;};
-            return false;
-        }
-        else
-        {
-            switch(SMLvl)
-            {
-                case 1: if (verticalWin()) {chooseCanvasAndWinner(ref SMLvl2); return true;} break;
-                case 2: if (horizontalWin()) {chooseCanvasAndWinner(ref SMLvl3); return true;} break;
-                case 3: if (leftDiagonalWin() || rightDiagonalWin()) {chooseCanvasAndWinner(ref SMLvl4); return true;} break;
-                case 4: if (helmetWin()) {chooseCanvasAndWinner(ref winScreen); return true;} break;
-                default: return false;
-            }
-        }
-        return false;
+    //     switch(TutLvl)
+    //     {
+    //         case 1: if (verticalWin()) {chooseCanvasAndWinner(ref SMLvl2); return true;} break;
+    //         case 2: if (horizontalWin()) {chooseCanvasAndWinner(ref SMLvl3); return true;} break;
+    //         case 3: if (leftDiagonalWin() || rightDiagonalWin()) {chooseCanvasAndWinner(ref SMLvl4); return true;} break;
+    //         default: return false;
+    //     }
+         return false;
     }
-
+    
 
     public void shiftBoard(char dir, char currentPiece)
     {
@@ -343,8 +199,8 @@ public class GameCore : MonoBehaviour
         {
             for (int i = chosenPiece.row; i > 0; i--)
             {
-                PieceLogic currentPieceObject = gameBoard[i - 1, chosenPiece.col].GetComponent<PieceLogic>();
-                currentPieceObject.GetComponent<PieceLogic>().row = i;
+                TutPieceLogic currentPieceObject = gameBoard[i - 1, chosenPiece.col].GetComponent<TutPieceLogic>();
+                currentPieceObject.GetComponent<TutPieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position + new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = gameBoard[i - 1, chosenPiece.col];
@@ -355,8 +211,8 @@ public class GameCore : MonoBehaviour
         {
             for (int i = chosenPiece.row; i < 4; i++)
             {
-                PieceLogic currentPieceObject = gameBoard[i + 1, chosenPiece.col].GetComponent<PieceLogic>();
-                currentPieceObject.GetComponent<PieceLogic>().row = i;
+                TutPieceLogic currentPieceObject = gameBoard[i + 1, chosenPiece.col].GetComponent<TutPieceLogic>();
+                currentPieceObject.GetComponent<TutPieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col]; 
@@ -367,8 +223,8 @@ public class GameCore : MonoBehaviour
         {
             for (int i = chosenPiece.col; i < 4; i++)
             {
-                PieceLogic currentPieceObject = gameBoard[chosenPiece.row, i + 1].GetComponent<PieceLogic>();
-                currentPieceObject.GetComponent<PieceLogic>().col = i;
+                TutPieceLogic currentPieceObject = gameBoard[chosenPiece.row, i + 1].GetComponent<TutPieceLogic>();
+                currentPieceObject.GetComponent<TutPieceLogic>().col = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(0, 0, 20);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
@@ -379,8 +235,8 @@ public class GameCore : MonoBehaviour
         {
             for (int i = chosenPiece.col; i > 0; i--)
             {
-                PieceLogic currentPieceObject = gameBoard[chosenPiece.row, i - 1].GetComponent<PieceLogic>();
-                currentPieceObject.GetComponent<PieceLogic>().col = i;
+                TutPieceLogic currentPieceObject = gameBoard[chosenPiece.row, i - 1].GetComponent<TutPieceLogic>();
+                currentPieceObject.GetComponent<TutPieceLogic>().col = i;
                 Vector3 newPosition = currentPieceObject.transform.position + new Vector3(0, 0, 20);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
@@ -389,7 +245,7 @@ public class GameCore : MonoBehaviour
         }
     }
 
-    public System.Collections.IEnumerator MovePieceSmoothly(PieceLogic piece, Vector3 targetPosition)
+    public System.Collections.IEnumerator MovePieceSmoothly(TutPieceLogic piece, Vector3 targetPosition)
     {
         float duration = 0.5f; // Adjust as needed
         Vector3 startPosition = piece.transform.position;
@@ -408,16 +264,17 @@ public class GameCore : MonoBehaviour
     private System.Collections.IEnumerator moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
     {
         gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
-        gameBoard[row, col].GetComponent<PieceLogic>().player = currentPiece; //F: changing the moved piece's symbol to the current
+        gameBoard[row, col].GetComponent<TutPieceLogic>().player = currentPiece; //F: changing the moved piece's symbol to the current
         gameBoard[row, col].GetComponent<Renderer>().material = pieceColor; //F: changing the moved piece's material (color) 
         Vector3 target = new Vector3(x, y + 15, z);
-        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), target));
-        gameBoard[row, col].GetComponent<PieceLogic>().row = row; //F: changing the moved piece's row
-        gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
-        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), new Vector3(target.x, 96f, target.z)));
+        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<TutPieceLogic>(), target));
+        gameBoard[row, col].GetComponent<TutPieceLogic>().row = row; //F: changing the moved piece's row
+        gameBoard[row, col].GetComponent<TutPieceLogic>().col = col; //F: changing the moved piece's col
+        yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<TutPieceLogic>(), new Vector3(target.x, 96f, target.z)));
         gamePaused = false;
 
     }
+
     public bool makeMove(char c)
     {
         if (gamePaused)
@@ -443,50 +300,20 @@ public class GameCore : MonoBehaviour
                 currentPlayer = p1; 
             } 
 
-            if (playAI)
-            {
-                if (easyAI)
-                {
-                    AIMove(easyAI);
-                }
-            }
+            // if (playAI)
+            // {
+            //     if (easyAI)
+            //     {
+            //         AIMove(easyAI);
+            //     }
+            // }
 
             return true;
         }
         return false;
     }
 
-    async void AIMove(EasyAI easyAI)
-    {
-        Debug.Log("Fernando's mother");
-        char[,] board = translateBoard();
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,3));
-        validPiece(move.Item1.row, move.Item1.col);
-        shiftBoard(move.Item2, currentPlayer.piece);
-        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
-        counter++;
-        if (counter > 8 && won()) 
-        {
-            Time.timeScale = 0;
-            gamePaused = true;
-            Debug.Log(currentPlayer.piece + " won!");
-        }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }
-    }
-
-    public System.Collections.IEnumerator WaitFor(int time)
-    {
-        yield return new WaitForSeconds(time);
-    }
-
-    public List<char> moveOptions(int row, int col)
+     public List<char> moveOptions(int row, int col)
     {
         buttonHandler.changeArrowsBack();
         List<char> moveList = new List<char>();
@@ -520,7 +347,7 @@ public class GameCore : MonoBehaviour
         {
             return false;
         }
-        PieceLogic piece = gameBoard[row, col].GetComponent<PieceLogic>();
+        TutPieceLogic piece = gameBoard[row, col].GetComponent<TutPieceLogic>();
         if ((row == 0 || row == 4) || (col == 0 || col == 4))
         {
             if (piece.player == '-' || currentPlayer.piece == piece.player)
@@ -546,27 +373,13 @@ public class GameCore : MonoBehaviour
             for (int j = 0; j < 5; j++)
             {
                 gameBoard[i, j] = Instantiate(piecePrefab, new Vector3((-2856 + x), 100f, z), Quaternion.identity);
-                gameBoard[i, j].GetComponent<PieceLogic>().row = i;
-                gameBoard[i, j].GetComponent<PieceLogic>().col = j;
-                gameBoard[i, j].GetComponent<PieceLogic>().player = '-';
-                gameBoard[i, j].GetComponent<PieceLogic>().game = this;
+                gameBoard[i, j].GetComponent<TutPieceLogic>().row = i;
+                gameBoard[i, j].GetComponent<TutPieceLogic>().col = j;
+                gameBoard[i, j].GetComponent<TutPieceLogic>().player = '-';
+                gameBoard[i, j].GetComponent<TutPieceLogic>().game = this;
                 z += 20;
             }
             x += 20;
         }
-    }
-
-    public char[,] translateBoard()
-    {
-        char[,] aiBoard = new char[5, 5];
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                aiBoard[i, j] = gameBoard[i, j].GetComponent<PieceLogic>().player;
-            }
-        }
-
-        return aiBoard;
     }
 }

@@ -19,7 +19,7 @@ public class PauseButton : MonoBehaviour
     void Start()
     {        
         pauseMenu.enabled = false;
-        helpMenu.enabled = false;
+        helpMenu.enabled = true;
     }
 
     public void openMenu()
