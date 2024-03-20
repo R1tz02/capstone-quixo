@@ -3864,7 +3864,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerOneSpace: {fileID: 2100000, guid: 4c6b620b115807049bde38a1827deb87, type: 2}
   playerTwoSpace: {fileID: 2100000, guid: 3ee1f85925abf294d995976b22fe1a06, type: 2}
-  piecePrefab: {fileID: 9075320395111789681, guid: 302d85e3780aa984d83043a6c0e2007e,
+  piecePrefab: {fileID: 9075320395111789681, guid: b7dc3fe1a79659740b27de827fa2543c,
     type: 3}
   chosenPiece: {fileID: 0}
   winScreen: {fileID: 2039624279}

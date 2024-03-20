@@ -27,7 +27,7 @@ public class TutPauseButton : MonoBehaviour
         pauseMenu.enabled = true;
         pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
-        gameMaster.GetComponent<GameCore>().gamePaused = true;
+        gameMaster.GetComponent<TutGameCore>().gamePaused = true;
     }
 
     public void closeMenu() 
@@ -35,19 +35,11 @@ public class TutPauseButton : MonoBehaviour
         pauseMenu.enabled = false;
         pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1;
-        gameMaster.GetComponent<GameCore>().gamePaused = false;
+        gameMaster.GetComponent<TutGameCore>().gamePaused = false;
     }
 
     public async void returnToMain()
     {
-        GameObject networkingManger = GameObject.Find("NetworkManager");
-
-        // Disconnect from photon if the game is being played online
-        if (networkingManger != null && networkingManger.GetComponent<NetworkingManager>()._runner)
-        {
-            await networkingManger.GetComponent<NetworkingManager>().DisconnectFromPhoton();
-        }
-
         Time.timeScale = 1;
         SceneManager.LoadScene(0);
     }

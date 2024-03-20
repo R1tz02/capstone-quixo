@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class Player
+{
+    public char piece { get; set; }
+    public bool won { get; set; }
+}
 public class TutGameCore : MonoBehaviour
 {
     public Material playerOneSpace;
@@ -12,15 +17,16 @@ public class TutGameCore : MonoBehaviour
     public Canvas winScreen;
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
-    public IPlayer currentPlayer;
+    public Player currentPlayer;
     public bool gamePaused;
-    public ButtonHandler buttonHandler;
-    public IPlayer p1;
-    public IPlayer p2;
+    public TutButtonHandler tutButtonHandler;
+    public Player p1;
+    public Player p2;
     public int TutLvl = 0;
     
     void Start() {
         winScreen.enabled = false;
+        populateBoard();
     }
 
      private bool horizontalWin()
@@ -285,7 +291,7 @@ public class TutGameCore : MonoBehaviour
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
-            buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
+            tutButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
                 Time.timeScale = 0;
@@ -316,27 +322,27 @@ public class TutGameCore : MonoBehaviour
 
      public List<char> moveOptions(int row, int col)
     {
-        buttonHandler.changeArrowsBack();
+        tutButtonHandler.changeArrowsBack();
         List<char> moveList = new List<char>();
         if (row > 0)
         {
             moveList.Add('U');
-            buttonHandler.changeArrowColor('U');
+            tutButtonHandler.changeArrowColor('U');
         }
         if (row < 4)
         {
             moveList.Add('D');
-            buttonHandler.changeArrowColor('D');
+            tutButtonHandler.changeArrowColor('D');
         }
         if (col > 0)
         {
             moveList.Add('L');
-            buttonHandler.changeArrowColor('L');
+            tutButtonHandler.changeArrowColor('L');
         }
         if (col < 4)
         {
             moveList.Add('R');
-            buttonHandler.changeArrowColor('R');
+            tutButtonHandler.changeArrowColor('R');
         }
         return moveList;
     }

@@ -9,7 +9,6 @@ public class TutPieceLogic : MonoBehaviour
     public int col;
     public char player;
     public TutGameCore game;
-    private ButtonHandler buttonHandler;
     private bool isSelected = false;
     // private Rigidbody rb;
     private List<char> moveList;
