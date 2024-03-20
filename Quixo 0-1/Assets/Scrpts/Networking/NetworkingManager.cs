@@ -52,7 +52,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
     public NetworkChat chat;
-
     [SerializeField] private NetworkPrefabRef _playerPrefab;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -92,7 +91,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
                 SyncBoard();
             });
-
         }
 
         ButtonHandler.OnMoveMade += SendMove;
@@ -101,13 +99,16 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameObject chatObject = GameObject.Find("NetworkChat");
 
         // If chat object hasn't been created yet, create it
-        chatObject.GetOrAddComponent<NetworkChat>();
+        chatObject.GetOrAddComponent<NetworkObject>();
+        chat = chatObject.GetOrAddComponent<NetworkChat>();
 
         // Sync up the chat log if the client disconnected and came back
         if (runner.IsServer)
         {
-            chat.RpcSyncChat(chat.chatLog.ToArray());
+            //TODO: chat.RpcSyncChat(chat.chatLog.ToArray());
         }
+
+        ChatMenu.OnChatUpdated += SendChat;
     }
 
     public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -141,6 +142,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         ButtonHandler.OnMoveMade -= SendMove;
 
         GameCore.OnChosenPiece -= SetChosenPiece;
+
+        ChatMenu.OnChatUpdated -= SendChat;
 
         runner.SessionInfo.IsOpen = true;
     }
@@ -369,6 +372,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
+        ChatMenu.OnChatUpdated -= SendChat;
     }
 
     public void SetChosenPiece(int row, int col)
