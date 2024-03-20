@@ -17,6 +17,7 @@ public class MenuController : MonoBehaviour
     public Canvas HelpCanvas;
     public Canvas overlayCanvas;
     public Canvas joinLobbyCanvas;
+    public Canvas tutorialCanvas;
 
     public float moveDuration;
     public float rotaionDuration;
@@ -27,6 +28,7 @@ public class MenuController : MonoBehaviour
     
     void Start()
     {
+        tutorialCanvas.enabled = false;
         quickCanvas.enabled = false;
         multiCanvas.enabled = false;
         storyCanvas.enabled = false;
@@ -45,6 +47,12 @@ public class MenuController : MonoBehaviour
     {
         hostJoinCanvas.enabled = false;
         joinLobbyCanvas.enabled = true;
+    }
+
+    public void openTutorialMenu()
+    {
+        tutorialCanvas.enabled = true;
+        overlayCanvas.enabled = false;
     }
 
     public void openHelpMenu()
@@ -113,6 +121,22 @@ public class MenuController : MonoBehaviour
         {
             StartCoroutine(RotateUp());
         }
+    }
+
+    public void loadTutorial() //need Jack to map this to the scene I need
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<GameCore>().StartAIGame();
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));   
     }
 
     public void NewEasyGame()

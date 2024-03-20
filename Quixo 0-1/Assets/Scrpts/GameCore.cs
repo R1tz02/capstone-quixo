@@ -460,7 +460,7 @@ public class GameCore : MonoBehaviour
     {
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,3));
+        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,2));
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
