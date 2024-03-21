@@ -20,11 +20,15 @@ public class TutGameCore : MonoBehaviour
     public Player currentPlayer;
     public bool gamePaused;
     public TutButtonHandler tutButtonHandler;
-    public Player p1;
-    public Player p2;
+    public Player p1 = new Player();
+    public Player p2= new Player();
     public int TutLvl = 0;
     
     void Start() {
+        p1.piece = 'X';
+        p2.piece = 'O';
+
+        currentPlayer = p1;
         winScreen.enabled = false;
         populateBoard();
     }
@@ -322,6 +326,7 @@ public class TutGameCore : MonoBehaviour
 
      public List<char> moveOptions(int row, int col)
     {
+        tutButtonHandler = GameObject.FindObjectOfType<TutButtonHandler>();
         tutButtonHandler.changeArrowsBack();
         List<char> moveList = new List<char>();
         if (row > 0)

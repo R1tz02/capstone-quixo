@@ -39,13 +39,12 @@ public class GameCore : MonoBehaviour
     
     void Start()
     {
-
+        GameObject curPlayerVisual;
         SMLvl2.enabled = false;
         SMLvl3.enabled = false;
         SMLvl4.enabled = false;
         winScreen.enabled = false;
         loseScreen.enabled = false;
-       
     }
 
     public async void StartNetworkedGame(string gameType)
@@ -326,7 +325,6 @@ public class GameCore : MonoBehaviour
     {
         Debug.Log(dir);
         gameBoard[0, 5] = gameBoard[chosenPiece.row, chosenPiece.col]; // Store the selected piece temporarily
-
         Material pieceColor;
         gamePaused = true;
         switch (currentPiece)

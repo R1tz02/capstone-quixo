@@ -48,13 +48,6 @@ public class TutPieceLogic : MonoBehaviour
         }
     }
 
-    public void SimulateOnMouseDown(){
-        OnMouseDown();
-    }
-
-
-
-
     // Update is called once per frame
     void Update()
     {

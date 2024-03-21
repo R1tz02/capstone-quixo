@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2459,6 +2459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a612dc38387c242a3ed6e633c61116, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentTurn: 0
+  chat: {fileID: 0}
   _playerPrefab:
     RawGuidValue: bf32258f35e314643827b46563c36a86
   _runner: {fileID: 0}
@@ -4216,8 +4218,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   piecePrefab: {fileID: 9075320395111789681, guid: 302d85e3780aa984d83043a6c0e2007e,
-    type: 3}
-  winnerText: {fileID: 292560836153075689, guid: 92579f97d3df66345b2c227ae56b84d4,
     type: 3}
   playerOneSpace: {fileID: 2100000, guid: 1f40211e90609704f90bc8536e0e04b9, type: 2}
   playerTwoSpace: {fileID: 2100000, guid: 79c652c7ea7abe2499dd1d416d9cdb24, type: 2}

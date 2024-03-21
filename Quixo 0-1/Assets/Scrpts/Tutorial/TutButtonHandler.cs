@@ -11,7 +11,7 @@ public class TutButtonHandler : MonoBehaviour
     public Button right;
     public Button up;
     public Button down;
-    public GameCore game;
+    public TutGameCore game;
 
     // Create Event so that we can add a listener to any other class that wants to know when a move was made
     public delegate void MoveMade(char direction);
@@ -19,7 +19,7 @@ public class TutButtonHandler : MonoBehaviour
 
     void Start()
     {
-        game = GameObject.FindObjectOfType<GameCore>();
+        game = GameObject.FindObjectOfType<TutGameCore>();
         up.onClick.AddListener(delegate { doOnClick('U'); });   //F: Give each arrow an on click event listener that calls doOnClick and we pass it a char
         down.onClick.AddListener(delegate { doOnClick('D'); }); // representing what arrow was clicked
         left.onClick.AddListener(delegate { doOnClick('L'); });
