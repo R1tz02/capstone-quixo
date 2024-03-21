@@ -438,7 +438,7 @@ public class EasyAI : MonoBehaviour
             int maxEval = int.MinValue;
             foreach ((Piece, char) move in PossibleMoves(copy))
             {
-                copy.makeMove(move.Item1, move.Item2);
+                copy.movePiece(move.Item1, move.Item2);
 
 
                 maxEval = Math.Max(maxEval, Minimax(copy.Clone(), depth - 1, false, alpha, beta));
@@ -458,7 +458,7 @@ public class EasyAI : MonoBehaviour
             int minEval = int.MaxValue;
             foreach ((Piece, char) move in PossibleMoves(copy)) {
 
-                copy.makeMove(move.Item1, move.Item2);
+                copy.movePiece(move.Item1, move.Item2);
                 minEval = Math.Min(minEval, Minimax(copy.Clone(), depth - 1, true, alpha, beta));
                 copy = board.Clone();
                 beta = Math.Min(beta, minEval);
@@ -493,8 +493,7 @@ public class EasyAI : MonoBehaviour
         foreach ((Piece, char) move in PossibleMoves(newBoard))
         {
             quixoModel copy = newBoard.Clone();
-            copy.makeMove(move.Item1, move.Item2);
-            copy.playerOneTurn = true;
+            copy.movePiece(move.Item1, move.Item2);
             int evalScore = MinimaxAlphaBeta(copy, depth-1, false);
 
             if (evalScore > bestEval)

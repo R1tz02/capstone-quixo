@@ -454,16 +454,20 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
+
+
     async void AIMove(EasyAI easyAI)
     {
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,2));
+
+        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,4));
+        await WaitFor();
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         counter++;
-        if (counter > 8 && won()) 
+        if (won()) 
         {
             Time.timeScale = 0;
             gamePaused = true;
@@ -479,9 +483,17 @@ public class GameCore : MonoBehaviour
         }
     }
 
-    public System.Collections.IEnumerator WaitFor(int time)
+
+
+    public System.Collections.IEnumerator waitAI(EasyAI easyAI)
     {
-        yield return new WaitForSeconds(time);
+        yield return new WaitForSeconds(2);
+        AIMove(easyAI);
+        
+    }
+    private async Task WaitFor()
+    {
+        await Task.Delay(1000);
     }
 
     public List<char> moveOptions(int row, int col)
