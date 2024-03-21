@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
+using UnityEditor.SceneManagement;
 //using UnityEditor.Overlays;
 
 public class PauseButton : MonoBehaviour
@@ -31,11 +32,14 @@ public class PauseButton : MonoBehaviour
     }
 
     public void closeMenu() 
-    { 
-        pauseMenu.enabled = false;
-        pauseButton.gameObject.SetActive(true);
-        Time.timeScale = 1;
-        gameMaster.GetComponent<GameCore>().gamePaused = false;
+    {
+        if (pauseMenu)
+        {
+            pauseMenu.enabled = false;
+            pauseButton.gameObject.SetActive(true);
+            Time.timeScale = 1;
+            gameMaster.GetComponent<GameCore>().gamePaused = false;
+        }
     }
 
     public async void returnToMain()
@@ -66,7 +70,21 @@ public class PauseButton : MonoBehaviour
 
     public void restartGame()
     {
+        MenuController menuController = gameObject.GetComponent("MenuController") as MenuController;
         Time.timeScale = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        switch (gameMaster.GetComponent<GameCore>().currentGameMode)
+        {
+            case GameType.AIEasy:
+                menuController.NewEasyGame();
+                break;
+            case GameType.AIHard:
+                break;
+            case GameType.Local:
+                menuController.LocalGame();
+                break;
+            case GameType.Online:
+                break;
+        }
+       //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

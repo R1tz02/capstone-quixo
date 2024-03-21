@@ -6,6 +6,16 @@ using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
 using System.Threading.Tasks;
 
+
+public enum GameType
+{ 
+    AIEasy,
+    AIHard,
+    Local,
+    Online
+};
+
+
 public class GameCore : MonoBehaviour
 {
     public GameObject piecePrefab;
@@ -33,6 +43,9 @@ public class GameCore : MonoBehaviour
     private EasyAI easyAI;
     private bool playAI = false;
 
+    public GameType currentGameMode;
+
+
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
@@ -50,6 +63,7 @@ public class GameCore : MonoBehaviour
 
     public async void StartNetworkedGame(string gameType)
     {
+        currentGameMode = GameType.Online;
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {
             throw new System.Exception("Not a valid game type");
@@ -73,6 +87,7 @@ public class GameCore : MonoBehaviour
 
     public void StartAIGame()
     {
+        currentGameMode = GameType.AIEasy;
         playAI = true;
 
         GameObject player1Object = new GameObject("Player1");
@@ -91,6 +106,7 @@ public class GameCore : MonoBehaviour
 
     public void StartLocalGame()
     {
+        currentGameMode = GameType.Local;
         winScreen.enabled = false;
         
         GameObject player1Object = new GameObject("Player1");

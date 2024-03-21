@@ -27,12 +27,18 @@ public class MenuController : MonoBehaviour
     
     void Start()
     {
-        quickCanvas.enabled = false;
+        if (quickCanvas)
+            quickCanvas.enabled = false;
+        if (multiCanvas)
         multiCanvas.enabled = false;
-        storyCanvas.enabled = false;
-        hostJoinCanvas.enabled = false;
-        HelpCanvas.enabled = false;
-        joinLobbyCanvas.enabled = false;
+        if(storyCanvas)
+            storyCanvas.enabled = false;
+        if(hostJoinCanvas)
+            hostJoinCanvas.enabled = false;
+        if(HelpCanvas)
+            HelpCanvas.enabled = false;
+        if(joinLobbyCanvas)
+            joinLobbyCanvas.enabled = false;
     }
 
     public void HostJoin()
