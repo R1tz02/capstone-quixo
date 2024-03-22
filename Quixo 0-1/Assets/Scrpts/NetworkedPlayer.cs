@@ -152,12 +152,12 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         if (playAgainCount == 2)
         {
-            ResetGame();
+            RpcResetGame();
         }
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void ResetGame()
+    public void RpcResetGame()
     {
         playAgainCount = 0;
         wantsToPlayAgain = false;
