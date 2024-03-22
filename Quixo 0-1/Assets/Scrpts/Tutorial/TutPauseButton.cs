@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
+using System;
 //using UnityEditor.Overlays;
 
 public class TutPauseButton : MonoBehaviour
@@ -14,12 +15,45 @@ public class TutPauseButton : MonoBehaviour
     public Canvas helpMenu;
     public Button pauseButton;
     public GameObject gameMaster;
+    public Canvas learningModes;
 
     // Start is called before the first frame update
     void Start()
     {
+        learningModes.enabled = true;
         pauseMenu.enabled = false;
         helpMenu.enabled = true;
+    }
+
+    public void tryLeft()
+    {
+        gameMaster.GetComponent<TutGameCore>().tutLvl = 0;
+        learningModes.enabled = false;
+    }
+
+    public void tryRight()
+    {
+        gameMaster.GetComponent<TutGameCore>().tutLvl = 1;
+        learningModes.enabled = false;
+    }
+
+    public void tryHori()
+    {
+        gameMaster.GetComponent<TutGameCore>().tutLvl = 2;
+        learningModes.enabled = false;
+    }
+
+    public void tryVer()
+    {
+        gameMaster.GetComponent<TutGameCore>().tutLvl = 3;
+        learningModes.enabled = false;
+    }
+
+    public void tryDifMode()
+    {
+        restartGame();
+        learningModes.enabled = true;
+        gameMaster.GetComponent<TutGameCore>().winScreen.enabled = false;
     }
 
     public void openMenu()
@@ -61,5 +95,24 @@ public class TutPauseButton : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        closeHelpMenu();
     }
+
+    public IEnumerator AsyncLoadGameScene(int sceneToLoad, Action onSceneLoaded)
+        {
+            // Needed so that the callbacks can be called after the scene is loaded
+            DontDestroyOnLoad(this.gameObject);
+
+            Debug.Log("Loading game scene...");
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoad);
+
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
+
+            onSceneLoaded?.Invoke();
+
+            Destroy(this.gameObject);
+        }
 }

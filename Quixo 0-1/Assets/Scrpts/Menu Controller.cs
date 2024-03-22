@@ -130,7 +130,7 @@ public class MenuController : MonoBehaviour
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
-                gameMaster.GetComponent<GameCore>().StartAIGame();
+                gameMaster.GetComponent<TutGameCore>().StartTutorial();
             }
             else
             {

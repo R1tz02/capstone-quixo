@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class Player
 {
-    public char piece { get; set; }
-    public bool won { get; set; }
+    public char piece;
+    public bool won;
 }
 public class TutGameCore : MonoBehaviour
 {
@@ -21,10 +24,14 @@ public class TutGameCore : MonoBehaviour
     public bool gamePaused;
     public TutButtonHandler tutButtonHandler;
     public Player p1 = new Player();
-    public Player p2= new Player();
-    public int TutLvl = 0;
-    
-    void Start() {
+    public Player p2 = new Player();
+    public int tutLvl = 0;
+    public int counter = 0;
+
+    void Start()
+    {
+
+
         p1.piece = 'X';
         p2.piece = 'O';
 
@@ -33,7 +40,11 @@ public class TutGameCore : MonoBehaviour
         populateBoard();
     }
 
-     private bool horizontalWin()
+    public void StartTutorial()
+    {
+
+    }
+    private bool horizontalWin()
     {
         Debug.Log("checking for horizontal win");
         bool success;
@@ -178,16 +189,16 @@ public class TutGameCore : MonoBehaviour
 
     public bool won()
     {
-    //     switch(TutLvl)
-    //     {
-    //         case 1: if (verticalWin()) {chooseCanvasAndWinner(ref SMLvl2); return true;} break;
-    //         case 2: if (horizontalWin()) {chooseCanvasAndWinner(ref SMLvl3); return true;} break;
-    //         case 3: if (leftDiagonalWin() || rightDiagonalWin()) {chooseCanvasAndWinner(ref SMLvl4); return true;} break;
-    //         default: return false;
-    //     }
-         return false;
+        switch (tutLvl)
+        {
+            case 0: if (leftDiagonalWin())  { winScreen.enabled = true; return true; } break;
+            case 1: if (rightDiagonalWin()) { winScreen.enabled = true; return true; } break;
+            case 2: if (horizontalWin())    { winScreen.enabled = true; return true; } break;
+            case 3: if (verticalWin())      { winScreen.enabled = true; return true; } break;
+        }
+        return false;
     }
-    
+
 
     public void shiftBoard(char dir, char currentPiece)
     {
@@ -197,7 +208,7 @@ public class TutGameCore : MonoBehaviour
         Material pieceColor;
         gamePaused = true;
         switch (currentPiece)
-        { 
+        {
             case 'X':
                 pieceColor = playerOneSpace;
                 break;
@@ -226,9 +237,9 @@ public class TutGameCore : MonoBehaviour
                 currentPieceObject.GetComponent<TutPieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
-                gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col]; 
+                gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col];
             }
-             StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
+            StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
         }
         else if (dir == 'R')
         {
@@ -240,7 +251,7 @@ public class TutGameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
             }
-             StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
+            StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
         }
         else if (dir == 'L')
         {
@@ -252,7 +263,7 @@ public class TutGameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
             }
-             StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
+            StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
         }
     }
 
@@ -271,7 +282,7 @@ public class TutGameCore : MonoBehaviour
 
         piece.transform.position = targetPosition; // Ensure it reaches the target position precisely
     }
-  
+
     private System.Collections.IEnumerator moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
     {
         gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
@@ -296,7 +307,7 @@ public class TutGameCore : MonoBehaviour
         {
             shiftBoard(c, currentPlayer.piece);
             tutButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
-            if (won()) 
+            if (won())
             {
                 Time.timeScale = 0;
                 gamePaused = true;
@@ -305,26 +316,140 @@ public class TutGameCore : MonoBehaviour
             }
             //F: if not won, we change the currentPlayer
             else if (currentPlayer.piece == 'X') {
-                currentPlayer = p2; 
+                currentPlayer = p2;
             }
             else {
-                currentPlayer = p1; 
-            } 
+                currentPlayer = p1;
+            }
 
-            // if (playAI)
-            // {
-            //     if (easyAI)
-            //     {
-            //         AIMove(easyAI);
-            //     }
-            // }
+            switch (tutLvl)
+            {
+                case 0: LDiagFakeMove(); break;
+                case 1: RDiagFakeMove(); break;
+                case 2: horFakeMove(); break;
+                case 3: verFakeMove(); break;
+            }
 
             return true;
         }
         return false;
     }
 
-     public List<char> moveOptions(int row, int col)
+    async void horFakeMove()
+    {
+        await WaitFor();
+        Piece fakeAI = new Piece();
+        fakeAI.row = 4;
+        fakeAI.col = 0;
+        (Piece, char) fakeMove = (fakeAI, 'R');
+        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, currentPlayer.piece);
+
+        if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
+    }
+
+    async void verFakeMove()
+    {
+        await WaitFor();
+        Piece fakeAI = new Piece();
+        fakeAI.row = 0;
+        fakeAI.col = 4;
+        (Piece, char) fakeMove = new (fakeAI, 'D');
+        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, currentPlayer.piece);
+
+        if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
+    }
+
+    async void LDiagFakeMove()
+    {
+        await WaitFor();
+        Piece fakeAI = new Piece();
+        (Piece, char) fakeMove = new();
+        (Piece, char) fakeMove1 = new(new Piece(0, 4), 'D');
+        (Piece, char) fakeMove2 = new(new Piece(4, 1), 'U');
+        (Piece, char) fakeMove3 = new(new Piece(0, 3), 'R');
+        (Piece, char) fakeMove4 = new(new Piece(0, 3), 'D');
+        (Piece, char) fakeMove5 = new(new Piece(0, 2), 'D');
+
+        switch (counter)
+        {
+            case 0: fakeMove = fakeMove1; break;
+            case 1: fakeMove = fakeMove2; break;
+            case 2: fakeMove = fakeMove3; break;
+            case 3: fakeMove = fakeMove4; break;
+            case 4: fakeMove = fakeMove5; break;
+        }
+
+        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, currentPlayer.piece);
+
+        if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
+        counter++;
+    }
+
+    async void RDiagFakeMove()
+    {
+        await WaitFor();
+        Piece fakeAI = new Piece();
+        (Piece, char) fakeMove = new();
+        (Piece, char) fakeMove1 = new(new Piece(4, 4), 'U');
+        (Piece, char) fakeMove2 = new(new Piece(1, 0), 'R');
+        (Piece, char) fakeMove3 = new(new Piece(1, 0), 'R');
+        (Piece, char) fakeMove4 = new(new Piece(3, 4), 'L');
+        (Piece, char) fakeMove5 = new(new Piece(0, 2), 'D');
+
+        switch (counter)
+        {
+            case 0: fakeMove = fakeMove1; break;
+            case 1: fakeMove = fakeMove2; break;
+            case 2: fakeMove = fakeMove3; break;
+            case 3: fakeMove = fakeMove4; break;
+            case 4: fakeMove = fakeMove5; break;
+        }
+
+        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, currentPlayer.piece);
+
+        if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
+        counter++;
+    }
+
+
+    private async Task WaitFor()
+    {
+        await Task.Delay(2000);
+    }
+
+    public List<char> moveOptions(int row, int col)
     {
         tutButtonHandler = GameObject.FindObjectOfType<TutButtonHandler>();
         tutButtonHandler.changeArrowsBack();
