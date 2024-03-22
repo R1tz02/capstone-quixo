@@ -94,6 +94,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (runner.IsServer)
         {
+            // TODO @R1tz02 #26: Hide message about waiting for client to rejoin
+
+
             // AssignPlayers might need to check if the game is set up
             // If so, it will just skip creating new players on host
             AssignPlayers(() =>
@@ -136,6 +139,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer && player != runner.LocalPlayer)
         {
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
+
+            // TODO @R1tz02 #26: Display error message in the game scene about the client leaving the game
         }
 
         if (playerIndex != -1)
