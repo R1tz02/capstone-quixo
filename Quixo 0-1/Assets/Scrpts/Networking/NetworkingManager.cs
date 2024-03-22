@@ -63,6 +63,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
+    public string lobbyName;
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
@@ -198,7 +199,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public List<ChatMessage> chatLog = new();
 
-    public async Task StartGame(GameMode mode, string sessionName = "Default")
+    public async Task StartGame(GameMode mode, string sessionName)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
 
@@ -214,7 +215,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
         }
 
-        string lobbyName = sessionName;
+        lobbyName = sessionName;
 
         if (mode == GameMode.Host)
         {
@@ -223,8 +224,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             System.Random res = new System.Random();
 
-            String str = "abcdefghijklmnopqrstuvwxyz";
-            int size = 10;
+            String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            int size = 6;
 
             String ran = "";
 
@@ -236,7 +237,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             lobbyName = ran;
 
-            // TODO: Display this room name on the host's screen
+            // TODO: Display this room name on the host's screen. Stored in class's lobbyName variable so it can always be accessed
         }
 
         if (mode == GameMode.AutoHostOrClient)

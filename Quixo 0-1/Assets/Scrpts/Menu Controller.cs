@@ -174,6 +174,7 @@ public class MenuController : MonoBehaviour
 
     public void JoinNetworkedGame()
     {
+        string code = GameObject.Find("enterCode").GetComponent<InputField>().text;
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             Debug.Log("Looking for GameMaster object...");
@@ -181,7 +182,7 @@ public class MenuController : MonoBehaviour
             if (gameMaster != null)
             {
                 Debug.Log("GameMaster found. Starting networked game...");
-                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Client");
+                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Client", code);
             }
             else
             {

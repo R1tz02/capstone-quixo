@@ -61,7 +61,7 @@ public class GameCore : MonoBehaviour
        
     }
 
-    public async void StartNetworkedGame(string gameType)
+    public async void StartNetworkedGame(string gameType, string code = null)
     {
         currentGameMode = GameType.Online;
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
@@ -73,15 +73,15 @@ public class GameCore : MonoBehaviour
 
         if (gameType == "Host")
         {
-            await networkingManager.StartGame(GameMode.Host);
+            await networkingManager.StartGame(GameMode.Host, code);
         }
         else if (gameType == "AutoHostOrClient")
         {
-            await networkingManager.StartGame(GameMode.AutoHostOrClient);
+            await networkingManager.StartGame(GameMode.AutoHostOrClient, code);
         }
         else
         {
-            await networkingManager.StartGame(GameMode.Client);
+            await networkingManager.StartGame(GameMode.Client, code);
         }
     }
 
