@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
@@ -26,7 +27,8 @@ public class TutGameCore : MonoBehaviour
     public Player p1 = new Player();
     public Player p2 = new Player();
     public int tutLvl = 0;
-    public int counter = 0;
+    public int AIcounter = 0;
+    public int usrCounter = 0;
 
     void Start()
     {
@@ -191,10 +193,10 @@ public class TutGameCore : MonoBehaviour
     {
         switch (tutLvl)
         {
-            case 0: if (leftDiagonalWin())  { winScreen.enabled = true; return true; } break;
+            case 0: if (leftDiagonalWin()) { winScreen.enabled = true; return true; } break;
             case 1: if (rightDiagonalWin()) { winScreen.enabled = true; return true; } break;
-            case 2: if (horizontalWin())    { winScreen.enabled = true; return true; } break;
-            case 3: if (verticalWin())      { winScreen.enabled = true; return true; } break;
+            case 2: if (horizontalWin()) { winScreen.enabled = true; return true; } break;
+            case 3: if (verticalWin()) { winScreen.enabled = true; return true; } break;
         }
         return false;
     }
@@ -361,7 +363,7 @@ public class TutGameCore : MonoBehaviour
         Piece fakeAI = new Piece();
         fakeAI.row = 0;
         fakeAI.col = 4;
-        (Piece, char) fakeMove = new (fakeAI, 'D');
+        (Piece, char) fakeMove = new(fakeAI, 'D');
         validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
         shiftBoard(fakeMove.Item2, currentPlayer.piece);
 
@@ -386,7 +388,7 @@ public class TutGameCore : MonoBehaviour
         (Piece, char) fakeMove4 = new(new Piece(0, 3), 'D');
         (Piece, char) fakeMove5 = new(new Piece(0, 2), 'D');
 
-        switch (counter)
+        switch (AIcounter)
         {
             case 0: fakeMove = fakeMove1; break;
             case 1: fakeMove = fakeMove2; break;
@@ -406,7 +408,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-        counter++;
+        AIcounter++;
     }
 
     async void RDiagFakeMove()
@@ -420,7 +422,7 @@ public class TutGameCore : MonoBehaviour
         (Piece, char) fakeMove4 = new(new Piece(3, 4), 'L');
         (Piece, char) fakeMove5 = new(new Piece(0, 2), 'D');
 
-        switch (counter)
+        switch (AIcounter)
         {
             case 0: fakeMove = fakeMove1; break;
             case 1: fakeMove = fakeMove2; break;
@@ -440,7 +442,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-        counter++;
+        AIcounter++;
     }
 
 
@@ -477,6 +479,57 @@ public class TutGameCore : MonoBehaviour
         return moveList;
     }
 
+    public List<(Piece, char)> allowedPieces()
+    {
+        List<(Piece, char)>pieces = new List<(Piece, char)>();
+        if (tutLvl == 0)
+        {
+            pieces = new List<(Piece, char)>
+            {
+                (new Piece(4, 0), 'U'),
+                (new Piece(4, 1), 'U'),
+                (new Piece(0, 4), 'D'),
+                (new Piece(0, 3), 'D'),
+                (new Piece(3, 0), 'R'),
+                (new Piece(3, 0), 'R'),
+            };
+        }
+        else if (tutLvl == 1)
+        {
+            pieces = new List<(Piece, char)>
+            {
+                (new Piece(0, 0), 'D'),
+                (new Piece(0, 0), 'R'),
+                (new Piece(4, 4), 'U'),
+                (new Piece(3, 4), 'L'),
+                (new Piece(0, 2), 'D'),
+                (new Piece(0, 2), 'D'),
+            };
+        }
+        else if(tutLvl == 2)
+        {
+            pieces = new List<(Piece, char)>
+            {
+                (new Piece(0, 0), 'R'),
+                (new Piece(0, 0), 'R'),
+                (new Piece(0, 0), 'R'),
+                (new Piece(0, 0), 'R'),
+                (new Piece(0, 0), 'R'),
+            };
+        }
+        else if(tutLvl==3)
+        {
+            pieces = new List<(Piece, char)>
+            {
+                (new Piece(4, 0), 'U'),
+                (new Piece(4, 0), 'U'),
+                (new Piece(4, 0), 'U'),
+                (new Piece(4, 0), 'U'),
+                (new Piece(4, 0), 'U'),
+            };
+        }
+        return pieces;
+    }
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col)
     {
