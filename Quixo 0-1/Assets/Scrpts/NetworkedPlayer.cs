@@ -91,6 +91,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
             playerIndex++;
         }
 
+        networkingManager.chat = GameObject.FindObjectOfType<NetworkChat>();
+
         networkingManager.game.currentPlayer = playerTurnLocal == 2 ? networkingManager.game.p2 : networkingManager.game.p1;
     }
 

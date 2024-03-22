@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
+using Fusion;
 
 public class ChatMenu : MonoBehaviour
 {
@@ -49,15 +50,23 @@ public class ChatMenu : MonoBehaviour
         // Any other input logic should go here. I.E checking for pushing enter etc.
         if (text != "")
         {
-            OnChatUpdated.Invoke(text);
+            OnChatUpdated?.Invoke(text);
         }
     }
 
-    public void UpdateChat(NetworkChat.ChatMessage chatMessage)
+    public void UpdateChat(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef)
     {
-        // This is where we would update the chat log
-        // ChatMessage is an object with a string and the player that sent it.
-        Debug.Log(chatMessage.message);
-        Debug.Log(chatMessage.playerRef);
+        // @R1tz02: This function will be called on both the client and server when a new chat message is sent.
+        // NetworkingManager.ChatLog contains a list of chatMessage which is an object with a string and the player that sent it.
+        if (sendingPlayerRef == localPlayerRef)
+        {
+            // This is the local player's message
+            Debug.Log("I sent this message: " + message);
+        }
+        else
+        {
+            // This is the remote player's message
+            Debug.Log("They sent this message: " + message);
+        }   
     }
 }

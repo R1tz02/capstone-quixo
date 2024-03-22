@@ -43,6 +43,18 @@ public struct GameState
     }
 }
 
+public class ChatMessage
+    {
+        public string message;
+        public PlayerRef playerRef;
+
+        public ChatMessage(string message, PlayerRef playerRef)
+        {
+            this.message = message;
+            this.playerRef = playerRef;
+        }
+    }
+
 public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public List<KeyValuePair<PlayerRef, NetworkedPlayer>> _players = new();
@@ -51,8 +63,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
-    public NetworkChat chat;
     [SerializeField] private NetworkPrefabRef _playerPrefab;
+    [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -93,22 +105,16 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             });
         }
 
-        ButtonHandler.OnMoveMade += SendMove;
-        GameCore.OnChosenPiece += SetChosenPiece;
-
-        GameObject chatObject = GameObject.Find("NetworkChat");
-
-        // If chat object hasn't been created yet, create it
-        chatObject.GetOrAddComponent<NetworkObject>();
-        chat = chatObject.GetOrAddComponent<NetworkChat>();
-
         // Sync up the chat log if the client disconnected and came back
         if (runner.IsServer)
         {
             //TODO: chat.RpcSyncChat(chat.chatLog.ToArray());
         }
 
+        ButtonHandler.OnMoveMade += SendMove;
+        GameCore.OnChosenPiece += SetChosenPiece;
         ChatMenu.OnChatUpdated += SendChat;
+        NetworkChat.OnNetworkChatUpdated += UpdateLocalChatLog;
     }
 
     public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -144,6 +150,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameCore.OnChosenPiece -= SetChosenPiece;
 
         ChatMenu.OnChatUpdated -= SendChat;
+
+        NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
 
         runner.SessionInfo.IsOpen = true;
     }
@@ -186,6 +194,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkRunner _runner;
     public GameCore game;
     public GameState gameState;
+    public NetworkChat chat;
+
+    public List<ChatMessage> chatLog = new();
 
     public async Task StartGame(GameMode mode, string sessionName = "Default")
     {
@@ -207,7 +218,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (mode == GameMode.Host)
         {
-            isOpen = false;
+            //TODO: Not sure if hiding the game when the player Host's is the best idea. Creates impression that Quickplay doesn't work if the game is hidden.
+            //isOpen = false;
 
             System.Random res = new System.Random();
 
@@ -346,6 +358,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             Debug.Log("Spawned player: " + player.Key);
         }
 
+        // Spawn NetworkChat Object
+        NetworkObject networkedObject = _runner.Spawn(_networkChatPrefab);
+
         // Use this callback to make sure that the players are created on the client before continuing
         StartCoroutine(NetworkedPlayer.WaitForClientConfirmation(OnComplete));
     }
@@ -373,6 +388,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
         ChatMenu.OnChatUpdated -= SendChat;
+        NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
     }
 
     public void SetChosenPiece(int row, int col)
@@ -388,6 +404,11 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void SendChat(string message)
     {
-        chat.SendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
+        chat.RpcSendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
+    }
+
+    public void UpdateLocalChatLog(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef)
+    {
+        chatLog.Add(new ChatMessage(message, sendingPlayerRef));
     }
 }

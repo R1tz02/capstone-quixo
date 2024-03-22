@@ -1,12 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Diagnostics.Contracts;
-using UnityEditor.SceneManagement;
 //using UnityEditor.Overlays;
 
 public class PauseButton : MonoBehaviour
