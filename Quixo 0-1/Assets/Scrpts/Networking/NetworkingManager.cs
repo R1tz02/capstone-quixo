@@ -119,6 +119,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameCore.OnChosenPiece += SetChosenPiece;
         ChatMenu.OnChatUpdated += SendChat;
         NetworkChat.OnNetworkChatUpdated += UpdateLocalChatLog;
+        PauseButton.OnNetworkingGameRestart += Rematch;
     }
 
     public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -152,12 +153,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         ButtonHandler.OnMoveMade -= SendMove;
-
         GameCore.OnChosenPiece -= SetChosenPiece;
-
         ChatMenu.OnChatUpdated -= SendChat;
-
         NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
+        PauseButton.OnNetworkingGameRestart -= Rematch;
 
         runner.SessionInfo.IsOpen = true;
     }
@@ -395,6 +394,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameCore.OnChosenPiece -= SetChosenPiece;
         ChatMenu.OnChatUpdated -= SendChat;
         NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
+        PauseButton.OnNetworkingGameRestart -= Rematch;
     }
 
     public void SetChosenPiece(int row, int col)
@@ -416,5 +416,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public void UpdateLocalChatLog(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef)
     {
         chatLog.Add(new ChatMessage(message, sendingPlayerRef));
+    }
+
+    public void Rematch()
+    {
+        // Sets the local player as wanting a rematch
+        // If both players do, then ResetGame() will be called
+        GetNetworkedPlayer(_runner.LocalPlayer).Rematch();
+    }
+
+    public void ResetGame()
+    {
+       // TODO: Either reload scene or reset game state
     }
 }

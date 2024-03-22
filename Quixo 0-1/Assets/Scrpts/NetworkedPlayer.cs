@@ -13,6 +13,11 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Networked]
     public PlayerRef PlayerRef { get; set; }
     public static int TotalPlayers = 0;
+    // Used to keep track of how many players want to play again
+    [Networked]
+    private int playAgainCount { get; set; } = 0;
+
+    bool wantsToPlayAgain = false;
 
     private NetworkingManager networkingManager;
 
@@ -134,5 +139,28 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void RpcSetChosenPiece(int row, int col)
     {
         networkingManager.game.chosenPiece = networkingManager.game.gameBoard[row, col].GetComponent<PieceLogic>();
+    }
+
+    public void Rematch()
+    {
+        // Prevent one player from spamming the play again button
+        if (wantsToPlayAgain) return;
+
+        wantsToPlayAgain = true;
+
+        playAgainCount++;
+
+        if (playAgainCount == 2)
+        {
+            ResetGame();
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void ResetGame()
+    {
+        playAgainCount = 0;
+        wantsToPlayAgain = false;
+        networkingManager.ResetGame();
     }
 }

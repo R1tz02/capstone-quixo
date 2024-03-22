@@ -10,6 +10,8 @@ public class PauseButton : MonoBehaviour
     public Button pauseButton;
     public GameObject gameMaster;
 
+    public delegate void RestartNetworkingGame();
+    public static event RestartNetworkingGame OnNetworkingGameRestart;
     // Start is called before the first frame update
     void Start()
     {        
@@ -77,6 +79,7 @@ public class PauseButton : MonoBehaviour
                 menuController.LocalGame();
                 break;
             case GameType.Online:
+                OnNetworkingGameRestart.Invoke();
                 break;
         }
        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
