@@ -32,8 +32,6 @@ public class TutGameCore : MonoBehaviour
 
     void Start()
     {
-
-
         p1.piece = 'X';
         p2.piece = 'O';
 
@@ -307,7 +305,10 @@ public class TutGameCore : MonoBehaviour
         }
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
-            shiftBoard(c, currentPlayer.piece);
+            List<(Piece, char)> tutMoves = allowedPieces();
+            chosenPiece.row = tutMoves[usrCounter].Item1.row;
+            chosenPiece.col = tutMoves[usrCounter].Item1.col;
+            shiftBoard(tutMoves[usrCounter].Item2, currentPlayer.piece);
             tutButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won())
             {
