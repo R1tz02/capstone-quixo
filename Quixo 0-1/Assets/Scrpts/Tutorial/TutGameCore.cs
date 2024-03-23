@@ -191,10 +191,10 @@ public class TutGameCore : MonoBehaviour
     {
         switch (tutLvl)
         {
-            case 0: if (leftDiagonalWin()) { winScreen.enabled = true; return true; } break;
-            case 1: if (rightDiagonalWin()) { winScreen.enabled = true; return true; } break;
-            case 2: if (horizontalWin()) { winScreen.enabled = true; return true; } break;
-            case 3: if (verticalWin()) { winScreen.enabled = true; return true; } break;
+            case 0: if (leftDiagonalWin()) {  return true; } break;
+            case 1: if (rightDiagonalWin()) {  return true; } break;
+            case 2: if (horizontalWin()) {  return true; } break;
+            case 3: if (verticalWin()) {  return true; } break;
         }
         return false;
     }
@@ -305,13 +305,14 @@ public class TutGameCore : MonoBehaviour
         }
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
-            List<(Piece, char)> tutMoves = allowedPieces();
-            chosenPiece.row = tutMoves[usrCounter].Item1.row;
-            chosenPiece.col = tutMoves[usrCounter].Item1.col;
-            shiftBoard(tutMoves[usrCounter].Item2, currentPlayer.piece);
+            
+            shiftBoard(c, currentPlayer.piece);
             tutButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
+            usrCounter++;
             if (won())
             {
+                WaitFor(3000);
+                winScreen.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -447,9 +448,9 @@ public class TutGameCore : MonoBehaviour
     }
 
 
-    private async Task WaitFor()
+    private async Task WaitFor(int delay = 2000)
     {
-        await Task.Delay(2000);
+        await Task.Delay(delay);
     }
 
     public List<char> moveOptions(int row, int col)
@@ -457,26 +458,36 @@ public class TutGameCore : MonoBehaviour
         tutButtonHandler = GameObject.FindObjectOfType<TutButtonHandler>();
         tutButtonHandler.changeArrowsBack();
         List<char> moveList = new List<char>();
-        if (row > 0)
+        if (currentPlayer.piece == 'X') 
         {
-            moveList.Add('U');
-            tutButtonHandler.changeArrowColor('U');
+            List<(Piece, char)> tutMoves = allowedPieces();
+            moveList.Add(tutMoves[usrCounter].Item2);
+            tutButtonHandler.changeArrowColor(tutMoves[usrCounter].Item2);
         }
-        if (row < 4)
+        else
         {
-            moveList.Add('D');
-            tutButtonHandler.changeArrowColor('D');
+            if (row > 0)
+            {
+                moveList.Add('U');
+                tutButtonHandler.changeArrowColor('U');
+            }
+            if (row < 4)
+            {
+                moveList.Add('D');
+                tutButtonHandler.changeArrowColor('D');
+            }
+            if (col > 0)
+            {
+                moveList.Add('L');
+                tutButtonHandler.changeArrowColor('L');
+            }
+            if (col < 4)
+            {
+                moveList.Add('R');
+                tutButtonHandler.changeArrowColor('R');
+            }
         }
-        if (col > 0)
-        {
-            moveList.Add('L');
-            tutButtonHandler.changeArrowColor('L');
-        }
-        if (col < 4)
-        {
-            moveList.Add('R');
-            tutButtonHandler.changeArrowColor('R');
-        }
+        
         return moveList;
     }
 
@@ -539,15 +550,29 @@ public class TutGameCore : MonoBehaviour
             return false;
         }
         TutPieceLogic piece = gameBoard[row, col].GetComponent<TutPieceLogic>();
-        if ((row == 0 || row == 4) || (col == 0 || col == 4))
+        if (currentPlayer.piece == p1.piece)
         {
-            if (piece.player == '-' || currentPlayer.piece == piece.player)
+            List<(Piece, char)> tutMoves = allowedPieces();
+            if(piece.row == tutMoves[usrCounter].Item1.row && piece.col == tutMoves[usrCounter].Item1.col)
             {
                 chosenPiece = piece;
-
                 OnChosenPiece?.Invoke(row, col);
-
                 return true;
+            }
+            return false;
+        }
+        else
+        {
+            if ((row == 0 || row == 4) || (col == 0 || col == 4))
+            {
+                if (piece.player == '-' || currentPlayer.piece == piece.player)
+                {
+                    chosenPiece = piece;
+
+                    OnChosenPiece?.Invoke(row, col);
+
+                    return true;
+                }
             }
         }
         return false;
