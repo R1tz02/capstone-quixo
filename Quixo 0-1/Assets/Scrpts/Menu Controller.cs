@@ -157,14 +157,14 @@ public class MenuController : MonoBehaviour
 
     public void StoryModeLevel1()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(3, () =>
         {
-            GameCore gcComponent;
+            StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            gcComponent = gameMaster.GetComponent<GameCore>();
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
             if (gcComponent != null)
             {
-                gcComponent.StartAIGame();
+                gcComponent.StartStoryGame();
                 gcComponent.SMLvl=1;
             }
             else
