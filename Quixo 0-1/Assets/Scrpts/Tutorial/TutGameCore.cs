@@ -559,6 +559,7 @@ public class TutGameCore : MonoBehaviour
                 OnChosenPiece?.Invoke(row, col);
                 return true;
             }
+            tutButtonHandler.changeArrowsBack();
             return false;
         }
         else
