@@ -27,12 +27,18 @@ public class MenuController : MonoBehaviour
     
     void Start()
     {
-        quickCanvas.enabled = false;
+        if (quickCanvas)
+            quickCanvas.enabled = false;
+        if (multiCanvas)
         multiCanvas.enabled = false;
-        storyCanvas.enabled = false;
-        hostJoinCanvas.enabled = false;
-        HelpCanvas.enabled = false;
-        joinLobbyCanvas.enabled = false;
+        if(storyCanvas)
+            storyCanvas.enabled = false;
+        if(hostJoinCanvas)
+            hostJoinCanvas.enabled = false;
+        if(HelpCanvas)
+            HelpCanvas.enabled = false;
+        if(joinLobbyCanvas)
+            joinLobbyCanvas.enabled = false;
     }
 
     public void HostJoin()
@@ -168,6 +174,7 @@ public class MenuController : MonoBehaviour
 
     public void JoinNetworkedGame()
     {
+        string code = GameObject.Find("enterCode").GetComponent<InputField>().text;
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             Debug.Log("Looking for GameMaster object...");
@@ -175,7 +182,7 @@ public class MenuController : MonoBehaviour
             if (gameMaster != null)
             {
                 Debug.Log("GameMaster found. Starting networked game...");
-                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Client");
+                gameMaster.GetComponent<GameCore>().StartNetworkedGame("Client", code);
             }
             else
             {

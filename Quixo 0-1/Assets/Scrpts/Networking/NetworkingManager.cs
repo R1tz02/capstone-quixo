@@ -5,8 +5,6 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
-using System.Collections;
 
 [Serializable]
 public struct PieceData
@@ -43,6 +41,18 @@ public struct GameState
     }
 }
 
+public class ChatMessage
+{
+    public string message;
+    public PlayerRef playerRef;
+
+    public ChatMessage(string message, PlayerRef playerRef)
+    {
+        this.message = message;
+        this.playerRef = playerRef;
+    }
+}
+
 public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public List<KeyValuePair<PlayerRef, NetworkedPlayer>> _players = new();
@@ -51,9 +61,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
-    public NetworkChat chat;
-
+    public string lobbyName;
     [SerializeField] private NetworkPrefabRef _playerPrefab;
+    [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -63,57 +73,25 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         runner.SessionInfo.IsOpen = false;
 
-        NetworkedPlayer.TotalPlayers = 0;
-
-        game = GameObject.Find("GameMaster").GetComponent<GameCore>();
-
-        gameState = GameState.Create();
-
-        game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-
-        Debug.Log("Runner local player at start: " + runner.LocalPlayer);
-
-        if (!GameObject.Find("GamePiece(Clone)"))
-        {
-            GameSetUp = false;
-
-            game.populateBoard();
-        }
-
-        if (runner.IsServer)
-        {
-            // AssignPlayers might need to check if the game is set up
-            // If so, it will just skip creating new players on host
-            AssignPlayers(() =>
-            {
-                GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key, currentTurn);
-
-                currentTurn = 0;
-
-                SyncBoard();
-            });
-
-        }
-
-        ButtonHandler.OnMoveMade += SendMove;
-        GameCore.OnChosenPiece += SetChosenPiece;
-
-        GameObject chatObject = GameObject.Find("NetworkChat");
-
-        // If chat object hasn't been created yet, create it
-        chatObject.GetOrAddComponent<NetworkChat>();
+        SetupGame();
 
         // Sync up the chat log if the client disconnected and came back
         if (runner.IsServer)
         {
-            chat.RpcSyncChat(chat.chatLog.ToArray());
+            //TODO: chat.RpcSyncChat(chat.chatLog.ToArray());
         }
+
+        ButtonHandler.OnMoveMade += SendMove;
+        GameCore.OnChosenPiece += SetChosenPiece;
+        ChatMenu.OnChatUpdated += SendChat;
+        NetworkChat.OnNetworkChatUpdated += UpdateLocalChatLog;
+        PauseButton.OnNetworkingGameRestart += Rematch;
     }
 
     public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
-        
+
         if (runner.IsClient && player != runner.LocalPlayer)
         {
             await DisconnectFromPhoton();
@@ -128,6 +106,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer && player != runner.LocalPlayer)
         {
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
+
+            // TODO @R1tz02 #26: Display error message in the game scene about the client leaving the game
         }
 
         if (playerIndex != -1)
@@ -138,9 +118,15 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             GameObject.Destroy(networkedPlayer.gameObject);
         }
 
-        ButtonHandler.OnMoveMade -= SendMove;
+        //NetworkChat networkChat = GameObject.FindObjectOfType<NetworkChat>();
+        //runner.Despawn(networkChat.GetComponent<NetworkObject>());
+        //GameObject.Destroy(networkChat.gameObject);
 
+        ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
+        ChatMenu.OnChatUpdated -= SendChat;
+        NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
+        PauseButton.OnNetworkingGameRestart -= Rematch;
 
         runner.SessionInfo.IsOpen = true;
     }
@@ -183,8 +169,11 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkRunner _runner;
     public GameCore game;
     public GameState gameState;
+    public NetworkChat chat;
 
-    public async Task StartGame(GameMode mode, string sessionName = "Default")
+    public List<ChatMessage> chatLog = new();
+
+    public async Task StartGame(GameMode mode, string sessionName)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
 
@@ -200,16 +189,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
         }
 
-        string lobbyName = sessionName;
+        lobbyName = sessionName;
 
         if (mode == GameMode.Host)
         {
-            isOpen = false;
+            //TODO: Not sure if hiding the game when the player Host's is the best idea. Creates impression that Quickplay doesn't work if the game is hidden.
+            //isOpen = false;
 
             System.Random res = new System.Random();
 
-            String str = "abcdefghijklmnopqrstuvwxyz";
-            int size = 10;
+            String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            int size = 6;
 
             String ran = "";
 
@@ -221,7 +211,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             lobbyName = ran;
 
-            // TODO: Display this room name on the host's screen
+            // TODO: Display this room name on the host's screen. Stored in class's lobbyName variable so it can always be accessed
         }
 
         if (mode == GameMode.AutoHostOrClient)
@@ -254,6 +244,41 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("Game started");
         }
+    }
+
+    public void SetupGame(bool rematch = false)
+    {
+        NetworkedPlayer.TotalPlayers = 0;
+
+        game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+
+        gameState = GameState.Create();
+
+        game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+
+        if (!GameObject.Find("GamePiece(Clone)") || rematch)
+        {
+            GameSetUp = false;
+
+            game.populateBoard();
+        }
+
+        if (_runner.IsServer && rematch != true)
+        {
+            // TODO @R1tz02 #26: Hide message about waiting for client to rejoin
+
+            // AssignPlayers might need to check if the game is set up
+            // If so, it will just skip creating new players on host
+            AssignPlayers(() =>
+            {
+                GetNetworkedPlayer(_runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key, currentTurn);
+
+                currentTurn = 0;
+
+                SyncBoard();
+            });
+        }
+
     }
 
     private void SyncBoard()
@@ -343,6 +368,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             Debug.Log("Spawned player: " + player.Key);
         }
 
+        // Spawn NetworkChat Object
+        NetworkObject networkedObject = _runner.Spawn(_networkChatPrefab);
+
         // Use this callback to make sure that the players are created on the client before continuing
         StartCoroutine(NetworkedPlayer.WaitForClientConfirmation(OnComplete));
     }
@@ -369,6 +397,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
+        ChatMenu.OnChatUpdated -= SendChat;
+        NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
+        PauseButton.OnNetworkingGameRestart -= Rematch;
     }
 
     public void SetChosenPiece(int row, int col)
@@ -384,6 +415,27 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void SendChat(string message)
     {
-        chat.SendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
+        chat.RpcSendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
+    }
+
+    public void UpdateLocalChatLog(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef)
+    {
+        chatLog.Add(new ChatMessage(message, sendingPlayerRef));
+    }
+
+    public void Rematch()
+    {
+        // Sets the local player as wanting a rematch
+        // If both players do, then ResetGame() will be called
+        GetNetworkedPlayer(_runner.LocalPlayer).Rematch();
+    }
+
+    public async void ResetGame()
+    {
+        await game.ResetBoard();
+        
+        GameSetUp = false;
+        currentTurn = 0;
+        SetupGame(true);
     }
 }

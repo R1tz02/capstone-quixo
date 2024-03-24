@@ -13,6 +13,10 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Networked]
     public PlayerRef PlayerRef { get; set; }
     public static int TotalPlayers = 0;
+    // Used to keep track of how many players want to play again
+    private static int playAgainCount { get; set; } = 0;
+
+    bool wantsToPlayAgain = false;
 
     private NetworkingManager networkingManager;
 
@@ -91,6 +95,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
             playerIndex++;
         }
 
+        networkingManager.chat = GameObject.FindObjectOfType<NetworkChat>();
+
         networkingManager.game.currentPlayer = playerTurnLocal == 2 ? networkingManager.game.p2 : networkingManager.game.p1;
     }
 
@@ -132,5 +138,36 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void RpcSetChosenPiece(int row, int col)
     {
         networkingManager.game.chosenPiece = networkingManager.game.gameBoard[row, col].GetComponent<PieceLogic>();
+    }
+
+    public void Rematch()
+    {
+        // Prevent one player from spamming the play again button
+        if (wantsToPlayAgain) return;
+
+        wantsToPlayAgain = true;
+
+        RpcUpdatePlayAgainCount();
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RpcUpdatePlayAgainCount()
+    {
+        playAgainCount += 1;
+
+        // TODO #35: Change the GUI text to reflect the number of players who want to play again
+
+        if (playAgainCount == 2 && networkingManager._runner.IsServer)
+        {
+            RpcResetGame();
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RpcResetGame()
+    {
+        playAgainCount = 0;
+        wantsToPlayAgain = false;
+        networkingManager.ResetGame();
     }
 }
