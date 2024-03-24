@@ -12,9 +12,9 @@ public class StoryGameCore : MonoBehaviour
 
     public Material playerOneSpace;
     public Material playerTwoSpace;
-    public ButtonHandler buttonHandler;
+    public StoryButtonHandler buttonHandler;
     public GameObject AI;
-    private StoryPieceLogic StoryPieceLogic;
+    private StoryPieceLogic storyPieceLogic;
     public StoryPieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
@@ -59,7 +59,7 @@ public class StoryGameCore : MonoBehaviour
         p2.Initialize('O');
 
         currentPlayer = p1; //F: make X the first player/move
-        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+        buttonHandler = GameObject.FindObjectOfType<StoryButtonHandler>();
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
     }

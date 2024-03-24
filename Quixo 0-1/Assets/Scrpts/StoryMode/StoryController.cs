@@ -9,10 +9,22 @@ using System;
 public class StoryController : MonoBehaviour
 {
     public Camera currentCam;
+    public Canvas HelpCanvas;
 
     void Start(){
-        GameObject tempMenu = GameObject.Find("Menu Manager");
-        tempMenu.GetComponent<PauseButton>().closeMenu();
+        HelpCanvas.enabled = false;
+    }
+
+    public void openHelpMenu()
+    {
+        Time.timeScale = 0;
+        HelpCanvas.enabled = true;
+    }
+
+    public void closeHelpMenu()
+    {
+        Time.timeScale = 1;
+        HelpCanvas.enabled = false;
     }
     public void StoryModeLevel2()
     {

@@ -9,7 +9,7 @@ public class StoryPieceLogic : MonoBehaviour
     public int col;
     public char player;
     public StoryGameCore game;
-    private ButtonHandler buttonHandler;
+    private StoryButtonHandler buttonHandler;
     private bool isSelected = false;
     // private Rigidbody rb;
     private List<char> moveList;
