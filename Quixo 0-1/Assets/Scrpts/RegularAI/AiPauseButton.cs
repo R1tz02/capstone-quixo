@@ -14,10 +14,14 @@ public class AiPauseButton : MonoBehaviour
     public Canvas helpMenu;
     public Button pauseButton;
     public GameObject gameMaster;
+    public Canvas drawAccepted;
+    public Canvas drawDenied;
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
+        drawAccepted.enabled = false;
+        drawDenied.enabled = false;
         pauseMenu.enabled = false;
         helpMenu.enabled = false;
     }
@@ -68,5 +72,34 @@ public class AiPauseButton : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void requestDraw()
+    {
+        gameMaster.GetComponent<AiGameCore>().gamePaused = true;
+        if (gameMaster.GetComponent<AiGameCore>().drawAccepted())
+        {
+            acceptDraw();
+        }
+        else
+        {
+            denyDraw();
+        }
+    }
+
+    public void acceptDraw()
+    {
+        drawAccepted.enabled = true;
+    }
+
+    public void denyDraw()
+    {
+        drawDenied.enabled = true;
+    }
+
+    public void closeDrawMenu()
+    {
+        drawDenied.enabled = false;
+        gameMaster.GetComponent<AiGameCore>().gamePaused = false;
     }
 }

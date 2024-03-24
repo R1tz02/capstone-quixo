@@ -5,6 +5,7 @@ using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class AiGameCore : MonoBehaviour
 {
@@ -27,7 +28,8 @@ public class AiGameCore : MonoBehaviour
     public Canvas loseScreen;
     public Canvas winScreen;
     private EasyAI easyAI;
-    private bool playAI = false;
+    public bool requestDraw = false;
+
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -340,12 +342,22 @@ public class AiGameCore : MonoBehaviour
         return false;
     }
 
-
+    public bool drawAccepted()
+    {
+        int score;
+        char[,] board = translateBoard();
+        score = easyAI.Evaluate(board);
+        if (score < 50)
+        {
+            return true;
+        }
+        return false;
+    }
 
     async void AIMove(EasyAI easyAI)
-    {
-        Debug.Log("Fernando's mother");
+    {        
         char[,] board = translateBoard();
+        Debug.Log("Fernando's mother");
 
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,4));
         await WaitFor();
