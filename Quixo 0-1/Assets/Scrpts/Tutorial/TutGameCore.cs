@@ -307,7 +307,11 @@ public class TutGameCore : MonoBehaviour
         }
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
-            
+            GameObject menu = GameObject.Find("Menu Manager");
+            if (menu.GetComponent<TutPauseButton>().stepTwo.enabled == true)
+            {
+                menu.GetComponent<TutPauseButton>().stepTwo.enabled = false;
+            }
             shiftBoard(c, currentPlayer.piece);
             tutButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             usrCounter++;

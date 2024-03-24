@@ -32,11 +32,18 @@ public class TutPieceLogic : MonoBehaviour
 
         if (game.validPiece(row, col))
         {
+            GameObject menu = GameObject.Find("Menu Manager");
+            if (menu.GetComponent<TutPauseButton>().stepOne.enabled == true)
+            {
+                menu.GetComponent<TutPauseButton>().stepOne.enabled = false;
+                menu.GetComponent<TutPauseButton>().stepTwo.enabled = true;
+            }
             // C: Temporarily disable gravity to lift the piece
             StartCoroutine(game.MovePieceSmoothly(this, new Vector3(transform.position.x, 114f, transform.position.z)));
             isSelected = true;
             moveList = game.moveOptions(row, col); // C: Creates a list of directional moves based on the piece selected
             selectedPiece = this; // C: Set the current piece as the selected one
+            
         }
         else
         {

@@ -16,6 +16,8 @@ public class TutPauseButton : MonoBehaviour
     public Button pauseButton;
     public GameObject gameMaster;
     public Canvas learningModes;
+    public Canvas stepOne;
+    public Canvas stepTwo;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +26,8 @@ public class TutPauseButton : MonoBehaviour
         pauseMenu.enabled = false;
         pauseButton.gameObject.SetActive(false);
         helpMenu.enabled = true;
+        stepOne.enabled = false;
+        stepTwo.enabled = false;
 
         gameMaster.GetComponent<TutGameCore>().gamePaused = true;
         Time.timeScale = 0;
@@ -34,6 +38,7 @@ public class TutPauseButton : MonoBehaviour
         gameMaster.GetComponent<TutGameCore>().tutLvl = 0;
         learningModes.enabled = false;
         closeMenu();
+        stepOne.enabled = true;
     }
 
     public void tryRight()
@@ -41,6 +46,7 @@ public class TutPauseButton : MonoBehaviour
         gameMaster.GetComponent<TutGameCore>().tutLvl = 1;
         learningModes.enabled = false;
         closeMenu();
+        stepOne.enabled = true;
     }
 
     public void tryHori()
@@ -48,6 +54,7 @@ public class TutPauseButton : MonoBehaviour
         gameMaster.GetComponent<TutGameCore>().tutLvl = 2;
         learningModes.enabled = false;
         closeMenu();
+        stepOne.enabled = true;
     }
 
     public void tryVer()
@@ -55,6 +62,7 @@ public class TutPauseButton : MonoBehaviour
         gameMaster.GetComponent<TutGameCore>().tutLvl = 3;
         learningModes.enabled = false;
         closeMenu();
+        stepOne.enabled = true;
     }
 
     public void tryDifMode()
