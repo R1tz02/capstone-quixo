@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1298,11 +1298,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 789017402}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: restartGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: StoryPauseButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3294889421444960860, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
@@ -1781,11 +1786,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 789017402}
     - target: {fileID: 4921382664323329817, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: returnToMain
+      objectReference: {fileID: 0}
+    - target: {fileID: 4921382664323329817, guid: a1343ae76a9c0c24eabe5270144fd379,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: StoryPauseButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5110831169669228350, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -1801,11 +1811,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 789017402}
     - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: restartGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: StoryPauseButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7442957656355487185, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -2397,8 +2412,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: StoryPauseButton, Assembly-CSharp
         m_MethodName: returnToMain
         m_Mode: 1
         m_Arguments:
@@ -2529,8 +2544,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: StoryPauseButton, Assembly-CSharp
         m_MethodName: closeHelpMenu
         m_Mode: 1
         m_Arguments:
@@ -2827,12 +2842,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 789017399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5810299c46805194784e908d6b143abe, type: 3}
+  m_Script: {fileID: 11500000, guid: 6acf94b5ebab8f54da5766ed9870f463, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenu: {fileID: 1982665530}
   helpMenu: {fileID: 1458110360}
-  pauseButton: {fileID: 0}
+  pauseButton: {fileID: 754616625}
   gameMaster: {fileID: 1407541393}
 --- !u!224 &891386100 stripped
 RectTransform:
@@ -3369,7 +3384,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1850532869}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1102538219
+--- !u!114 &1102538215
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3378,7 +3393,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1102538214}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5366bb3ca617d914b861f6d518d22c4f, type: 3}
+  m_Script: {fileID: 11500000, guid: 84ac315272d191640b6aeba9b3cac005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   left: {fileID: 557420415}
@@ -4217,7 +4232,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1407541393}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a4ec015b28d0e24baa14b022f8d541a, type: 3}
+  m_Script: {fileID: 11500000, guid: ce9c099cba2d1464a9219016f55b80e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   piecePrefab: {fileID: 9075320395111789681, guid: 422ef3dd657592440a503e3542c47e87,
@@ -4678,11 +4693,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 789017402}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: restartGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: StoryPauseButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3294889421444960860, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
@@ -4832,11 +4852,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 789017402}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: restartGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: StoryPauseButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3294889421444960860, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
@@ -6116,7 +6141,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 789017402}
         m_TargetAssemblyTypeName: StoryPauseButton, Assembly-CSharp
-        m_MethodName: openHelpMenu
+        m_MethodName: closeHelpMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6531,7 +6556,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2715122763493696876, guid: 25faf3cad2629954db2939ba813bf8a4,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1102538219}
+      addedObject: {fileID: 1102538215}
   m_SourcePrefab: {fileID: 100100000, guid: 25faf3cad2629954db2939ba813bf8a4, type: 3}
 --- !u!1001 &1860377904
 PrefabInstance:
@@ -6715,8 +6740,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: StoryPauseButton, Assembly-CSharp
         m_MethodName: restartGame
         m_Mode: 1
         m_Arguments:
@@ -6988,10 +7013,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2037154631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 081ac4e3224f4ce44971fc33bbd05461, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e001f2b01d771140ba93a9cb8cb9ab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentCam: {fileID: 961739752}
+  currentCam: {fileID: 0}
   HelpCanvas: {fileID: 1458110360}
 --- !u!1 &2039624276
 GameObject:

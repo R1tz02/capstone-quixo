@@ -238,23 +238,14 @@ public class StoryGameCore : MonoBehaviour
 
     private void chooseCanvasAndWinner(ref Canvas canvasToShow)
     {
-        if (playAI)
-        { //AI game, either SM or normal
-            if (currentPlayer == p1)
-            {
-                canvasToShow.enabled = true;
-            }
-            else
-            {
-                loseScreen.enabled = true;
-            }
+         //AI game, either SM or normal
+        if (currentPlayer == p1)
+        {
+            canvasToShow.enabled = true;
         }
         else
-        { //Local game
-            GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
-            TMP_Text text = congrats.GetComponent<TMP_Text>();
-            text.text = "Congrats " + currentPlayer.piece + " won!";
-            winScreen.enabled = true;
+        {
+            loseScreen.enabled = true;
         }
     }
 
@@ -413,7 +404,7 @@ public class StoryGameCore : MonoBehaviour
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 4));
+        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 2));
         await WaitFor();
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);

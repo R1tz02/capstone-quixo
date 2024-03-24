@@ -92,7 +92,7 @@ public class StoryController : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         Debug.Log("Loading game scene...");
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(3);
 
         while (!asyncLoad.isDone){
             yield return null;
