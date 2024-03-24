@@ -5,8 +5,6 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
-using System.Collections;
 
 [Serializable]
 public struct PieceData
@@ -44,16 +42,16 @@ public struct GameState
 }
 
 public class ChatMessage
-    {
-        public string message;
-        public PlayerRef playerRef;
+{
+    public string message;
+    public PlayerRef playerRef;
 
-        public ChatMessage(string message, PlayerRef playerRef)
-        {
-            this.message = message;
-            this.playerRef = playerRef;
-        }
+    public ChatMessage(string message, PlayerRef playerRef)
+    {
+        this.message = message;
+        this.playerRef = playerRef;
     }
+}
 
 public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -75,39 +73,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         runner.SessionInfo.IsOpen = false;
 
-        NetworkedPlayer.TotalPlayers = 0;
-
-        game = GameObject.Find("GameMaster").GetComponent<GameCore>();
-
-        gameState = GameState.Create();
-
-        game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-
-        Debug.Log("Runner local player at start: " + runner.LocalPlayer);
-
-        if (!GameObject.Find("GamePiece(Clone)"))
-        {
-            GameSetUp = false;
-
-            game.populateBoard();
-        }
-
-        if (runner.IsServer)
-        {
-            // TODO @R1tz02 #26: Hide message about waiting for client to rejoin
-
-
-            // AssignPlayers might need to check if the game is set up
-            // If so, it will just skip creating new players on host
-            AssignPlayers(() =>
-            {
-                GetNetworkedPlayer(runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key, currentTurn);
-
-                currentTurn = 0;
-
-                SyncBoard();
-            });
-        }
+        SetupGame();
 
         // Sync up the chat log if the client disconnected and came back
         if (runner.IsServer)
@@ -125,7 +91,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
-        
+
         if (runner.IsClient && player != runner.LocalPlayer)
         {
             await DisconnectFromPhoton();
@@ -151,6 +117,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             _players.RemoveAt(playerIndex);
             GameObject.Destroy(networkedPlayer.gameObject);
         }
+
+        //NetworkChat networkChat = GameObject.FindObjectOfType<NetworkChat>();
+        //runner.Despawn(networkChat.GetComponent<NetworkObject>());
+        //GameObject.Destroy(networkChat.gameObject);
 
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
@@ -274,6 +244,41 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("Game started");
         }
+    }
+
+    public void SetupGame(bool rematch = false)
+    {
+        NetworkedPlayer.TotalPlayers = 0;
+
+        game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+
+        gameState = GameState.Create();
+
+        game.buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
+
+        if (!GameObject.Find("GamePiece(Clone)") || rematch)
+        {
+            GameSetUp = false;
+
+            game.populateBoard();
+        }
+
+        if (_runner.IsServer && rematch != true)
+        {
+            // TODO @R1tz02 #26: Hide message about waiting for client to rejoin
+
+            // AssignPlayers might need to check if the game is set up
+            // If so, it will just skip creating new players on host
+            AssignPlayers(() =>
+            {
+                GetNetworkedPlayer(_runner.LocalPlayer).RpcAssignPlayers(_players[0].Key, _players[1].Key, currentTurn);
+
+                currentTurn = 0;
+
+                SyncBoard();
+            });
+        }
+
     }
 
     private void SyncBoard()
@@ -425,8 +430,12 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GetNetworkedPlayer(_runner.LocalPlayer).Rematch();
     }
 
-    public void ResetGame()
+    public async void ResetGame()
     {
-       // TODO: Either reload scene or reset game state
+        await game.ResetBoard();
+        
+        GameSetUp = false;
+        currentTurn = 0;
+        SetupGame(true);
     }
 }

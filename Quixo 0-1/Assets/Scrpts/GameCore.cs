@@ -5,6 +5,7 @@ using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 
 
 public enum GameType
@@ -584,5 +585,28 @@ public class GameCore : MonoBehaviour
         }
 
         return aiBoard;
+    }
+
+    public Task ResetBoard()
+    {
+        foreach (GameObject piece in gameBoard)
+        {
+            Destroy(piece);
+        }
+
+        gameBoard = new GameObject[5, 6];
+
+        currentPlayer = p1;
+        buttonHandler.changeArrowsBack();
+        winScreen.enabled = false;
+        loseScreen.enabled = false;
+        SMLvl2.enabled = false;
+        SMLvl3.enabled = false;
+        SMLvl4.enabled = false;
+        Time.timeScale = 1;
+
+        gamePaused = false;
+
+        return Task.CompletedTask;
     }
 }

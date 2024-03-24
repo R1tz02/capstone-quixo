@@ -14,8 +14,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public PlayerRef PlayerRef { get; set; }
     public static int TotalPlayers = 0;
     // Used to keep track of how many players want to play again
-    [Networked]
-    private int playAgainCount { get; set; } = 0;
+    private static int playAgainCount { get; set; } = 0;
 
     bool wantsToPlayAgain = false;
 
@@ -148,9 +147,15 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         wantsToPlayAgain = true;
 
-        playAgainCount++;
+        RpcUpdatePlayAgainCount();
+    }
 
-        if (playAgainCount == 2)
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RpcUpdatePlayAgainCount()
+    {
+        playAgainCount += 1;
+
+        if (playAgainCount == 2 && networkingManager._runner.IsServer)
         {
             RpcResetGame();
         }

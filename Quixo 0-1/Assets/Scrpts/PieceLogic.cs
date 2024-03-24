@@ -13,25 +13,18 @@ public class PieceLogic : MonoBehaviour
     private bool isSelected = false;
     // private Rigidbody rb;
     private List<char> moveList;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     private static PieceLogic selectedPiece; // C: Track the currently selected piece
 
     private void OnMouseDown()
     {
-        if (selectedPiece != this && selectedPiece != null)
+        if (selectedPiece != this && selectedPiece != null && !game.gamePaused)
         {
             // C: If another piece is already selected, deselect it and enable gravity
             selectedPiece.isSelected = false;
             StartCoroutine(game.MovePieceSmoothly(selectedPiece, new Vector3(selectedPiece.transform.position.x, 96f, selectedPiece.transform.position.z)));
         }
 
-        if (game.validPiece(row, col))
+        if (game.validPiece(row, col) && !game.gamePaused)
         {
             // C: Temporarily disable gravity to lift the piece
             StartCoroutine(game.MovePieceSmoothly(this, new Vector3(transform.position.x, 114f, transform.position.z)));
@@ -42,23 +35,15 @@ public class PieceLogic : MonoBehaviour
         else
         {
             // C: Re-enable gravity if the piece is not valid and already selected
-            if (isSelected)
+            if (isSelected && !game.gamePaused)
             {
                 game.MovePieceSmoothly(selectedPiece, new Vector3(selectedPiece.transform.position.x, 96f, selectedPiece.transform.position.z));
-              }
+            }
         }
     }
 
-    public void SimulateOnMouseDown(){
-        OnMouseDown();
-    }
-
-
-
-
-    // Update is called once per frame
-    void Update()
+    public void SimulateOnMouseDown()
     {
-
+        OnMouseDown();
     }
 }
