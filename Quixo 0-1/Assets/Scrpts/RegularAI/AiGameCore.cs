@@ -355,6 +355,7 @@ public class AiGameCore : MonoBehaviour
         counter++;
         if (won()) 
         {
+            loseScreen.enabled = true;
             Time.timeScale = 0;
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");

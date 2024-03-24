@@ -141,12 +141,12 @@ public class MenuController : MonoBehaviour
 
     public void NewEasyGame()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(4, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
-                gameMaster.GetComponent<GameCore>().StartAIGame();
+                gameMaster.GetComponent<AiGameCore>().StartAIGame();
             }
             else
             {
