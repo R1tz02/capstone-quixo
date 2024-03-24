@@ -22,31 +22,39 @@ public class TutPauseButton : MonoBehaviour
     {
         learningModes.enabled = true;
         pauseMenu.enabled = false;
+        pauseButton.gameObject.SetActive(false);
         helpMenu.enabled = true;
+
+        gameMaster.GetComponent<TutGameCore>().gamePaused = true;
+        Time.timeScale = 0;
     }
 
     public void tryLeft()
     {
         gameMaster.GetComponent<TutGameCore>().tutLvl = 0;
         learningModes.enabled = false;
+        closeMenu();
     }
 
     public void tryRight()
     {
         gameMaster.GetComponent<TutGameCore>().tutLvl = 1;
         learningModes.enabled = false;
+        closeMenu();
     }
 
     public void tryHori()
     {
         gameMaster.GetComponent<TutGameCore>().tutLvl = 2;
         learningModes.enabled = false;
+        closeMenu();
     }
 
     public void tryVer()
     {
         gameMaster.GetComponent<TutGameCore>().tutLvl = 3;
         learningModes.enabled = false;
+        closeMenu();
     }
 
     public void tryDifMode()
@@ -87,8 +95,7 @@ public class TutPauseButton : MonoBehaviour
     public void closeHelpMenu()
     {
         helpMenu.enabled = false;
-        pauseMenu.enabled = true;
-        closeMenu();
+        pauseButton.gameObject.SetActive(true);
     }
 
     public void restartGame()

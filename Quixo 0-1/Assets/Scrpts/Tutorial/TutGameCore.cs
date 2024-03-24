@@ -1,5 +1,7 @@
+using ExitGames.Client.Photon.StructWrapping;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEditorInternal;
@@ -26,7 +28,7 @@ public class TutGameCore : MonoBehaviour
     public TutButtonHandler tutButtonHandler;
     public Player p1 = new Player();
     public Player p2 = new Player();
-    public int tutLvl = 0;
+    public int tutLvl = -1;
     public int AIcounter = 0;
     public int usrCounter = 0;
 
@@ -334,6 +336,17 @@ public class TutGameCore : MonoBehaviour
                 case 3: verFakeMove(); break;
             }
 
+            if (usrCounter > 0)
+            {
+                for (int row = 0; row < 5; row++)
+                {
+                    for (int col = 0; col < 5; col++)
+                    {
+                        dehighlightPeice(row, col);
+                    }
+                }
+            }
+
             return true;
         }
         return false;
@@ -452,6 +465,8 @@ public class TutGameCore : MonoBehaviour
     {
         await Task.Delay(delay);
     }
+
+    
 
     public List<char> moveOptions(int row, int col)
     {
@@ -597,6 +612,38 @@ public class TutGameCore : MonoBehaviour
                 z += 20;
             }
             x += 20;
+        }
+    }
+    private void highlightPeice(int row, int col)
+    {
+        TutPieceLogic peice = gameBoard[row, col].GetComponent<TutPieceLogic>();
+        if (peice.GetComponent<Outline>() == null)
+        {
+            Outline outline = peice.AddComponent<Outline>();
+            outline.enabled = true;
+            peice.GetComponent<Outline>().OutlineColor = Color.white;
+            peice.GetComponent<Outline>().OutlineWidth = 10.0f;
+        }
+
+    }
+    private void dehighlightPeice(int row, int col)
+    {
+        TutPieceLogic peice = gameBoard[row, col].GetComponent<TutPieceLogic>();
+        if (peice.GetComponent<Outline>() != null)
+        {
+            peice.GetComponent<Outline>().enabled = false;
+        }
+    }    
+
+    private void Update()
+    {
+        if (tutLvl != -1)
+        {
+            List<(Piece, char)> tutMoves = allowedPieces();
+            if (currentPlayer.piece == 'X' && won() == false)
+            {
+                highlightPeice(tutMoves[usrCounter].Item1.row, tutMoves[usrCounter].Item1.col);
+            }
         }
     }
 }
