@@ -14,10 +14,16 @@ public class PauseButton : MonoBehaviour
     public Canvas helpMenu;
     public Button pauseButton;
     public GameObject gameMaster;
+    public Canvas drawReqScreen;
+    public Canvas drawAccepted;
+    public Canvas drawDenied;
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
+        drawDenied.enabled = false;
+        drawReqScreen.enabled = false;
+        drawAccepted.enabled = false;
         pauseMenu.enabled = false;
         helpMenu.enabled = false;
     }
@@ -68,5 +74,29 @@ public class PauseButton : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void requestDraw()
+    {
+        drawReqScreen.enabled = true;
+        gameMaster.GetComponent<GameCore>().gamePaused = true;
+    }
+
+    public void acceptDraw()
+    {
+        drawReqScreen.enabled = false;
+        drawAccepted.enabled = true;
+    }
+
+    public void denyDraw()
+    {
+        drawReqScreen.enabled = false;
+        drawDenied.enabled = true;
+    }
+
+    public void closeDrawMenu()
+    {
+        drawDenied.enabled = false;
+        gameMaster.GetComponent<GameCore>().gamePaused = false;
     }
 }

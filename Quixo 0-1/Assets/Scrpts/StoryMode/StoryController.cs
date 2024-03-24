@@ -30,13 +30,13 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
-            GameCore gcComponent;
+            StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            gcComponent = gameMaster.GetComponent<GameCore>();
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
             gcComponent.gamePaused = false;
             if (gcComponent != null)
             {
-                gcComponent.StartAIGame();
+                gcComponent.StartStoryGame();
                 gcComponent.SMLvl=2;
             }
             else
@@ -50,13 +50,13 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
-            GameCore gcComponent;
+            StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            gcComponent = gameMaster.GetComponent<GameCore>();
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
             gcComponent.gamePaused = false;
             if (gcComponent != null)
             {
-                gcComponent.StartAIGame();
+                gcComponent.StartStoryGame();
                 gcComponent.SMLvl=3;
             }
             else
@@ -70,13 +70,13 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
-            GameCore gcComponent;
+            StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            gcComponent = gameMaster.GetComponent<GameCore>();
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
             gcComponent.gamePaused = false;
             if (gcComponent != null)
             {
-                gcComponent.StartAIGame();
+                gcComponent.StartStoryGame();
                 gcComponent.SMLvl=4;
             }
             else

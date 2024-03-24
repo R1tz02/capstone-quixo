@@ -27,11 +27,6 @@ public class GameCore : MonoBehaviour
 
     public Canvas loseScreen;
     public Canvas winScreen;
-    public Canvas SMLvl2;
-    public Canvas SMLvl3;
-    public Canvas SMLvl4;
-    private EasyAI easyAI;
-    private bool playAI = false;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -40,9 +35,6 @@ public class GameCore : MonoBehaviour
     void Start()
     {
         GameObject curPlayerVisual;
-        SMLvl2.enabled = false;
-        SMLvl3.enabled = false;
-        SMLvl4.enabled = false;
         winScreen.enabled = false;
         loseScreen.enabled = false;
     }
@@ -69,25 +61,6 @@ public class GameCore : MonoBehaviour
             await networkingManager.StartGame(GameMode.Client);
         }
     }
-
-    public void StartAIGame()
-    {
-        playAI = true;
-
-        GameObject player1Object = new GameObject("Player1");
-        p1 = player1Object.AddComponent<LocalPlayer>();
-        p1.Initialize('X');
-
-        GameObject player2Object = new GameObject("Player2");
-        p2 = player2Object.AddComponent<LocalPlayer>();
-        p2.Initialize('O');
-
-        currentPlayer = p1; //F: make X the first player/move
-        buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
-        easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
-        populateBoard(); //Initialize board
-    }
-
     public void StartLocalGame()
     {
         winScreen.enabled = false;
@@ -249,77 +222,23 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
-    private bool helmetWin(){
-        Debug.Log("check helmet win");
-
-        //check for top left to bottom right win
-        char helmetPart1 = gameBoard[3, 1].GetComponent<PieceLogic>().player;
-        char helmetPart2 = gameBoard[2, 1].GetComponent<PieceLogic>().player;
-        char helmetPart3 = gameBoard[1, 2].GetComponent<PieceLogic>().player;
-        char helmetPart4 = gameBoard[2, 3].GetComponent<PieceLogic>().player;
-        char helmetPart5 = gameBoard[3, 3].GetComponent<PieceLogic>().player;
-              
-        if (helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5)
-        {
-            if (p1.piece == helmetPart1)
-            {
-                p1.won = true;
-                currentPlayer = p1;
-            }
-            else
-            {
-                p2.won = true;
-                currentPlayer = p2;
-            }
-            return true;
-        }
-
-        return false;
-    }
-    
     private void chooseCanvasAndWinner(ref Canvas canvasToShow){
-        if(playAI){ //AI game, either SM or normal
-            if (currentPlayer == p1)
-            {
-                canvasToShow.enabled = true;
-            }
-            else
-            {
-                loseScreen.enabled = true;
-            }        
-        }
-        else{ //Local game
+           
             GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
             TMP_Text text = congrats.GetComponent<TMP_Text>();
             text.text = "Congrats "+ currentPlayer.piece + " won!";
-            winScreen.enabled = true;
-        }
+            winScreen.enabled = true;        
     }
 
     public bool won()
     {
-        if (SMLvl == 0)
-        {
-            if (horizontalWin())    {chooseCanvasAndWinner(ref winScreen); return true;};
-            if (verticalWin())      {chooseCanvasAndWinner(ref winScreen); return true;};
-            if (leftDiagonalWin())  {chooseCanvasAndWinner(ref winScreen); return true;}; //separated checkDiagonalWin into two separate functions
-            if (rightDiagonalWin()) {chooseCanvasAndWinner(ref winScreen); return true;};
-            return false;
-        }
-        else
-        {
-            switch(SMLvl)
-            {
-                case 1: if (verticalWin()) {chooseCanvasAndWinner(ref SMLvl2); return true;} break;
-                case 2: if (horizontalWin()) {chooseCanvasAndWinner(ref SMLvl3); return true;} break;
-                case 3: if (leftDiagonalWin() || rightDiagonalWin()) {chooseCanvasAndWinner(ref SMLvl4); return true;} break;
-                case 4: if (helmetWin()) {chooseCanvasAndWinner(ref winScreen); return true;} break;
-                default: return false;
-            }
-        }
+        if (horizontalWin())    {chooseCanvasAndWinner(ref winScreen); return true;};
+        if (verticalWin())      {chooseCanvasAndWinner(ref winScreen); return true;};
+        if (leftDiagonalWin())  {chooseCanvasAndWinner(ref winScreen); return true;}; //separated checkDiagonalWin into two separate functions
+        if (rightDiagonalWin()) {chooseCanvasAndWinner(ref winScreen); return true;};
         return false;
-    }
 
+    }
 
     public void shiftBoard(char dir, char currentPiece)
     {
@@ -441,56 +360,11 @@ public class GameCore : MonoBehaviour
                 currentPlayer = p1; 
             } 
 
-            if (playAI)
-            {
-                if (easyAI)
-                {
-                    AIMove(easyAI);
-                }
-            }
-
             return true;
         }
         return false;
     }
 
-
-
-    async void AIMove(EasyAI easyAI)
-    {
-        Debug.Log("Fernando's mother");
-        char[,] board = translateBoard();
-
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,4));
-        await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col);
-        shiftBoard(move.Item2, currentPlayer.piece);
-        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
-        counter++;
-        if (won()) 
-        {
-            Time.timeScale = 0;
-            gamePaused = true;
-            Debug.Log(currentPlayer.piece + " won!");
-        }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }
-    }
-
-
-
-    public System.Collections.IEnumerator waitAI(EasyAI easyAI)
-    {
-        yield return new WaitForSeconds(2);
-        AIMove(easyAI);
-        
-    }
     private async Task WaitFor()
     {
         await Task.Delay(1000);
@@ -564,19 +438,5 @@ public class GameCore : MonoBehaviour
             }
             x += 20;
         }
-    }
-
-    public char[,] translateBoard()
-    {
-        char[,] aiBoard = new char[5, 5];
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                aiBoard[i, j] = gameBoard[i, j].GetComponent<PieceLogic>().player;
-            }
-        }
-
-        return aiBoard;
     }
 }
