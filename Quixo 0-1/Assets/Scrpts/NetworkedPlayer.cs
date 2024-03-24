@@ -155,6 +155,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     {
         playAgainCount += 1;
 
+        // TODO #35: Change the GUI text to reflect the number of players who want to play again
+
         if (playAgainCount == 2 && networkingManager._runner.IsServer)
         {
             RpcResetGame();
