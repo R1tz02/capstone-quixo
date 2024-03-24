@@ -15,7 +15,7 @@ public class AiGameCore : MonoBehaviour
     public Material playerTwoSpace;
     public AiButtonHandler aiButtonHandler;
     public GameObject AI;
-    private AiPieceLogic AiPieceLogic;
+    private AiPieceLogic aiPieceLogic;
     public AiPieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];
     private Renderer rd;
