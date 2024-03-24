@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StoryModeGame.unity
     guid: 80af12a7fe192ef46b4de82fcbcfa369
+  - enabled: 1
+    path: Assets/Scenes/RegularAiGame.unity
+    guid: a73aa2d9bf4853349ad121598df3070d
   m_configObjects: {}
