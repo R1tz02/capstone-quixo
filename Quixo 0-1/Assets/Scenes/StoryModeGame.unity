@@ -5209,9 +5209,7 @@ PrefabInstance:
     - target: {fileID: 5295389653777786831, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_text
-      value: 'congrats_key
-
-'
+      value: congrats_key
       objectReference: {fileID: 0}
     - target: {fileID: 6919458767182176075, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}

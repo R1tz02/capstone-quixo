@@ -52,7 +52,15 @@ public class MenuController : MonoBehaviour
     public void openTutorialMenu()
     {
         tutorialCanvas.enabled = true;
+        Time.timeScale = 0;
         overlayCanvas.enabled = false;
+    }
+
+    public void closeTutorialMenu()
+    {
+        tutorialCanvas.enabled = false;
+        Time.timeScale = 1;
+        overlayCanvas.enabled = true;
     }
 
     public void openHelpMenu()
@@ -113,6 +121,7 @@ public class MenuController : MonoBehaviour
         storyCanvas.enabled = false;
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
+
         if (!moving)
         {
             StartCoroutine(MoveToLocation());

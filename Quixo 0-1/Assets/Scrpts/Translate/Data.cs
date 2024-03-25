@@ -4,27 +4,27 @@ using UnityEngine;
 using UnityEngine.Events;
 public static class Data
 {
-    public static string CURRENT_LANGUAGE = "es";
+    public static string CURRENT_LANGUAGE = "en";
 
     public static Dictionary<string, Dictionary<string, string>> LOCALIZATION =
         new Dictionary<string, Dictionary<string, string>>()
         {
             { "easyAI_key", new Dictionary<string, string>()
             {
-                {"en", "EASY" },
-                {"es", "FACIL" }
+                {"en", "Easy" },
+                {"es", "Facil" }
             }
             },
             { "hardAI_key", new Dictionary<string, string>()
             {
-                {"en", "HARD" },
-                {"es", "DIFICIL" }
+                {"en", "Hard" },
+                {"es", "Dificil" }
             }
             },
             { "quickplayAI_key", new Dictionary<string, string>()
             {
-                {"en", "QUICKPLAY" },
-                {"es", "PARTIDA RAPIDA" }
+                {"en", "Quickplay" },
+                {"es", "Partida Rapida" }
             }
             },
             { "settings_key", new Dictionary<string, string>()
@@ -35,38 +35,38 @@ public static class Data
             },
             { "online_key", new Dictionary<string, string>()
             {
-                {"en", "ONLINE" },
-                {"es", "EN LINEA" }
+                {"en", "Online" },
+                {"es", "En Linea" }
             }
             },
             { "multiplayer_key", new Dictionary<string, string>()
             {
-                {"en", "MULTIPLAYER" },
-                {"es", "MULTIJUGADOR" }
+                {"en", "Multiplayer" },
+                {"es", "Multijugador" }
             }
             },
             { "host_key", new Dictionary<string, string>()
             {
-                {"en", "HOST" },
-                {"es", "CREAR SALA" }
+                {"en", "Host" },
+                {"es", "Crear Sala" }
             }
             },
             { "join_key", new Dictionary<string, string>()
             {
-                {"en", "JOIN" },
-                {"es", "UNIRSE" }
+                {"en", "Join" },
+                {"es", "Unirse" }
             }
             },
             { "joinLobby_key", new Dictionary<string, string>()
             {
-                {"en", "UNIRSE A SALA" },
-                {"es", "JOIN LOBBY" }
+                {"en", "Join Lobby" },
+                {"es", "Unirse A Sala" }
             }
             },
             { "story_key", new Dictionary<string, string>()
             {
-                {"en", "STORY MODE" },
-                {"es", "MODO CAMPAÑA" }
+                {"en", "Story Mode" },
+                {"es", "Modo Campaña" }
             }
             },
             { "help_key", new Dictionary<string, string>()
@@ -77,14 +77,14 @@ public static class Data
             },
             { "congrats_key", new Dictionary<string, string>()
             {
-                {"en", "CONGRATULATIONS" },
-                {"es", "FELICIDADES" }
+                {"en", "Congratulations" },
+                {"es", "Felicidades" }
             }
             },
             { "restart_key", new Dictionary<string, string>()
             {
-                {"en", "RESTART" },
-                {"es", "REINICIAR" }
+                {"en", "Restart" },
+                {"es", "Reiniciar" }
             }
             },
             { "returnToMain_key", new Dictionary<string, string>()
@@ -187,6 +187,30 @@ public static class Data
             {
                 {"en", "These arrows indicate which direction a peice can move. When an arrow is red, it indicates the peice can move that direction. Select the red arrow." },
                 {"es", "Estas flechas indican en qué dirección se puede mover una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa dirección. Seleccione la flecha roja." }
+            }
+            },
+            { "offerDraw_key", new Dictionary<string, string>()
+            {
+                {"en", "Offer Draw"},
+                {"es", "Sorteo De Oferta"}//Fernado needs to fix
+            }
+            },
+            { "vertical_key", new Dictionary<string, string>()
+            {
+                {"en", "Vertical"},
+                {"es", "Vertical"} //Fernado needs to fix
+            }
+            },
+            { "horizontal_key", new Dictionary<string, string>()
+            {
+                {"en", "Horizontal"},
+                {"es", "Horizontal"}//Fernado needs to fix
+            }
+            },
+            { "local_key", new Dictionary<string, string>()
+            {
+                {"en", "Local"},
+                {"es", "Local"}//Fernado needs to fix
             }
             },
 
