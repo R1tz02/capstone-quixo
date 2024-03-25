@@ -9,22 +9,34 @@ using System;
 public class StoryController : MonoBehaviour
 {
     public Camera currentCam;
+    public Canvas HelpCanvas;
 
     void Start(){
-        GameObject tempMenu = GameObject.Find("Menu Manager");
-        tempMenu.GetComponent<PauseButton>().closeMenu();
+        HelpCanvas.enabled = false;
+    }
+
+    public void openHelpMenu()
+    {
+        Time.timeScale = 0;
+        HelpCanvas.enabled = true;
+    }
+
+    public void closeHelpMenu()
+    {
+        Time.timeScale = 1;
+        HelpCanvas.enabled = false;
     }
     public void StoryModeLevel2()
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
-            GameCore gcComponent;
+            StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            gcComponent = gameMaster.GetComponent<GameCore>();
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
             gcComponent.gamePaused = false;
             if (gcComponent != null)
             {
-                gcComponent.StartAIGame();
+                gcComponent.StartStoryGame();
                 gcComponent.SMLvl=2;
             }
             else
@@ -38,13 +50,13 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
-            GameCore gcComponent;
+            StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            gcComponent = gameMaster.GetComponent<GameCore>();
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
             gcComponent.gamePaused = false;
             if (gcComponent != null)
             {
-                gcComponent.StartAIGame();
+                gcComponent.StartStoryGame();
                 gcComponent.SMLvl=3;
             }
             else
@@ -58,13 +70,13 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
-            GameCore gcComponent;
+            StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
-            gcComponent = gameMaster.GetComponent<GameCore>();
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
             gcComponent.gamePaused = false;
             if (gcComponent != null)
             {
-                gcComponent.StartAIGame();
+                gcComponent.StartStoryGame();
                 gcComponent.SMLvl=4;
             }
             else
@@ -80,7 +92,7 @@ public class StoryController : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         Debug.Log("Loading game scene...");
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(3);
 
         while (!asyncLoad.isDone){
             yield return null;

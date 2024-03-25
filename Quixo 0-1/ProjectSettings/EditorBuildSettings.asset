@@ -11,4 +11,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/QuixoGame.unity
     guid: 70b426b4b25ac4242a61dc7e7271154b
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 4cd677528b4aebc408e95e75ecb4782a
+  - enabled: 1
+    path: Assets/Scenes/StoryModeGame.unity
+    guid: 80af12a7fe192ef46b4de82fcbcfa369
+  - enabled: 1
+    path: Assets/Scenes/RegularAiGame.unity
+    guid: a73aa2d9bf4853349ad121598df3070d
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 1b13780a8ed9d8d4ebaa6e7bf77df3ff,
+      type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: 5c731f2462ec6f74999b29909891db16,
+      type: 2}

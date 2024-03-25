@@ -6,8 +6,14 @@ using UnityEngine;
 
 
 public class Piece {
-   public int row;
-   public int col; 
+    public int row;
+    public int col;
+    public Piece(int row=0, int col=0)
+    {
+        this.row = row;
+        this.col = col;
+    }
+
 }
 public class quixoModel
 {
@@ -386,8 +392,8 @@ public class EasyAI : MonoBehaviour
             }
         }
 
-        score = (int)Math.Pow(10, count);
-        oppScore = -(int)Math.Pow(10, opponentCount) - 5;
+        score = (int)Math.Pow(3, count);
+        oppScore = -(int)Math.Pow(3, opponentCount) - 5;
 
         return score + oppScore;
 
