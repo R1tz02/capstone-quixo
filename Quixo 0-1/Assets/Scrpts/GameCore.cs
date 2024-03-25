@@ -13,7 +13,6 @@ public class GameCore : MonoBehaviour
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
-    public GameObject AI;
     private PieceLogic pieceLogic;
     public PieceLogic chosenPiece;
     public GameObject[,] gameBoard = new GameObject[5, 6];

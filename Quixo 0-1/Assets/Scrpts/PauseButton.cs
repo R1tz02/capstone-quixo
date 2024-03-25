@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
+using TMPro;
 //using UnityEditor.Overlays;
 
 public class PauseButton : MonoBehaviour
@@ -78,6 +79,9 @@ public class PauseButton : MonoBehaviour
 
     public void requestDraw()
     {
+        GameObject header = drawReqScreen.transform.Find("Background/Header/Congrats").gameObject;
+        TMP_Text text = header.GetComponent<TMP_Text>();
+        text.text = "Player " + gameMaster.GetComponent<GameCore>().currentPlayer.piece + " is requesting a draw";
         drawReqScreen.enabled = true;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
     }
