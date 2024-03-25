@@ -5,6 +5,17 @@ using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
+
+
+public enum GameType
+{ 
+    AIEasy,
+    AIHard,
+    Local,
+    Online
+};
+
 
 public class GameCore : MonoBehaviour
 {
@@ -27,6 +38,9 @@ public class GameCore : MonoBehaviour
     public Canvas loseScreen;
     public Canvas winScreen;
 
+    public GameType currentGameMode;
+
+
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
@@ -38,8 +52,9 @@ public class GameCore : MonoBehaviour
         loseScreen.enabled = false;
     }
 
-    public async void StartNetworkedGame(string gameType)
+    public async void StartNetworkedGame(string gameType, string code = null)
     {
+        currentGameMode = GameType.Online;
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {
             throw new System.Exception("Not a valid game type");
@@ -49,19 +64,20 @@ public class GameCore : MonoBehaviour
 
         if (gameType == "Host")
         {
-            await networkingManager.StartGame(GameMode.Host);
+            await networkingManager.StartGame(GameMode.Host, code);
         }
         else if (gameType == "AutoHostOrClient")
         {
-            await networkingManager.StartGame(GameMode.AutoHostOrClient);
+            await networkingManager.StartGame(GameMode.AutoHostOrClient, code);
         }
         else
         {
-            await networkingManager.StartGame(GameMode.Client);
+            await networkingManager.StartGame(GameMode.Client, code);
         }
     }
     public void StartLocalGame()
     {
+        currentGameMode = GameType.Local;
         winScreen.enabled = false;
         
         GameObject player1Object = new GameObject("Player1");
@@ -437,5 +453,39 @@ public class GameCore : MonoBehaviour
             }
             x += 20;
         }
+    }
+
+    public char[,] translateBoard()
+    {
+        char[,] aiBoard = new char[5, 5];
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                aiBoard[i, j] = gameBoard[i, j].GetComponent<PieceLogic>().player;
+            }
+        }
+
+        return aiBoard;
+    }
+
+    public Task ResetBoard()
+    {
+        foreach (GameObject piece in gameBoard)
+        {
+            Destroy(piece);
+        }
+
+        gameBoard = new GameObject[5, 6];
+
+        currentPlayer = p1;
+        buttonHandler.changeArrowsBack();
+        winScreen.enabled = false;
+        loseScreen.enabled = false;
+        Time.timeScale = 1;
+
+        gamePaused = false;
+
+        return Task.CompletedTask;
     }
 }

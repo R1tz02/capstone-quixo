@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -7,6 +5,7 @@ using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
 using TMPro;
+
 //using UnityEditor.Overlays;
 
 public class PauseButton : MonoBehaviour
@@ -19,6 +18,8 @@ public class PauseButton : MonoBehaviour
     public Canvas drawAccepted;
     public Canvas drawDenied;
 
+    public delegate void RestartNetworkingGame();
+    public static event RestartNetworkingGame OnNetworkingGameRestart;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,11 +39,14 @@ public class PauseButton : MonoBehaviour
     }
 
     public void closeMenu() 
-    { 
-        pauseMenu.enabled = false;
-        pauseButton.gameObject.SetActive(true);
-        Time.timeScale = 1;
-        gameMaster.GetComponent<GameCore>().gamePaused = false;
+    {
+        if (pauseMenu)
+        {
+            pauseMenu.enabled = false;
+            pauseButton.gameObject.SetActive(true);
+            Time.timeScale = 1;
+            gameMaster.GetComponent<GameCore>().gamePaused = false;
+        }
     }
 
     public async void returnToMain()
@@ -73,8 +77,23 @@ public class PauseButton : MonoBehaviour
 
     public void restartGame()
     {
+        MenuController menuController = gameObject.GetComponent("MenuController") as MenuController;
         Time.timeScale = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        switch (gameMaster.GetComponent<GameCore>().currentGameMode)
+        {
+            case GameType.AIEasy:
+                menuController.NewEasyGame();
+                break;
+            case GameType.AIHard:
+                break;
+            case GameType.Local:
+                menuController.LocalGame();
+                break;
+            case GameType.Online:
+                OnNetworkingGameRestart.Invoke();
+                break;
+        }
+       //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void requestDraw()

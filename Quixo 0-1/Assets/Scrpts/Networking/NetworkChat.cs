@@ -1,49 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using Fusion;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class NetworkChat : NetworkBehaviour
 {
     // Subscribe to this event to receive the updated chat log
-    public delegate void NetworkChatUpdated(ChatMessage chatMessage);
+    public delegate void NetworkChatUpdated(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef);
     public static event NetworkChatUpdated OnNetworkChatUpdated;
-    public List<ChatMessage> chatLog = new();
 
-    public struct MaxStorage : IFixedStorage
+    NetworkingManager networkingManager;
+
+    public void Start()
     {
-        public readonly int Capacity => 256;
-    }
-
-    [Serializable]
-    public struct ChatMessage : INetworkStruct
-    {
-        public NetworkString<MaxStorage> message;
-        public PlayerRef playerRef;
-    }
-
-    public void SendChatMessage(string message, PlayerRef playerRef)
-    {
-        ChatMessage chatMessage = new ChatMessage
-        {
-            message = new NetworkString<MaxStorage>(message),
-            playerRef = playerRef
-        };
-
-        RpcSendChatMessage(chatMessage);
+        networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcSendChatMessage(ChatMessage chatMessage)
+    public void RpcSendChatMessage(string message, PlayerRef sendingPlayerRef)
     {
-        chatLog.Add(chatMessage);
-
-        OnNetworkChatUpdated?.Invoke(chatMessage);
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcSyncChat(ChatMessage[] chatLog)
-    {
-        this.chatLog = chatLog.ToList();
+        OnNetworkChatUpdated?.Invoke(message, sendingPlayerRef, networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer).PlayerRef);
     }
 }
