@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
 using TMPro;
+using Fusion;
 
 //using UnityEditor.Overlays;
 
@@ -31,14 +32,14 @@ public class PauseButton : MonoBehaviour
     }
 
     public void openMenu()
-    { 
+    {
         pauseMenu.enabled = true;
         pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
     }
 
-    public void closeMenu() 
+    public void closeMenu()
     {
         if (pauseMenu)
         {
@@ -93,11 +94,17 @@ public class PauseButton : MonoBehaviour
                 OnNetworkingGameRestart.Invoke();
                 break;
         }
-       //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void requestDraw()
+    public void requestDraw(bool bypass = false)
     {
+        if (gameMaster.GetComponent<GameCore>().currentGameMode == GameType.Online && !bypass)
+        {
+            NetworkedPlayer localPlayer = GetNetworkedLocalPlayer();
+            localPlayer.RpcOfferDraw(localPlayer.PlayerRef);
+        }
+
         GameObject header = drawReqScreen.transform.Find("Background/Header/Congrats").gameObject;
         TMP_Text text = header.GetComponent<TMP_Text>();
         text.text = "Player " + gameMaster.GetComponent<GameCore>().currentPlayer.piece + " is requesting a draw";
@@ -105,14 +112,26 @@ public class PauseButton : MonoBehaviour
         gameMaster.GetComponent<GameCore>().gamePaused = true;
     }
 
-    public void acceptDraw()
+    public void acceptDraw(bool bypass = false)
     {
+        if (gameMaster.GetComponent<GameCore>().currentGameMode == GameType.Online && !bypass)
+        {
+            NetworkedPlayer localPlayer = GetNetworkedLocalPlayer();
+            localPlayer.RpcAcceptDraw(localPlayer.PlayerRef);
+        }
+
         drawReqScreen.enabled = false;
         drawAccepted.enabled = true;
     }
 
-    public void denyDraw()
+    public void denyDraw(bool bypass = false)
     {
+        if (gameMaster.GetComponent<GameCore>().currentGameMode == GameType.Online && !bypass)
+        {
+            NetworkedPlayer localPlayer = GetNetworkedLocalPlayer();
+            localPlayer.RpcDenyDraw(localPlayer.PlayerRef);
+        }
+
         drawReqScreen.enabled = false;
         drawDenied.enabled = true;
     }
@@ -121,5 +140,11 @@ public class PauseButton : MonoBehaviour
     {
         drawDenied.enabled = false;
         gameMaster.GetComponent<GameCore>().gamePaused = false;
+    }
+
+    private NetworkedPlayer GetNetworkedLocalPlayer()
+    {
+        NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+        return networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
     }
 }

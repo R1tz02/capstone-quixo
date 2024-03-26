@@ -37,6 +37,7 @@ public class GameCore : MonoBehaviour
 
     public Canvas loseScreen;
     public Canvas winScreen;
+    public Canvas drawButtonCanvas;
 
     public GameType currentGameMode;
 
@@ -55,6 +56,10 @@ public class GameCore : MonoBehaviour
     public async void StartNetworkedGame(string gameType, string code = null)
     {
         currentGameMode = GameType.Online;
+
+        drawButtonCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        drawButtonCanvas.enabled = false;
+
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {
             throw new System.Exception("Not a valid game type");

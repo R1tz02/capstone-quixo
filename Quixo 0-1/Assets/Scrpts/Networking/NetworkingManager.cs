@@ -279,6 +279,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             });
         }
 
+        game.drawButtonCanvas.enabled = true;
     }
 
     private void SyncBoard()

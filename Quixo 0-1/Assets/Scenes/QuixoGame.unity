@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
+  m_IndirectSpecularColor: {r: 0.36301878, g: 0.3668124, b: 0.3255641, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2645,13 +2645,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTurn: 0
-  chat: {fileID: 0}
+  lobbyName: 
   _playerPrefab:
     RawGuidValue: bf32258f35e314643827b46563c36a86
+  _networkChatPrefab:
+    RawGuidValue: ba8a1f480ff2f0b4da0d60ffc4e0f4bf
   _runner: {fileID: 0}
   game: {fileID: 0}
   gameState:
     piecesData: []
+  chat: {fileID: 0}
 --- !u!4 &621600117
 Transform:
   m_ObjectHideFlags: 0
@@ -5009,6 +5012,8 @@ MonoBehaviour:
   gamePaused: 0
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
+  drawButtonCanvas: {fileID: 0}
+  currentGameMode: 0
 --- !u!4 &1407541395
 Transform:
   m_ObjectHideFlags: 0
