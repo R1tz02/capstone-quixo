@@ -184,29 +184,15 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         }
     }
 
-    // This is injected into the normal draw flow so that the result is a networked draw function
-    // As this is an RPC, it will be called on both machines. The local player will stop execution and the other player will continue the draw flow
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcAcceptDraw(PlayerRef callingPlayer)
+    public void RpcAcceptDraw()
     {
-        PlayerRef localPlayerRef = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer).PlayerRef;
-
-        if (callingPlayer != localPlayerRef)
-        {
-            GameObject.FindObjectOfType<PauseButton>().acceptDraw(true);
-        }
+        GameObject.FindObjectOfType<PauseButton>().acceptDraw(true);
     }
 
-    // This is injected into the normal draw flow so that the result is a networked draw function
-    // As this is an RPC, it will be called on both machines. The local player will stop execution and the other player will continue the draw flow
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcDenyDraw(PlayerRef callingPlayer)
+    public void RpcDenyDraw()
     {
-        PlayerRef localPlayerRef = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer).PlayerRef;
-
-        if (callingPlayer != localPlayerRef)
-        {
-            GameObject.FindObjectOfType<PauseButton>().denyDraw(true);
-        }
+        GameObject.FindObjectOfType<PauseButton>().denyDraw(true);
     }
 }

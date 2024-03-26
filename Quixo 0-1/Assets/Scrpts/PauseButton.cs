@@ -103,6 +103,7 @@ public class PauseButton : MonoBehaviour
         {
             NetworkedPlayer localPlayer = GetNetworkedLocalPlayer();
             localPlayer.RpcOfferDraw(localPlayer.PlayerRef);
+            return;
         }
 
         GameObject header = drawReqScreen.transform.Find("Background/Header/Congrats").gameObject;
@@ -117,7 +118,8 @@ public class PauseButton : MonoBehaviour
         if (gameMaster.GetComponent<GameCore>().currentGameMode == GameType.Online && !bypass)
         {
             NetworkedPlayer localPlayer = GetNetworkedLocalPlayer();
-            localPlayer.RpcAcceptDraw(localPlayer.PlayerRef);
+            localPlayer.RpcAcceptDraw();
+            return;
         }
 
         drawReqScreen.enabled = false;
@@ -129,7 +131,8 @@ public class PauseButton : MonoBehaviour
         if (gameMaster.GetComponent<GameCore>().currentGameMode == GameType.Online && !bypass)
         {
             NetworkedPlayer localPlayer = GetNetworkedLocalPlayer();
-            localPlayer.RpcDenyDraw(localPlayer.PlayerRef);
+            localPlayer.RpcDenyDraw();
+            return;
         }
 
         drawReqScreen.enabled = false;
@@ -146,5 +149,10 @@ public class PauseButton : MonoBehaviour
     {
         NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
         return networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
+    }
+
+    public void ResetNetworkGame()
+    {
+        GameObject.Find("NetworkManager").GetComponent<NetworkingManager>().Rematch();
     }
 }

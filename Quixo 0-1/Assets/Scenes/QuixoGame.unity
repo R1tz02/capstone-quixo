@@ -943,7 +943,7 @@ MonoBehaviour:
       - m_Target: {fileID: 789017400}
         m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
         m_MethodName: denyDraw
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3152,7 +3152,7 @@ MonoBehaviour:
       - m_Target: {fileID: 789017400}
         m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
         m_MethodName: acceptDraw
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4749,7 +4749,7 @@ MonoBehaviour:
       - m_Target: {fileID: 789017400}
         m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
         m_MethodName: requestDraw
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8293,6 +8293,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 789017400}
+    - target: {fileID: 287619917595131727, guid: 9aafbd5921f743e4b938c100a7ac4a13,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ResetNetworkGame
+      objectReference: {fileID: 0}
     - target: {fileID: 412276010922495286, guid: 9aafbd5921f743e4b938c100a7ac4a13,
         type: 3}
       propertyPath: m_text
