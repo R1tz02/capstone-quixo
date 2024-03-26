@@ -41,6 +41,7 @@ public class AnvilClick : MonoBehaviour
     {
         if (currentCam.transform.position != endMarker.position)
         {
+            GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
             if (!rotating)
             {
                 StartCoroutine(RotateDown());

@@ -51,7 +51,7 @@ public class OutlineSelection : MonoBehaviour
                 {
                     Outline outline = highlight.gameObject.AddComponent<Outline>();
                     outline.enabled = true;
-                    highlight.gameObject.GetComponent<Outline>().OutlineColor = Color.white;
+                    highlight.gameObject.GetComponent<Outline>().OutlineColor = Color.green;
                     highlight.gameObject.GetComponent<Outline>().OutlineWidth = 2.0f;
                 }
             }

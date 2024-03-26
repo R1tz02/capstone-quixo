@@ -6,7 +6,7 @@ public class UseChat : MonoBehaviour
 {
     public Button openChat;
     public Button closeChat;
-    public UnityEngine.UI.InputField chat;
+    public InputField chat;
     public Image chatCanvas;
     // Start is called before the first frame update
     void Start()

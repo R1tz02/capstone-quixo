@@ -18,6 +18,7 @@ public class MenuController : MonoBehaviour
     public Canvas overlayCanvas;
     public Canvas joinLobbyCanvas;
     public Canvas tutorialCanvas;
+    public Canvas labelCanvas;
 
     public float moveDuration;
     public float rotaionDuration;
@@ -28,12 +29,14 @@ public class MenuController : MonoBehaviour
     
     void Start()
     {
+        if(labelCanvas)
+            labelCanvas.enabled = true;
         if(tutorialCanvas)
             tutorialCanvas.enabled = false;
         if (quickCanvas)
             quickCanvas.enabled = false;
         if (multiCanvas)
-        multiCanvas.enabled = false;
+            multiCanvas.enabled = false;
         if(storyCanvas)
             storyCanvas.enabled = false;
         if(hostJoinCanvas)
@@ -128,6 +131,7 @@ public class MenuController : MonoBehaviour
         storyCanvas.enabled = false;
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
+        labelCanvas.enabled = true;
 
         if (!moving)
         {
