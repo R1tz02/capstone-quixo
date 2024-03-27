@@ -21,6 +21,7 @@ public class AnvilClick : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         menuItem = GameObject.FindGameObjectWithTag("MenuItem");
     }
 
@@ -59,7 +60,7 @@ public class AnvilClick : MonoBehaviour
         moving = true;
         float timeElapsed = 0;
 
-        while (timeElapsed < moveDuration) 
+        while (timeElapsed < 1) 
         { 
             currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, timeElapsed / moveDuration);
             timeElapsed += Time.deltaTime;

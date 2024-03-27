@@ -23,8 +23,8 @@ public class MenuController : MonoBehaviour
     public float moveDuration;
     public float rotaionDuration;
 
-    bool rotating;
-    bool moving;
+    public bool rotating;
+    public bool moving;
 
     
     void Start()
@@ -97,7 +97,7 @@ public class MenuController : MonoBehaviour
         moving = true;
         float timeElapsed = 0;
 
-        while (timeElapsed < moveDuration)
+        while (timeElapsed < 1)
         {
             currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, mMenuLocation.position, timeElapsed / moveDuration);
             timeElapsed += Time.deltaTime;
