@@ -6,6 +6,7 @@ using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.SocialPlatforms.Impl;
+using System;
 
 public class AiGameCore : MonoBehaviour
 {
@@ -358,9 +359,10 @@ public class AiGameCore : MonoBehaviour
     {        
         char[,] board = translateBoard();
         Debug.Log("Fernando's mother");
+        TimeSpan timeLimit = TimeSpan.FromSeconds(4);
 
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board,4));
-        await WaitFor();
+
+        (Piece, char) move = await Task.Run(() => easyAI.IterativeDeepening(board, timeLimit));
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
@@ -386,7 +388,7 @@ public class AiGameCore : MonoBehaviour
 
     public System.Collections.IEnumerator waitAI(EasyAI easyAI)
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         AIMove(easyAI);
         
     }
