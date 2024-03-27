@@ -23,8 +23,8 @@ public class MenuController : MonoBehaviour
     public float moveDuration;
     public float rotaionDuration;
 
-    public bool rotating;
-    public bool moving;
+    bool rotating;
+    bool moving;
 
     
     void Start()
