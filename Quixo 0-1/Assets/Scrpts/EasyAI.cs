@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -355,13 +357,22 @@ public class EasyAI : MonoBehaviour
 
     // Start is called before the first frame update
 
-
+    public char AIPiece = 'O';
+    public char playerPiece = 'X';
 
     //evaluates the state of the board using (# of AI pieces in a row ^ 2) - (# of user pieces in a row ^ 2) + number of pieces on board to prioritze adding a new piece
     public int Evaluate(char[,] board)
     {
+        int[,] postWeights =
+        {
+            {5, 4, 3, 4, 5 },
+            {4, 3, 2, 3, 2 },
+            {3, 2, 6, 2, 3 },
+            {4, 3, 2, 3, 2 },
+            {5, 4, 3, 4, 5 }
+        };
         int score = 0;
-        for (int i = 0; i< 5; i++)
+        for (int i = 0; i < 5; i++)
         {
             score += EvalLine(board[i, 0], board[i, 1], board[i, 2], board[i, 3], board[i, 4]);
             score += EvalLine(board[0, i], board[1, i], board[2, i], board[3, i], board[4, i]);
@@ -369,7 +380,23 @@ public class EasyAI : MonoBehaviour
         score += EvalLine(board[0, 0], board[1, 1], board[2, 2], board[3, 3], board[4, 4]);
         score += EvalLine(board[0, 4], board[1, 3], board[2, 2], board[3, 2], board[4, 0]);
 
-        return score; 
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                if (board[i, j] == AIPiece)
+                {
+                    score += (postWeights[i, j] * 2);
+                }
+                else if (board[i, j] == playerPiece)
+                {
+                    score -= (postWeights[i, j] * 2);
+                }
+            }
+        }
+
+
+        return score;
     }
 
 
@@ -434,15 +461,32 @@ public class EasyAI : MonoBehaviour
     public int Minimax(quixoModel board, int depth, bool maximizing, int alpha, int beta)
     {
         quixoModel copy = board.Clone();
-        if (board.checkForWin() != '-' || depth == 0)
+        if (board.checkForWin() != '-' || depth == 0 ||DateTime.Now >= endTime)
         {
             return Evaluate(board.board);
         }
+
+        List<(Piece, char)> moves = PossibleMoves(board);
+        List<(Piece, char, int)> weightedMoves = new List<(Piece, char, int)>();
+        List<(Piece, char, int)> sortedMoves = new List<(Piece, char, int)>();
+
+        foreach ((Piece, char) move in moves)
+        {
+            copy.movePiece(move.Item1, move.Item2);
+            int score = Evaluate(copy.board);
+            copy = board.Clone();
+            (Piece, char, int) tempMove;
+            tempMove.Item1 = move.Item1;
+            tempMove.Item2 = move.Item2;
+            tempMove.Item3 = score;
+            weightedMoves.Add(tempMove);
+        }
         if (maximizing)
         {
-            
+            sortedMoves = weightedMoves.OrderByDescending(s => s.Item3).ToList();
+
             int maxEval = int.MinValue;
-            foreach ((Piece, char) move in PossibleMoves(copy))
+            foreach ((Piece, char, int) move in sortedMoves)
             {
                 copy.movePiece(move.Item1, move.Item2);
 
@@ -460,9 +504,9 @@ public class EasyAI : MonoBehaviour
         }
         else if(!maximizing)
         {
-
+            sortedMoves = weightedMoves.OrderBy(s => s.Item3).ToList();
             int minEval = int.MaxValue;
-            foreach ((Piece, char) move in PossibleMoves(copy)) {
+            foreach ((Piece, char, int) move in sortedMoves) {
 
                 copy.movePiece(move.Item1, move.Item2);
                 minEval = Math.Min(minEval, Minimax(copy.Clone(), depth - 1, true, alpha, beta));
@@ -488,7 +532,34 @@ public class EasyAI : MonoBehaviour
     //looks through all possible moves and finds the one that has will end with the highest possible score, whent he opponent
     //is also trying to maximize their score
 
-    public Task<(Piece, char)> FindBestMove(char[,] model, int depth)
+    public DateTime endTime;
+
+    public Task<(Piece, char)> IterativeDeepening(char[,] model, TimeSpan timeLimit)
+    {
+        endTime = DateTime.Now.Add(timeLimit);
+        (Piece, char) bestMove = (null, ' ');
+        int depth = 1;
+
+        while(DateTime.Now < endTime)
+        {
+            (Piece, char) curBestMove = FindBestMove(model, depth);
+            if(curBestMove != (null, null))
+            {
+                bestMove = curBestMove;
+            }
+            else { break; }
+
+            depth++;
+
+
+        }
+
+        return Task.FromResult(bestMove);
+
+    }
+
+
+    public (Piece, char) FindBestMove(char[,] model, int depth)
     {
 
         (Piece, char) bestMove = (null, ' ');
@@ -496,6 +567,7 @@ public class EasyAI : MonoBehaviour
         quixoModel newBoard = new quixoModel();
         newBoard.board = (char[,])model.Clone();
         newBoard.playerOneTurn = false;
+
         foreach ((Piece, char) move in PossibleMoves(newBoard))
         {
             quixoModel copy = newBoard.Clone();
@@ -508,8 +580,7 @@ public class EasyAI : MonoBehaviour
                 bestMove = move;
             }
         }
-        return Task.FromResult(bestMove);
-
+        return bestMove;
         // Update is called once per frame
     }
 
