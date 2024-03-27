@@ -30,14 +30,15 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
+            Time.timeScale = 1;
             StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
             gcComponent = gameMaster.GetComponent<StoryGameCore>();
-            gcComponent.gamePaused = false;
             if (gcComponent != null)
             {
                 gcComponent.StartStoryGame();
                 gcComponent.SMLvl=2;
+                gcComponent.gamePaused = false;
             }
             else
             {
@@ -50,6 +51,7 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
+            Time.timeScale = 1;
             StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
             gcComponent = gameMaster.GetComponent<StoryGameCore>();
@@ -70,6 +72,7 @@ public class StoryController : MonoBehaviour
     {
         StartCoroutine(AsyncLoadGameScene(() =>
         {
+            Time.timeScale = 1;
             StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
             gcComponent = gameMaster.GetComponent<StoryGameCore>();
@@ -102,6 +105,4 @@ public class StoryController : MonoBehaviour
 
         Destroy(this.gameObject);
     }
-    
-
 }
