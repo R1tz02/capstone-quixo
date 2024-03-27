@@ -34,7 +34,7 @@ public class OutlineSelection : MonoBehaviour
         // Highlight
         if (highlight != null)
         {
-            highlight.gameObject.GetComponent<Outline>().enabled = false;
+            highlight.gameObject.GetComponent<Outline>().OutlineColor = Color.white;
             highlight = null;
         }
         Ray ray = curCamera.ScreenPointToRay(Input.mousePosition);
@@ -46,6 +46,7 @@ public class OutlineSelection : MonoBehaviour
                 if (highlight.gameObject.GetComponent<Outline>() != null)
                 {
                     highlight.gameObject.GetComponent<Outline>().enabled = true;
+                    highlight.gameObject.GetComponent<Outline>().OutlineColor = Color.green;
                 }
                 else
                 {
