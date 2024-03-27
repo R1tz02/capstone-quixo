@@ -6,6 +6,7 @@ using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using System.Collections;
 
 
 public enum GameType
@@ -38,6 +39,7 @@ public class GameCore : MonoBehaviour
     public Canvas loseScreen;
     public Canvas winScreen;
     public Canvas drawButtonCanvas;
+    public Camera CameraPosition;
 
     public GameType currentGameMode;
 
@@ -51,6 +53,38 @@ public class GameCore : MonoBehaviour
         GameObject curPlayerVisual;
         winScreen.enabled = false;
         loseScreen.enabled = false;
+        CameraPosition = Camera.main;
+    }
+
+    IEnumerator RotateCamera(Canvas canvasToShow)
+    {
+        float timeelapsed = 0;
+
+        Quaternion currentRotation = CameraPosition.transform.rotation;
+
+        // Define the target rotation
+        Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
+
+        // One second delay before rotation starts
+        yield return new WaitForSeconds(1.0f);
+
+        while (timeelapsed < 1)
+        {
+            // Smoothly rotate the camera towards the target rotation
+            CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
+            timeelapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        CameraPosition.transform.rotation = targetRotation;
+
+        // One second delay after rotation ends
+        yield return new WaitForSeconds(3.5f);
+
+        GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
+        TMP_Text text = congrats.GetComponent<TMP_Text>();
+        text.text = "Congrats " + currentPlayer.piece + " won!";
+        winScreen.enabled = true;
     }
 
     public async void StartNetworkedGame(string gameType, string code = null)
@@ -243,11 +277,12 @@ public class GameCore : MonoBehaviour
     }
 
     private void chooseCanvasAndWinner(ref Canvas canvasToShow){
-           
-            GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
-            TMP_Text text = congrats.GetComponent<TMP_Text>();
-            text.text = "Congrats "+ currentPlayer.piece + " won!";
-            winScreen.enabled = true;        
+
+        //GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
+        //TMP_Text text = congrats.GetComponent<TMP_Text>();
+        //text.text = "Congrats "+ currentPlayer.piece + " won!";
+        //winScreen.enabled = true;
+        StartCoroutine(RotateCamera(canvasToShow));
     }
 
     public bool won()
@@ -367,8 +402,8 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
-                Time.timeScale = 0;
-                gamePaused = true;
+                //Time.timeScale = 0;
+                //gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
             }
