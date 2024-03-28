@@ -2008,10 +2008,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5810299c46805194784e908d6b143abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 1982665530}
-  helpMenu: {fileID: 1458110360}
-  pauseButton: {fileID: 754616625}
-  gameMaster: {fileID: 1407541393}
 --- !u!1001 &435700420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5194,7 +5190,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 961739749}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!20 &961739752
 Camera:
   m_ObjectHideFlags: 0
@@ -5227,7 +5223,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -7836,10 +7832,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5810299c46805194784e908d6b143abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 1982665530}
-  helpMenu: {fileID: 1458110360}
-  pauseButton: {fileID: 754616625}
-  gameMaster: {fileID: 1407541393}
 --- !u!1 &1509564359 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2611590110735905682, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
