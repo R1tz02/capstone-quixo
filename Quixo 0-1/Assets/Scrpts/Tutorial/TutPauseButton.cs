@@ -108,9 +108,7 @@ public class TutPauseButton : MonoBehaviour
 
     public void restartGame()
     {
-        Time.timeScale = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        closeHelpMenu();
+        Debug.Log("TODO: Need aid getting this restart to work with differnt tutorial types");
     }
 
     public IEnumerator AsyncLoadGameScene(int sceneToLoad, Action onSceneLoaded)

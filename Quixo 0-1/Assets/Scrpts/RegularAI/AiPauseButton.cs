@@ -70,8 +70,16 @@ public class AiPauseButton : MonoBehaviour
 
     public void restartGame()
     {
+        MenuController menuController = gameObject.GetComponent<MenuController>();
         Time.timeScale = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        switch (gameMaster.GetComponent<AiGameCore>().currentGameMode)
+        {
+            case GameType.AIEasy:
+                menuController.NewEasyGame();
+                break;
+            case GameType.AIHard:
+                break;
+        }
     }
 
     public void requestDraw()

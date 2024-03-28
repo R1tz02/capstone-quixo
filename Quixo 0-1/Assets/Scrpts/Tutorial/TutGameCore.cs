@@ -8,6 +8,7 @@ public class Player
     public char piece;
     public bool won;
 }
+
 public class TutGameCore : MonoBehaviour
 {
     public Material playerOneSpace;
@@ -26,6 +27,7 @@ public class TutGameCore : MonoBehaviour
     public int tutLvl = -1;
     public int AIcounter = 0;
     public int usrCounter = 0;
+
 
     void Start()
     {

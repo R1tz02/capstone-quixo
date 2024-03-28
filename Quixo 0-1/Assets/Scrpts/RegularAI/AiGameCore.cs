@@ -7,10 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.SocialPlatforms.Impl;
 using System;
+using System.Collections;
 
 public class AiGameCore : MonoBehaviour
 {
     public GameObject piecePrefab;
+    public GameObject gameCoreGameObject;
 
     public Material playerOneSpace;
     public Material playerTwoSpace;
@@ -26,6 +28,9 @@ public class AiGameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
 
+    public GameType currentGameMode;
+
+    public Camera CameraPosition;
     public Canvas loseScreen;
     public Canvas winScreen;
     private EasyAI easyAI;
@@ -41,10 +46,12 @@ public class AiGameCore : MonoBehaviour
         GameObject curPlayerVisual;
         winScreen.enabled = false;
         loseScreen.enabled = false;
+        CameraPosition = Camera.main;
     }
 
     public void StartAIGame()
     {
+        currentGameMode = GameType.AIEasy;
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
         p1.Initialize('X');
@@ -57,6 +64,37 @@ public class AiGameCore : MonoBehaviour
         aiButtonHandler = GameObject.FindObjectOfType<AiButtonHandler>();
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
+    }
+
+    IEnumerator RotateCamera()
+    {
+        float timeelapsed = 0;
+
+        Quaternion currentRotation = CameraPosition.transform.rotation;
+
+        // Define the target rotation
+        Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
+
+        // One second delay before rotation starts
+        yield return new WaitForSeconds(1.0f);
+
+        while (timeelapsed < 1)
+        {
+            // Smoothly rotate the camera towards the target rotation
+            CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
+            timeelapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        CameraPosition.transform.rotation = targetRotation;
+
+        // One second delay after rotation ends
+        yield return new WaitForSeconds(3.5f);
+
+        GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
+        TMP_Text text = congrats.GetComponent<TMP_Text>();
+        text.text = "Congrats " + currentPlayer.piece + " won!";
+        winScreen.enabled = true;
     }
 
     private bool horizontalWin()
@@ -370,8 +408,9 @@ public class AiGameCore : MonoBehaviour
         if (won()) 
         {
             loseScreen.enabled = true;
-            Time.timeScale = 0;
-            gamePaused = true;
+            //Time.timeScale = 0;
+            //gamePaused = true;
+            StartCoroutine(RotateCamera());
             Debug.Log(currentPlayer.piece + " won!");
         }
         else if (currentPlayer.piece == 'X')
