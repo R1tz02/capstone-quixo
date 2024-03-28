@@ -4905,7 +4905,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 961739749}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!20 &961739752
 Camera:
   m_ObjectHideFlags: 0
@@ -4938,7 +4938,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -6088,6 +6088,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   piecePrefab: {fileID: 9075320395111789681, guid: 91e2b59427333554993f14f89799fded,
     type: 3}
+  gameCoreGameObject: {fileID: 0}
   playerOneSpace: {fileID: 2100000, guid: 1f40211e90609704f90bc8536e0e04b9, type: 2}
   playerTwoSpace: {fileID: 2100000, guid: 79c652c7ea7abe2499dd1d416d9cdb24, type: 2}
   aiButtonHandler: {fileID: 0}
@@ -6095,6 +6096,7 @@ MonoBehaviour:
   chosenPiece: {fileID: 0}
   counter: 0
   gamePaused: 0
+  CameraPosition: {fileID: 0}
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
   requestDraw: 0
