@@ -66,13 +66,13 @@ public static class Data
             { "story_key", new Dictionary<string, string>()
             {
                 {"en", "Story Mode" },
-                {"es", "ModoCampaña" }
+                {"es", "Modo Campaña" }
             }
             },
             { "help_key", new Dictionary<string, string>()
             {
                 {"en", "Choose a clear ingot or an already hot ingot that is located on the edge of the forge. Once selected the player can move their piece to the end of one of the now incomplete rows and shift the other pieces. As a blacksmith your goal is to align five hot ingots in a row either diagonally, vertically or horizontally before the forge cools down by accomplishing the same task with cold coals." },
-                {"es", "Seleccione un lingote claro o un lingote ya caliente que se encuentre en el borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo es alinear cinco lingotes calientes en fila, ya sea en diagonal, vertical u horizontal antes de que la forja se enfr�e, con los lingotes fr�os." }
+                {"es", "Seleccione un lingote claro o un lingote ya caliente que se encuentre en el borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo es alinear cinco lingotes calientes en fila, ya sea en diagonal, vertical u horizontal antes de que la forja se enfrie, con los lingotes frios." }
             }
             },
             { "congrats_key", new Dictionary<string, string>()
@@ -186,7 +186,7 @@ public static class Data
             { "step2_key", new Dictionary<string, string>()
             {
                 {"en", "These arrows indicate which direction a peice can move. When an arrow is red, it indicates the peice can move that direction. Select the red arrow." },
-                {"es", "Estas flechas indican en qu� direcci�n se puede mover una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa direcci�n. Seleccione la flecha roja." }
+                {"es", "Estas flechas indican en que direccion se puede mover una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja." }
             }
             },
             { "offerDraw_key", new Dictionary<string, string>()
