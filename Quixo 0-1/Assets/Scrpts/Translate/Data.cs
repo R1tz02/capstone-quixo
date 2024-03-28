@@ -66,13 +66,13 @@ public static class Data
             { "story_key", new Dictionary<string, string>()
             {
                 {"en", "Story Mode" },
-                {"es", "Modo Campaña" }
+                {"es", "ModoCampaÃ±a" }
             }
             },
             { "help_key", new Dictionary<string, string>()
             {
                 {"en", "Choose a clear ingot or an already hot ingot that is located on the edge of the forge. Once selected the player can move their piece to the end of one of the now incomplete rows and shift the other pieces. As a blacksmith your goal is to align five hot ingots in a row either diagonally, vertically or horizontally before the forge cools down by accomplishing the same task with cold coals." },
-                {"es", "Seleccione un lingote claro o un lingote ya caliente que se encuentre en el borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo es alinear cinco lingotes calientes en fila, ya sea en diagonal, vertical u horizontal antes de que la forja se enfríe, con los lingotes fríos." }
+                {"es", "Seleccione un lingote claro o un lingote ya caliente que se encuentre en el borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo es alinear cinco lingotes calientes en fila, ya sea en diagonal, vertical u horizontal antes de que la forja se enfrï¿½e, con los lingotes frï¿½os." }
             }
             },
             { "congrats_key", new Dictionary<string, string>()
@@ -186,25 +186,25 @@ public static class Data
             { "step2_key", new Dictionary<string, string>()
             {
                 {"en", "These arrows indicate which direction a peice can move. When an arrow is red, it indicates the peice can move that direction. Select the red arrow." },
-                {"es", "Estas flechas indican en qué dirección se puede mover una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa dirección. Seleccione la flecha roja." }
+                {"es", "Estas flechas indican en quï¿½ direcciï¿½n se puede mover una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa direcciï¿½n. Seleccione la flecha roja." }
             }
             },
             { "offerDraw_key", new Dictionary<string, string>()
             {
                 {"en", "Offer Draw"},
-                {"es", "Sorteo De Oferta"}//Fernado needs to fix
+                {"es", "Ofrecer Empate"}
             }
             },
             { "vertical_key", new Dictionary<string, string>()
             {
                 {"en", "Vertical"},
-                {"es", "Vertical"} //Fernado needs to fix
+                {"es", "Vertical"} 
             }
             },
             { "horizontal_key", new Dictionary<string, string>()
             {
                 {"en", "Horizontal"},
-                {"es", "Horizontal"}//Fernado needs to fix
+                {"es", "Horizontal"}
             }
             },
             { "local_key", new Dictionary<string, string>()
@@ -213,7 +213,12 @@ public static class Data
                 {"es", "Local"}//Fernado needs to fix
             }
             },
-
+            { "single_key", new Dictionary<string, string>()
+            {
+                {"en", "SinglePlayer"},
+                {"es", "Individual"}//Fernado needs to fix
+            }
+            },
         };
 
     public static string[] LANGUAGES = new string[] { "en", "es" };
