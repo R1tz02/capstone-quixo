@@ -4010,6 +4010,7 @@ GameObject:
   - component: {fileID: 789017401}
   - component: {fileID: 789017400}
   - component: {fileID: 789017402}
+  - component: {fileID: 789017403}
   m_Layer: 0
   m_Name: Menu Manager
   m_TagString: Untagged
@@ -4067,6 +4068,31 @@ MonoBehaviour:
   closeChat: {fileID: 1631362365}
   chat: {fileID: 1854063213}
   chatCanvas: {fileID: 2092840585}
+--- !u!114 &789017403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789017399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a24c6e2146d27418acc251b405a164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mMenuLocation: {fileID: 0}
+  currentCam: {fileID: 0}
+  quickCanvas: {fileID: 0}
+  multiCanvas: {fileID: 0}
+  storyCanvas: {fileID: 0}
+  hostJoinCanvas: {fileID: 0}
+  HelpCanvas: {fileID: 0}
+  overlayCanvas: {fileID: 0}
+  joinLobbyCanvas: {fileID: 0}
+  tutorialCanvas: {fileID: 0}
+  labelCanvas: {fileID: 0}
+  moveDuration: 0
+  rotaionDuration: 0
 --- !u!4 &796283575 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3185447028110058621, guid: a67b5490b0f6bad4fb1af602f4254fbf,
@@ -7270,6 +7296,7 @@ MonoBehaviour:
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
   drawButtonCanvas: {fileID: 0}
+  CameraPosition: {fileID: 0}
   currentGameMode: 0
 --- !u!4 &1407541395
 Transform:

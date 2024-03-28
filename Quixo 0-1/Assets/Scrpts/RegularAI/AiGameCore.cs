@@ -28,6 +28,8 @@ public class AiGameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
 
+    public GameType currentGameMode;
+
     public Camera CameraPosition;
     public Canvas loseScreen;
     public Canvas winScreen;
@@ -49,6 +51,7 @@ public class AiGameCore : MonoBehaviour
 
     public void StartAIGame()
     {
+        currentGameMode = GameType.AIEasy;
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
         p1.Initialize('X');

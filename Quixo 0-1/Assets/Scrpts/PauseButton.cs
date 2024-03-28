@@ -78,7 +78,7 @@ public class PauseButton : MonoBehaviour
 
     public void restartGame()
     {
-        MenuController menuController = gameObject.GetComponent("MenuController") as MenuController;
+        MenuController menuController = gameObject.GetComponent<MenuController>();
         Time.timeScale = 1;
         switch (gameMaster.GetComponent<GameCore>().currentGameMode)
         {
