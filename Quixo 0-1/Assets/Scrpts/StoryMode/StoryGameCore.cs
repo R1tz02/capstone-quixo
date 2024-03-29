@@ -21,7 +21,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
-    public int SMLvl = 0;
+    public int SMLvl = 1;
     public bool gamePaused;
 
     public Canvas loseScreen;

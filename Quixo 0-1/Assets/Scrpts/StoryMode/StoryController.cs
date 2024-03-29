@@ -29,13 +29,13 @@ public class StoryController : MonoBehaviour
 
     public void restart() 
     {
-        StoryGameCore gcComponent;
-        int lvl;
-        GameObject gameMaster = GameObject.Find("GameMaster");
-        gcComponent = gameMaster.GetComponent<StoryGameCore>();
-        lvl = gcComponent.SMLvl;
         StartCoroutine(AsyncLoadGameScene(() =>
         {
+            StoryGameCore gcComponent;
+            int lvl;
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
+            lvl = gcComponent.SMLvl;
             Time.timeScale = 1;
             if (gcComponent != null)
             {
