@@ -26,6 +26,50 @@ public class StoryController : MonoBehaviour
         Time.timeScale = 1;
         HelpCanvas.enabled = false;
     }
+
+    public void restart() 
+    {
+        StoryGameCore gcComponent;
+        int lvl;
+        GameObject gameMaster = GameObject.Find("GameMaster");
+        gcComponent = gameMaster.GetComponent<StoryGameCore>();
+        lvl = gcComponent.SMLvl;
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Time.timeScale = 1;
+            if (gcComponent != null)
+            {
+                gcComponent.StartStoryGame();
+                gcComponent.SMLvl = lvl;
+                gcComponent.gamePaused = false;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+
+    public void StoryModeLevel1()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Time.timeScale = 1;
+            StoryGameCore gcComponent;
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
+            if (gcComponent != null)
+            {
+                gcComponent.StartStoryGame();
+                gcComponent.SMLvl = 1;
+                gcComponent.gamePaused = false;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
     public void StoryModeLevel2()
     {
         StartCoroutine(AsyncLoadGameScene(() =>
