@@ -151,8 +151,10 @@ public class PauseButton : MonoBehaviour
         return networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
     }
 
-    public void ResetNetworkGame()
+    public void HideAllDrawMenus()
     {
-        GameObject.Find("NetworkManager").GetComponent<NetworkingManager>().Rematch();
+        drawReqScreen.enabled = false;
+        drawAccepted.enabled = false;
+        drawDenied.enabled = false;
     }
 }

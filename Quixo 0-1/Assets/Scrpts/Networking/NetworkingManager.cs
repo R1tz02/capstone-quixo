@@ -83,7 +83,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         ButtonHandler.OnMoveMade += SendMove;
         GameCore.OnChosenPiece += SetChosenPiece;
-        ChatMenu.OnChatUpdated += SendChat;
+        UseChat.OnChatUpdated += SendChat;
         NetworkChat.OnNetworkChatUpdated += UpdateLocalChatLog;
         PauseButton.OnNetworkingGameRestart += Rematch;
     }
@@ -118,13 +118,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             GameObject.Destroy(networkedPlayer.gameObject);
         }
 
-        //NetworkChat networkChat = GameObject.FindObjectOfType<NetworkChat>();
-        //runner.Despawn(networkChat.GetComponent<NetworkObject>());
-        //GameObject.Destroy(networkChat.gameObject);
-
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
-        ChatMenu.OnChatUpdated -= SendChat;
+        UseChat.OnChatUpdated -= SendChat;
         NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
         PauseButton.OnNetworkingGameRestart -= Rematch;
 
@@ -370,7 +366,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         // Spawn NetworkChat Object
-        NetworkObject networkedObject = _runner.Spawn(_networkChatPrefab);
+        if (chat == null)
+        {
+            _runner.Spawn(_networkChatPrefab);
+        }
 
         // Use this callback to make sure that the players are created on the client before continuing
         StartCoroutine(NetworkedPlayer.WaitForClientConfirmation(OnComplete));
@@ -398,7 +397,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
-        ChatMenu.OnChatUpdated -= SendChat;
+        UseChat.OnChatUpdated -= SendChat;
         NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
         PauseButton.OnNetworkingGameRestart -= Rematch;
     }
