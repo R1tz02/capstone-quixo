@@ -90,11 +90,6 @@ public class AiGameCore : MonoBehaviour
 
         // One second delay after rotation ends
         yield return new WaitForSeconds(3.5f);
-
-        GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
-        TMP_Text text = congrats.GetComponent<TMP_Text>();
-        text.text = "Congrats " + currentPlayer.piece + " won!";
-        winScreen.enabled = true;
     }
 
     private bool horizontalWin()

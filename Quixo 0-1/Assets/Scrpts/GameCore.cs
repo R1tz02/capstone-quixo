@@ -56,7 +56,7 @@ public class GameCore : MonoBehaviour
         CameraPosition = Camera.main;
     }
 
-    IEnumerator RotateCamera(Canvas canvasToShow)
+    IEnumerator RotateCamera()
     {
         float timeelapsed = 0;
 
@@ -276,21 +276,13 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
-    private void chooseCanvasAndWinner(ref Canvas canvasToShow){
-
-        //GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
-        //TMP_Text text = congrats.GetComponent<TMP_Text>();
-        //text.text = "Congrats "+ currentPlayer.piece + " won!";
-        //winScreen.enabled = true;
-        StartCoroutine(RotateCamera(canvasToShow));
-    }
 
     public bool won()
     {
-        if (horizontalWin())    {chooseCanvasAndWinner(ref winScreen); return true;};
-        if (verticalWin())      {chooseCanvasAndWinner(ref winScreen); return true;};
-        if (leftDiagonalWin())  {chooseCanvasAndWinner(ref winScreen); return true;}; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) {chooseCanvasAndWinner(ref winScreen); return true;};
+        if (horizontalWin())    {return true;};
+        if (verticalWin())      {return true;};
+        if (leftDiagonalWin())  {return true;}; //separated checkDiagonalWin into two separate functions
+        if (rightDiagonalWin()) {return true;};
         return false;
 
     }
@@ -404,6 +396,7 @@ public class GameCore : MonoBehaviour
             {
                 //Time.timeScale = 0;
                 //gamePaused = true;
+                StartCoroutine(RotateCamera());
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
             }
