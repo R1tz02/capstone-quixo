@@ -522,6 +522,9 @@ public class GameCore : MonoBehaviour
         buttonHandler.changeArrowsBack();
         winScreen.enabled = false;
         loseScreen.enabled = false;
+        
+        FindObjectOfType<PauseButton>().HideAllDrawMenus();
+
         Time.timeScale = 1;
 
         gamePaused = false;

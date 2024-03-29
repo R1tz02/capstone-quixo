@@ -18,6 +18,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
     private NetworkingManager networkingManager;
 
+    private PauseButton pauseButton;
+
     public char piece
     {
         get { return _piece[0]; }
@@ -27,6 +29,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void Start()
     {
         networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+        pauseButton = GameObject.FindObjectOfType<PauseButton>();
 
         TotalPlayers++;
 
@@ -180,7 +184,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         if (callingPlayer != localPlayerRef)
         {
-            GameObject.FindObjectOfType<PauseButton>().requestDraw(true);
+            pauseButton.requestDraw(true);
         }
     }
 
@@ -188,13 +192,13 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcAcceptDraw()
     {
-        GameObject.FindObjectOfType<PauseButton>().acceptDraw(true);
+        pauseButton.acceptDraw(true);
     }
 
     // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcDenyDraw()
     {
-        GameObject.FindObjectOfType<PauseButton>().denyDraw(true);
+        pauseButton.denyDraw(true);
     }
 }
