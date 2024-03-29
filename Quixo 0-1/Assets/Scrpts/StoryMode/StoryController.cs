@@ -11,7 +11,8 @@ public class StoryController : MonoBehaviour
     public Camera currentCam;
     public Canvas HelpCanvas;
 
-    void Start(){
+    void Start()
+    {
         HelpCanvas.enabled = false;
     }
 
@@ -29,13 +30,16 @@ public class StoryController : MonoBehaviour
 
     public void restart() 
     {
+        //StoryGameCore gc;
+        int lvl;
+        GameObject gm = GameObject.Find("GameMaster");
+        lvl = gm.GetComponent<StoryGameCore>().SMLvl;
+        
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             StoryGameCore gcComponent;
-            int lvl;
             GameObject gameMaster = GameObject.Find("GameMaster");
             gcComponent = gameMaster.GetComponent<StoryGameCore>();
-            lvl = gcComponent.SMLvl;
             Time.timeScale = 1;
             if (gcComponent != null)
             {
