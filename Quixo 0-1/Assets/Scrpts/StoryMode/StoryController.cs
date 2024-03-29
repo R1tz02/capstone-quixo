@@ -11,7 +11,8 @@ public class StoryController : MonoBehaviour
     public Camera currentCam;
     public Canvas HelpCanvas;
 
-    void Start(){
+    void Start()
+    {
         HelpCanvas.enabled = false;
     }
 
@@ -25,6 +26,53 @@ public class StoryController : MonoBehaviour
     {
         Time.timeScale = 1;
         HelpCanvas.enabled = false;
+    }
+
+    public void restart() 
+    {
+        //StoryGameCore gc;
+        int lvl;
+        GameObject gm = GameObject.Find("GameMaster");
+        lvl = gm.GetComponent<StoryGameCore>().SMLvl;
+        
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            StoryGameCore gcComponent;
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
+            Time.timeScale = 1;
+            if (gcComponent != null)
+            {
+                gcComponent.StartStoryGame();
+                gcComponent.SMLvl = lvl;
+                gcComponent.gamePaused = false;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+
+    public void StoryModeLevel1()
+    {
+        StartCoroutine(AsyncLoadGameScene(() =>
+        {
+            Time.timeScale = 1;
+            StoryGameCore gcComponent;
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
+            if (gcComponent != null)
+            {
+                gcComponent.StartStoryGame();
+                gcComponent.SMLvl = 1;
+                gcComponent.gamePaused = false;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
     }
     public void StoryModeLevel2()
     {

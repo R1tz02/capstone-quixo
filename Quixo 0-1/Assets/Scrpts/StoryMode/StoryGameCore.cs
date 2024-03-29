@@ -21,7 +21,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
-    public int SMLvl = 0;
+    public int SMLvl = 1;
     public bool gamePaused;
 
     public Canvas loseScreen;
@@ -218,7 +218,7 @@ public class StoryGameCore : MonoBehaviour
         char helmetPart4 = gameBoard[2, 3].GetComponent<StoryPieceLogic>().player;
         char helmetPart5 = gameBoard[3, 3].GetComponent<StoryPieceLogic>().player;
 
-        if (helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5)
+        if ((helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5) && helmetPart5!= '-')
         {
             if (p1.piece == helmetPart1)
             {

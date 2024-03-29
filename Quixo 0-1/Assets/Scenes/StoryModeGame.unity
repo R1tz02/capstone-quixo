@@ -1479,16 +1479,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 789017402}
+      objectReference: {fileID: 2037154633}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: restartGame
+      value: StoryModeLevel3
       objectReference: {fileID: 0}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: StoryPauseButton, Assembly-CSharp
+      value: StoryController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2611590110735905682, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
@@ -2558,16 +2558,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 789017402}
+      objectReference: {fileID: 2037154633}
     - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: restartGame
+      value: restart
       objectReference: {fileID: 0}
     - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: StoryPauseButton, Assembly-CSharp
+      value: StoryController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7442957656355487185, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -7239,16 +7239,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 789017402}
+      objectReference: {fileID: 2037154633}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: restartGame
+      value: StoryModeLevel2
       objectReference: {fileID: 0}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: StoryPauseButton, Assembly-CSharp
+      value: StoryController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2611590110735905682, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
@@ -7565,16 +7565,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 789017402}
+      objectReference: {fileID: 2037154633}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: restartGame
+      value: StoryModeLevel1
       objectReference: {fileID: 0}
     - target: {fileID: 2283285590923238830, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: StoryPauseButton, Assembly-CSharp
+      value: StoryController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2611590110735905682, guid: 9e0f1ce16a33dbb4691580f84e3c2bfb,
         type: 3}
@@ -8404,9 +8404,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017402}
-        m_TargetAssemblyTypeName: StoryPauseButton, Assembly-CSharp
-        m_MethodName: restartGame
+      - m_Target: {fileID: 2037154633}
+        m_TargetAssemblyTypeName: StoryController, Assembly-CSharp
+        m_MethodName: restart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9781,9 +9781,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 789017402}
-        m_TargetAssemblyTypeName: StoryPauseButton, Assembly-CSharp
-        m_MethodName: restartGame
+      - m_Target: {fileID: 2037154633}
+        m_TargetAssemblyTypeName: StoryController, Assembly-CSharp
+        m_MethodName: StoryModeLevel4
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
