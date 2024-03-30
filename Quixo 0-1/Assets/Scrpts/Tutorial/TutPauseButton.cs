@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
 using System;
+using JetBrains.Annotations;
 //using UnityEditor.Overlays;
 
 public class TutPauseButton : MonoBehaviour
@@ -108,7 +109,18 @@ public class TutPauseButton : MonoBehaviour
 
     public void restartGame()
     {
-        Debug.Log("TODO: Need aid getting this restart to work with differnt tutorial types");
+        StartCoroutine(AsyncLoadGameScene(2, () =>
+        {
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<TutGameCore>().StartTutorial();
+              
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
     }
 
     public IEnumerator AsyncLoadGameScene(int sceneToLoad, Action onSceneLoaded)
@@ -125,6 +137,7 @@ public class TutPauseButton : MonoBehaviour
             }
 
             onSceneLoaded?.Invoke();
+
 
             Destroy(this.gameObject);
         }
