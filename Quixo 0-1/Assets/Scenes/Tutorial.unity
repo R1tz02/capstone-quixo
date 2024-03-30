@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7623,6 +7623,7 @@ MonoBehaviour:
     type: 3}
   chosenPiece: {fileID: 0}
   winScreen: {fileID: 2039624279}
+  helpMenu: {fileID: 1458110360}
   gamePaused: 0
   tutButtonHandler: {fileID: 0}
   tutLvl: -1

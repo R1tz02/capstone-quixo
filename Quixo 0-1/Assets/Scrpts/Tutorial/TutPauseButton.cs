@@ -26,7 +26,6 @@ public class TutPauseButton : MonoBehaviour
         learningModes.enabled = true;
         pauseMenu.enabled = false;
         pauseButton.gameObject.SetActive(false);
-        helpMenu.enabled = true;
         stepOne.enabled = false;
         stepTwo.enabled = false;
 
@@ -68,9 +67,20 @@ public class TutPauseButton : MonoBehaviour
 
     public void tryDifMode()
     {
-        restartGame();
-        learningModes.enabled = true;
-        gameMaster.GetComponent<TutGameCore>().winScreen.enabled = false;
+        bool difMode = true;
+        StartCoroutine(AsyncLoadGameScene(2, () =>
+        {
+            if (gameMaster != null)
+            {
+                learningModes.enabled = true;
+                gameMaster.GetComponent<TutGameCore>().StartTutorial(difMode);
+
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
     }
 
     public void openMenu()
@@ -114,7 +124,7 @@ public class TutPauseButton : MonoBehaviour
             if (gameMaster != null)
             {
                 gameMaster.GetComponent<TutGameCore>().StartTutorial();
-              
+                
             }
             else
             {
