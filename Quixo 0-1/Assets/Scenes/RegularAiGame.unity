@@ -2625,11 +2625,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 789017402}
     - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: restartGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AiPauseButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7442957656355487185, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -6122,6 +6127,8 @@ MonoBehaviour:
   chosenPiece: {fileID: 0}
   counter: 0
   gamePaused: 0
+  aiMoving: 0
+  currentGameMode: 0
   CameraPosition: {fileID: 0}
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}

@@ -27,6 +27,7 @@ public class AiGameCore : MonoBehaviour
     public IPlayer p2;
     public int counter = 0;
     public bool gamePaused;
+    public bool aiMoving = false;
 
     public GameType currentGameMode;
 
@@ -309,6 +310,7 @@ public class AiGameCore : MonoBehaviour
             }
              StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
         }
+
     }
 
     public System.Collections.IEnumerator MovePieceSmoothly(AiPieceLogic piece, Vector3 targetPosition)
@@ -337,7 +339,7 @@ public class AiGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<AiPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<AiPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<AiPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        gamePaused = false;
+        //gamePaused = false;
 
     }
     public bool makeMove(char c)
@@ -364,8 +366,8 @@ public class AiGameCore : MonoBehaviour
             }
             else {
                 currentPlayer = p1; 
-            } 
-
+            }
+            gamePaused = false;
             if (easyAI)
             {
                 AIMove(easyAI);
@@ -389,32 +391,36 @@ public class AiGameCore : MonoBehaviour
     }
 
     async void AIMove(EasyAI easyAI)
-    {        
+    {
+        aiMoving = true;
         char[,] board = translateBoard();
         Debug.Log("Fernando's mother");
         TimeSpan timeLimit = TimeSpan.FromSeconds(4);
 
 
         (Piece, char) move = await Task.Run(() => easyAI.IterativeDeepening(board, timeLimit));
-        validPiece(move.Item1.row, move.Item1.col);
-        shiftBoard(move.Item2, currentPlayer.piece);
-        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
-        counter++;
-        if (won()) 
+        if(validPiece(move.Item1.row, move.Item1.col, true))
         {
-            loseScreen.enabled = true;
-            //Time.timeScale = 0;
-            //gamePaused = true;
-            StartCoroutine(RotateCamera());
-            Debug.Log(currentPlayer.piece + " won!");
-        }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
+            shiftBoard(move.Item2, currentPlayer.piece);
+            Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
+            if (won())
+            {
+                loseScreen.enabled = true;
+                //Time.timeScale = 0;
+                //gamePaused = true;
+                StartCoroutine(RotateCamera());
+                Debug.Log(currentPlayer.piece + " won!");
+            }
+            else if (currentPlayer.piece == 'X')
+            {
+                currentPlayer = p2;
+            }
+            else
+            {
+                currentPlayer = p1;
+            }
+            gamePaused = false;
+            aiMoving = false;
         }
     }
 
@@ -459,9 +465,9 @@ public class AiGameCore : MonoBehaviour
     }
 
     //checks to see if the passed piece is a selectable piece for the player to choose
-    public bool validPiece(int row, int col)
+    public bool validPiece(int row, int col, bool aiTurn = false)
     {
-        if (gamePaused)
+        if (gamePaused || (aiMoving && !aiTurn))
         {
             return false;
         }
