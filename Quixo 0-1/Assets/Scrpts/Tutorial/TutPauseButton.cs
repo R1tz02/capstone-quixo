@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics.Contracts;
 using System;
 using JetBrains.Annotations;
+using UnityEditor.Experimental.GraphView;
 //using UnityEditor.Overlays;
 
 public class TutPauseButton : MonoBehaviour
@@ -19,6 +20,7 @@ public class TutPauseButton : MonoBehaviour
     public Canvas learningModes;
     public Canvas stepOne;
     public Canvas stepTwo;
+    public int stepDisabled;
 
     // Start is called before the first frame update
     void Start()
@@ -84,7 +86,17 @@ public class TutPauseButton : MonoBehaviour
     }
 
     public void openMenu()
-    { 
+    {
+        if (stepOne.enabled)
+        {
+            stepOne.enabled = false;
+            stepDisabled = 1;
+        }
+        else if (stepTwo.enabled)
+        {
+            stepTwo.enabled = false;
+            stepDisabled = 2;
+        }
         pauseMenu.enabled = true;
         pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
@@ -93,6 +105,8 @@ public class TutPauseButton : MonoBehaviour
 
     public void closeMenu() 
     { 
+        if(stepDisabled == 1) { stepOne.enabled = true; }
+        else if (stepDisabled == 2) { stepTwo.enabled = true; }
         pauseMenu.enabled = false;
         pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1;
