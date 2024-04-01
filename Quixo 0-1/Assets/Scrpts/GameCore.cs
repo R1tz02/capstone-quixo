@@ -54,6 +54,9 @@ public class GameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
+
+
+
     }
 
     IEnumerator RotateCamera()
