@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System;
+using TMPro;
 
 public class MenuController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class MenuController : MonoBehaviour
     public Canvas labelCanvas;
     public Canvas errorCanvas;
     public Text errorText;
+    public Text joinCode;
 
     public float moveDuration;
     public float rotaionDuration;
@@ -228,7 +230,7 @@ public class MenuController : MonoBehaviour
 
     public void JoinNetworkedGame()
     {
-        string code = GameObject.Find("enterCode").GetComponent<InputField>().text;
+        string code = GameObject.Find("JoinMenu").GetComponentInChildren<TMP_InputField>().text;
         StartCoroutine(AsyncLoadGameScene(1, () =>
         {
             Debug.Log("Looking for GameMaster object...");

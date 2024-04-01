@@ -39,7 +39,7 @@ public class GameCore : MonoBehaviour
 
     public Canvas loseScreen;
     public Canvas winScreen;
-    public Canvas drawButtonCanvas;
+    public Button drawButton;
     public Canvas errorScreen;
     public Text errorText;
     public Camera CameraPosition;
@@ -68,6 +68,7 @@ public class GameCore : MonoBehaviour
         errorText.text = error;
         errorScreen.enabled = true;
         gamePaused = true;
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
     }
     public void closeError()
@@ -112,8 +113,7 @@ public class GameCore : MonoBehaviour
     {
         currentGameMode = GameType.Online;
 
-        drawButtonCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        drawButtonCanvas.enabled = false;
+        drawButton.gameObject.SetActive(false);
 
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {

@@ -1,14 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Diagnostics.Contracts;
 using System;
-using JetBrains.Annotations;
-using UnityEditor.Experimental.GraphView;
+
 //using UnityEditor.Overlays;
 
 public class TutPauseButton : MonoBehaviour
