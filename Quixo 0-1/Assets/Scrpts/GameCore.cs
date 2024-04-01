@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using System.Collections;
+using UnityEngine.UI;
 
 
 public enum GameType
@@ -39,6 +40,8 @@ public class GameCore : MonoBehaviour
     public Canvas loseScreen;
     public Canvas winScreen;
     public Canvas drawButtonCanvas;
+    public Canvas errorScreen;
+    public Text errorText;
     public Camera CameraPosition;
 
     public GameType currentGameMode;
@@ -54,6 +57,24 @@ public class GameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
+        errorScreen.enabled = false;
+
+
+
+    }
+
+    public void showError(string error)
+    { 
+        errorText.text = error;
+        errorScreen.enabled = true;
+        gamePaused = true;
+        Time.timeScale = 0;
+    }
+    public void closeError()
+    { 
+        errorScreen.enabled = false;
+        gamePaused = false;
+        Time.timeScale = 1;
     }
 
     IEnumerator RotateCamera()

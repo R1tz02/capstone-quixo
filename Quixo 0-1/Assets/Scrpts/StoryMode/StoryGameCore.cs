@@ -32,6 +32,11 @@ public class StoryGameCore : MonoBehaviour
     private EasyAI easyAI;
     private bool playAI = false;
 
+    public Canvas IntroSMLvl1;
+    public Canvas IntroSMLvl2;
+    public Canvas IntroSMLvl3;
+    public Canvas IntroSMLvl4;
+
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
@@ -44,6 +49,11 @@ public class StoryGameCore : MonoBehaviour
         SMLvl4.enabled = false;
         winScreen.enabled = false;
         loseScreen.enabled = false;
+
+        Time.timeScale = 0;
+        gamePaused = true;
+
+
     }
 
     public void StartStoryGame()
@@ -62,6 +72,45 @@ public class StoryGameCore : MonoBehaviour
         buttonHandler = GameObject.FindObjectOfType<StoryButtonHandler>();
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
+        
+    }
+
+    public void openDialogMenu()
+    {
+        switch (SMLvl)
+        {
+            case 1:
+                IntroSMLvl1.gameObject.SetActive(true);
+                IntroSMLvl2.gameObject.SetActive(false);
+                IntroSMLvl3.gameObject.SetActive(false);
+                IntroSMLvl4.gameObject.SetActive(false);
+                Debug.Log("Made it here 1");
+                break;
+            case 2:
+                IntroSMLvl1.gameObject.SetActive(false);
+
+                IntroSMLvl2.gameObject.SetActive(true);
+                IntroSMLvl2.enabled = true;
+                IntroSMLvl2.gameObject.GetComponent<Dialoge>().dialogeBox.enabled = true;
+                IntroSMLvl3.gameObject.SetActive(false);
+                IntroSMLvl4.gameObject.SetActive(false);
+                Debug.Log("Made it here 2");
+                break;
+            case 3:
+                IntroSMLvl1.gameObject.SetActive(false);
+                IntroSMLvl2.gameObject.SetActive(false);
+                IntroSMLvl3.gameObject.SetActive(true);
+                IntroSMLvl4.gameObject.SetActive(false);
+                break;
+            case 4:
+                IntroSMLvl1.gameObject.SetActive(false);
+                IntroSMLvl2.gameObject.SetActive(false);
+                IntroSMLvl3.gameObject.SetActive(false);
+                IntroSMLvl4.gameObject.SetActive(true);
+                break;
+        }
+        Time.timeScale = 0;
+        gamePaused = true;
     }
 
     private bool horizontalWin()

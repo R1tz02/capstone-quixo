@@ -5,6 +5,8 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System.Collections;
+using Unity.VisualScripting;
 
 [Serializable]
 public struct PieceData
@@ -96,8 +98,21 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             await DisconnectFromPhoton();
 
-            SceneManager.LoadScene(0);
-
+            //SceneManager.LoadScene(0);
+            //Still needs to be tested
+            StartCoroutine(AsyncLoadGameScene(0, () =>
+            {
+                GameObject gm = GameObject.Find("Game Manager");
+                MenuController menuController = gm.GetComponent<MenuController>();
+                if (menuController != null)
+                {
+                    menuController.displayError("Host disconnected from Game");
+                }
+                else
+                {
+                    Debug.Log("MenuController not found.");
+                }
+            }));
             // TODO @R1tz02: Display error message on main menu about the host leaving the game
 
             return;
@@ -106,6 +121,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer && player != runner.LocalPlayer)
         {
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
+
+            GameObject gm = GameObject.Find("GameMaster");
+            GameCore gameCore = gm.GetComponent<GameCore>();
+            if(gameCore != null) 
+            {
+                gameCore.showError("Client has diconnected from Game");
+            }
+            else
+            {
+                Debug.Log("GameCore not found.");
+            }
 
             // TODO @R1tz02 #26: Display error message in the game scene about the client leaving the game
         }
@@ -142,8 +168,21 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         Debug.Log("Disconnected from server");
 
-        SceneManager.LoadScene(0);
-
+        //SceneManager.LoadScene(0);
+        //Still needs to be tested
+        StartCoroutine(AsyncLoadGameScene(0, () =>
+        {
+            GameObject gm = GameObject.Find("Game Manager");
+            MenuController menuController = gm.GetComponent<MenuController>();
+            if (menuController != null)
+            {
+                menuController.displayError("Disconnected from Game");
+            }
+            else
+            {
+                Debug.Log("MenuController not found.");
+            }
+        }));
         //TODO @R1tz02: Display vague error message on main menu about being disconnected
     }
 
@@ -233,7 +272,21 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             await DisconnectFromPhoton();
 
-            SceneManager.LoadScene(0);
+            //SceneManager.LoadScene(0);
+            //Still needs to be tested
+            StartCoroutine(AsyncLoadGameScene(0, () => 
+            {
+                GameObject gm = GameObject.Find("Game Manager");
+                MenuController menuController = gm.GetComponent<MenuController>();
+                if (menuController != null)
+                {
+                    menuController.displayError("Unable to Connect to Server");
+                }
+                else
+                {
+                    Debug.Log("MenuController not found.");
+                }
+            }));
             // TODO @R1tz02: Display error message on main menu about not being able to connect
         }
         else
@@ -438,4 +491,25 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         currentTurn = 0;
         SetupGame(true);
     }
+
+    public IEnumerator AsyncLoadGameScene(int sceneToLoad, Action onSceneLoaded)
+    {
+        // Needed so that the callbacks can be called after the scene is loaded
+        DontDestroyOnLoad(this.gameObject);
+
+        Debug.Log("Loading game scene...");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoad);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        onSceneLoaded?.Invoke();
+
+        Destroy(this.gameObject);
+    }
+
 }
+
+
