@@ -19,6 +19,8 @@ public class MenuController : MonoBehaviour
     public Canvas joinLobbyCanvas;
     public Canvas tutorialCanvas;
     public Canvas labelCanvas;
+    public Canvas errorCanvas;
+    public Text errorText;
 
     public float moveDuration;
     public float rotaionDuration;
@@ -45,7 +47,22 @@ public class MenuController : MonoBehaviour
             HelpCanvas.enabled = false;
         if(joinLobbyCanvas)
             joinLobbyCanvas.enabled = false;
+        if(errorCanvas)
+            errorCanvas.enabled = false;
     }
+
+
+    public void displayError(string error)
+    {
+        errorText.text = error;
+        errorCanvas.enabled = true;
+    }
+
+    public void closeError()
+    { 
+        errorCanvas.enabled = false;
+    }
+
 
     public void HostJoin()
     {

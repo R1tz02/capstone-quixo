@@ -73,24 +73,28 @@ public class StoryGameCore : MonoBehaviour
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
         
-
     }
 
-    public void openDialogMenu(int lv)
+    public void openDialogMenu()
     {
-        switch (lv)
+        switch (SMLvl)
         {
             case 1:
                 IntroSMLvl1.gameObject.SetActive(true);
                 IntroSMLvl2.gameObject.SetActive(false);
                 IntroSMLvl3.gameObject.SetActive(false);
                 IntroSMLvl4.gameObject.SetActive(false);
+                Debug.Log("Made it here 1");
                 break;
             case 2:
                 IntroSMLvl1.gameObject.SetActive(false);
+
                 IntroSMLvl2.gameObject.SetActive(true);
+                IntroSMLvl2.enabled = true;
+                IntroSMLvl2.gameObject.GetComponent<Dialoge>().dialogeBox.enabled = true;
                 IntroSMLvl3.gameObject.SetActive(false);
                 IntroSMLvl4.gameObject.SetActive(false);
+                Debug.Log("Made it here 2");
                 break;
             case 3:
                 IntroSMLvl1.gameObject.SetActive(false);
@@ -105,6 +109,8 @@ public class StoryGameCore : MonoBehaviour
                 IntroSMLvl4.gameObject.SetActive(true);
                 break;
         }
+        Time.timeScale = 0;
+        gamePaused = true;
     }
 
     private bool horizontalWin()
