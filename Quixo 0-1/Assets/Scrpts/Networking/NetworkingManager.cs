@@ -109,7 +109,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             {
                 GameObject gm = GameObject.Find("Menu Manager");
                 MenuController menuController = gm.GetComponent<MenuController>();
-                
+
                 if (menuController != null)
                 {
                     game.gamePaused = true;
@@ -152,15 +152,29 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    public async void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+        await DisconnectFromPhoton();
+
+        if (shutdownReason == ShutdownReason.GameNotFound)
+        {
+            StartCoroutine(AsyncLoadGameScene(0, () =>
+            {
+                GameObject.Find("Menu Manager").GetComponent<MenuController>().displayError("Unable to Connect to Server");
+            }));
+        }
+
         Debug.Log("Shutting down");
+
         Destroy(this.gameObject);
     }
 
 #pragma warning disable UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
-    public void OnConnectedToServer(NetworkRunner runner) { }
+    public void OnConnectedToServer(NetworkRunner runner)
+    {
+        Debug.Log("Connected to server");
+    }
     public async void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
         Debug.Log("Disconnected from server");
@@ -169,8 +183,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         //Still needs to be tested
         StartCoroutine(AsyncLoadGameScene(0, () =>
         {
-            GameObject gm = GameObject.Find("Menu Manager");
-            MenuController menuController = gm.GetComponent<MenuController>();
+            MenuController menuController = GameObject.Find("Menu Manager").GetComponent<MenuController>();
+
             if (menuController != null)
             {
                 menuController.displayError("Disconnected from Game");
@@ -186,7 +200,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 #pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
+    public async void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
@@ -252,40 +266,16 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             lobbyName = null;
         }
 
-        try
+        await _runner.StartGame(new StartGameArgs()
         {
-            var result = await _runner.StartGame(new StartGameArgs()
-            {
-                GameMode = mode,
-                SessionName = lobbyName,
-                Scene = scene,
-                SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
-                PlayerCount = 2,
-                EnableClientSessionCreation = enableClientSessionCreation,
-                IsOpen = isOpen,
-            });
-        }
-        catch
-        {
-            await DisconnectFromPhoton();
-
-            //SceneManager.LoadScene(0);
-            //Still needs to be tested
-            StartCoroutine(AsyncLoadGameScene(0, () =>
-            {
-                GameObject gm = GameObject.Find("Menu Manager");
-                MenuController menuController = gm.GetComponent<MenuController>();
-                if (menuController != null)
-                {
-                    menuController.displayError("Unable to Connect to Server");
-                }
-                else
-                {
-                    Debug.Log("MenuController not found.");
-                }
-            }));
-            // TODO @R1tz02: Display error message on main menu about not being able to connect
-        }
+            GameMode = mode,
+            SessionName = lobbyName,
+            Scene = scene,
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+            PlayerCount = 2,
+            EnableClientSessionCreation = enableClientSessionCreation,
+            IsOpen = isOpen,
+        });
     }
 
     public void SetupGame(bool rematch = false)
@@ -479,7 +469,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public async void ResetGame()
     {
         await game.ResetBoard();
-        
+
         GameSetUp = false;
         currentTurn = 0;
         SetupGame(true);
