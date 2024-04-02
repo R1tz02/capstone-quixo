@@ -416,8 +416,7 @@ public class GameCore : MonoBehaviour
             if (won()) 
             {
                 buttonsCanvas.enabled = false;
-                //Time.timeScale = 0;
-                //gamePaused = true;
+                GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
                 StartCoroutine(RotateCamera());
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
