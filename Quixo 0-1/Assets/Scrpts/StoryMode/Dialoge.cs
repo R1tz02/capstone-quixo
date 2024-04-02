@@ -15,6 +15,11 @@ public class Dialoge : MonoBehaviour
         exampleWin.enabled = false;
     }
 
+    public void openTextbox()
+    {
+        dialogeBox.enabled = true;
+    }
+
     public void closeTextBox()
     { 
         dialogeBox.enabled = false;

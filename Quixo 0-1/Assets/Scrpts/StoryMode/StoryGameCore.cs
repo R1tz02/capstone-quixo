@@ -50,10 +50,14 @@ public class StoryGameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
 
+        IntroSMLvl1.enabled = false;
+        IntroSMLvl2.enabled = false;
+        IntroSMLvl3.enabled = false;
+        IntroSMLvl4.enabled = false;
+
+
         Time.timeScale = 0;
         gamePaused = true;
-
-
     }
 
     public void StartStoryGame()
@@ -72,7 +76,6 @@ public class StoryGameCore : MonoBehaviour
         buttonHandler = GameObject.FindObjectOfType<StoryButtonHandler>();
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         populateBoard(); //Initialize board
-        
     }
 
     public void openDialogMenu()
@@ -80,37 +83,34 @@ public class StoryGameCore : MonoBehaviour
         switch (SMLvl)
         {
             case 1:
-                IntroSMLvl1.gameObject.SetActive(true);
-                IntroSMLvl2.gameObject.SetActive(false);
-                IntroSMLvl3.gameObject.SetActive(false);
-                IntroSMLvl4.gameObject.SetActive(false);
-                Debug.Log("Made it here 1");
+                IntroSMLvl1.enabled = true;
+                IntroSMLvl2.enabled = false;
+                IntroSMLvl3.enabled = false;
+                IntroSMLvl4.enabled = false;
+                Debug.Log("Made it Here 1");
                 break;
             case 2:
-                IntroSMLvl1.gameObject.SetActive(false);
-
-                IntroSMLvl2.gameObject.SetActive(true);
+                IntroSMLvl1.enabled = false;
                 IntroSMLvl2.enabled = true;
-                IntroSMLvl2.gameObject.GetComponent<Dialoge>().dialogeBox.enabled = true;
-                IntroSMLvl3.gameObject.SetActive(false);
-                IntroSMLvl4.gameObject.SetActive(false);
-                Debug.Log("Made it here 2");
+                IntroSMLvl3.enabled = false;
+                IntroSMLvl4.enabled = false;
+                Debug.Log("Made it Here 2");
                 break;
             case 3:
-                IntroSMLvl1.gameObject.SetActive(false);
-                IntroSMLvl2.gameObject.SetActive(false);
-                IntroSMLvl3.gameObject.SetActive(true);
-                IntroSMLvl4.gameObject.SetActive(false);
+                IntroSMLvl1.enabled = false;
+                IntroSMLvl2.enabled = false;
+                IntroSMLvl3.enabled = true;
+                IntroSMLvl4.enabled = false;
                 break;
             case 4:
-                IntroSMLvl1.gameObject.SetActive(false);
-                IntroSMLvl2.gameObject.SetActive(false);
-                IntroSMLvl3.gameObject.SetActive(false);
-                IntroSMLvl4.gameObject.SetActive(true);
+                IntroSMLvl1.enabled = false;
+                IntroSMLvl2.enabled = false;
+                IntroSMLvl3.enabled = false;
+                IntroSMLvl4.enabled = true;
                 break;
+                //Time.timeScale = 0;
+                //gamePaused = true;
         }
-        Time.timeScale = 0;
-        gamePaused = true;
     }
 
     private bool horizontalWin()
@@ -555,6 +555,7 @@ public class StoryGameCore : MonoBehaviour
             }
             x += 20;
         }
+        openDialogMenu();
     }
 
     public char[,] translateBoard()
