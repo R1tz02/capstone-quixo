@@ -80,6 +80,7 @@ public class MenuController : MonoBehaviour
 
     public void openTutorialMenu()
     {
+        overlayCanvas.enabled = false;
         tutorialCanvas.enabled = true;
         Time.timeScale = 0;
         overlayCanvas.enabled = false;
@@ -87,6 +88,7 @@ public class MenuController : MonoBehaviour
 
     public void closeTutorialMenu()
     {
+        overlayCanvas.enabled = true;
         tutorialCanvas.enabled = false;
         Time.timeScale = 1;
         overlayCanvas.enabled = true;
@@ -151,6 +153,7 @@ public class MenuController : MonoBehaviour
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
         labelCanvas.enabled = true;
+        overlayCanvas.enabled = true;
 
         if (!moving)
         {
