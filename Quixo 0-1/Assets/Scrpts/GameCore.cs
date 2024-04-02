@@ -44,6 +44,7 @@ public class GameCore : MonoBehaviour
     public Canvas buttonsCanvas;
     public Text errorText;
     public Camera CameraPosition;
+    public Button restartButton;
 
     public GameType currentGameMode;
 
@@ -59,6 +60,7 @@ public class GameCore : MonoBehaviour
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
         errorScreen.enabled = false;
+        restartButton.gameObject.SetActive(true);
     }
 
     public void showError(string error)
@@ -110,7 +112,7 @@ public class GameCore : MonoBehaviour
     public async void StartNetworkedGame(string gameType, string code = null)
     {
         currentGameMode = GameType.Online;
-
+        restartButton.gameObject.SetActive(false);
         drawButton.gameObject.SetActive(false);
 
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
