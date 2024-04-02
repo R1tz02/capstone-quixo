@@ -64,6 +64,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
     public string lobbyName;
+    private bool isSceneLoaded = false;
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
@@ -162,6 +163,11 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             {
                 GameObject.Find("Menu Manager").GetComponent<MenuController>().displayError("Unable to Connect to Server");
             }));
+
+            while (!isSceneLoaded)
+            {
+                await Task.Delay(100); // wait for a short period before checking again
+            }
         }
 
         Debug.Log("Shutting down");
@@ -488,11 +494,12 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             yield return null;
         }
 
+        isSceneLoaded = true;
+
         onSceneLoaded?.Invoke();
 
         Destroy(this.gameObject);
     }
-
 }
 
 
