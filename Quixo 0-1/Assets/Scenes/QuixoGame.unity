@@ -7460,6 +7460,7 @@ MonoBehaviour:
   winScreen: {fileID: 2039624279}
   drawButton: {fileID: 1306903039}
   errorScreen: {fileID: 1541864705}
+  buttonsCanvas: {fileID: 1850532870}
   errorText: {fileID: 990728651}
   CameraPosition: {fileID: 0}
   currentGameMode: 0
@@ -10796,6 +10797,12 @@ PrefabInstance:
       addedObject: {fileID: 1306903038}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25faf3cad2629954db2939ba813bf8a4, type: 3}
+--- !u!223 &1850532870 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2081044094258837862, guid: 25faf3cad2629954db2939ba813bf8a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1850532869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1854063211
 GameObject:
   m_ObjectHideFlags: 0

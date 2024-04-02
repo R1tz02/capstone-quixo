@@ -4551,6 +4551,9 @@ MonoBehaviour:
   joinLobbyCanvas: {fileID: 0}
   tutorialCanvas: {fileID: 0}
   labelCanvas: {fileID: 0}
+  errorCanvas: {fileID: 0}
+  errorText: {fileID: 0}
+  joinCode: {fileID: 0}
   moveDuration: 0
   rotaionDuration: 0
 --- !u!224 &891386100 stripped
@@ -6132,6 +6135,7 @@ MonoBehaviour:
   CameraPosition: {fileID: 0}
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
+  buttonsCanvas: {fileID: 1850532872}
   requestDraw: 0
 --- !u!1 &1429386287
 GameObject:
@@ -9052,6 +9056,12 @@ MonoBehaviour:
   up: {fileID: 274036759}
   down: {fileID: 1647443925}
   game: {fileID: 0}
+--- !u!223 &1850532872 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2081044094258837862, guid: 25faf3cad2629954db2939ba813bf8a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1850532869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1862863567
 GameObject:
   m_ObjectHideFlags: 0

@@ -34,6 +34,7 @@ public class AiGameCore : MonoBehaviour
     public Camera CameraPosition;
     public Canvas loseScreen;
     public Canvas winScreen;
+    public Canvas buttonsCanvas;
     private EasyAI easyAI;
     public bool requestDraw = false;
 
@@ -354,6 +355,7 @@ public class AiGameCore : MonoBehaviour
             aiButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                buttonsCanvas.enabled = false;
                 winScreen.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
@@ -405,6 +407,7 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
+                buttonsCanvas.enabled = false;
                 loseScreen.enabled = true;
                 //Time.timeScale = 0;
                 //gamePaused = true;

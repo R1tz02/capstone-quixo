@@ -41,6 +41,7 @@ public class GameCore : MonoBehaviour
     public Canvas winScreen;
     public Button drawButton;
     public Canvas errorScreen;
+    public Canvas buttonsCanvas;
     public Text errorText;
     public Camera CameraPosition;
 
@@ -58,9 +59,6 @@ public class GameCore : MonoBehaviour
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
         errorScreen.enabled = false;
-
-
-
     }
 
     public void showError(string error)
@@ -415,6 +413,7 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                buttonsCanvas.enabled = false;
                 //Time.timeScale = 0;
                 //gamePaused = true;
                 StartCoroutine(RotateCamera());
