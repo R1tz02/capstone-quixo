@@ -87,6 +87,12 @@ public static class Data
                 {"es", "Reiniciar" }
             }
             },
+            { "restart_one_key", new Dictionary<string, string>()
+            {
+                {"en", "Restart (1/2)" },
+                {"es", "Reiniciar (1/2)" }
+            }
+            },
             { "returnToMain_key", new Dictionary<string, string>()
             {
                 {"en", "Return to Main Menu" },
