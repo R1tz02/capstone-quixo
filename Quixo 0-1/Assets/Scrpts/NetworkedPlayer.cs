@@ -104,14 +104,13 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
     // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcSendMove(byte direction)
+    public void RpcSendMove(byte direction, PlayerRef sendingPlayerRef)
     {
         NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
 
-        if (localPlayer.piece != networkingManager.game.currentPlayer.piece)
-        {
-            networkingManager.game.makeMove((char)direction);
-        }
+        if (localPlayer.PlayerRef == sendingPlayerRef) return;
+
+        networkingManager.game.makeMove((char)direction, true);
     }
 
     // Called by server

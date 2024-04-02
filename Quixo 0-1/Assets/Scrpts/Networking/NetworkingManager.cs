@@ -432,7 +432,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         byte move = (byte)direction;
 
-        GetNetworkedPlayer(_runner.LocalPlayer).RpcSendMove(move);
+        GetNetworkedPlayer(_runner.LocalPlayer).RpcSendMove(move, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
     }
 
     public void OnDestroy()

@@ -403,13 +403,15 @@ public class GameCore : MonoBehaviour
         gamePaused = false;
 
     }
-    public bool makeMove(char c)
+
+    // force is used to force a move, even if the game is paused. Used for networking
+    public bool makeMove(char c, bool force = false)
     {
-        if (gamePaused)
+        if (gamePaused && !force)
         {
             return false;
         }
-        if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
+        if (validPiece(chosenPiece.row, chosenPiece.col, force) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
@@ -467,9 +469,10 @@ public class GameCore : MonoBehaviour
     }
 
     //checks to see if the passed piece is a selectable piece for the player to choose
-    public bool validPiece(int row, int col)
+    // force is used to force a move, even if the game is paused. Used for networking
+    public bool validPiece(int row, int col, bool force = false)
     {
-        if (gamePaused)
+        if (gamePaused && !force)
         {
             return false;
         }
