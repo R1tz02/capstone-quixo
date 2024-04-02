@@ -7463,6 +7463,7 @@ MonoBehaviour:
   buttonsCanvas: {fileID: 1850532870}
   errorText: {fileID: 990728651}
   CameraPosition: {fileID: 0}
+  restartButton: {fileID: 1666645465}
   currentGameMode: 0
 --- !u!4 &1407541395
 Transform:
