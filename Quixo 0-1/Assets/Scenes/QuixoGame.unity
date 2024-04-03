@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
+  m_IndirectSpecularColor: {r: 0.36301878, g: 0.3668124, b: 0.3255641, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -12378,7 +12378,7 @@ PrefabInstance:
     - target: {fileID: 287619917595131727, guid: 9aafbd5921f743e4b938c100a7ac4a13,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ResetNetworkGame
+      value: restartGame
       objectReference: {fileID: 0}
     - target: {fileID: 412276010922495286, guid: 9aafbd5921f743e4b938c100a7ac4a13,
         type: 3}

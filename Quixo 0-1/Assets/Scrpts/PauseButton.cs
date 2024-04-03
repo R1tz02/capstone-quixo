@@ -122,6 +122,10 @@ public class PauseButton : MonoBehaviour
             return;
         }
 
+        GameCore game = gameMaster.GetComponent<GameCore>();
+        game.drawButton.gameObject.SetActive(false);
+        game.buttonsCanvas.enabled = false;
+
         drawReqScreen.enabled = false;
         drawAccepted.enabled = true;
     }

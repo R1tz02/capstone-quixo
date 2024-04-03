@@ -194,6 +194,11 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void RpcAcceptDraw()
     {
         pauseButton.acceptDraw(true);
+
+        if (networkingManager._runner.IsServer)
+        {
+            networkingManager._runner.SessionInfo.IsOpen = false;
+        }
     }
 
     // Called by both client and server

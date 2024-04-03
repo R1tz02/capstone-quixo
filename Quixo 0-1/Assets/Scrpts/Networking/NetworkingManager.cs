@@ -81,6 +81,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             game.closeError();
+
+            ShowButtons();
         }
 
         // Sync up the chat log if the client disconnected and came back
@@ -132,6 +134,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
 
             game.showError("Client has disconnected from Game");
+
+            HideButtons();
         }
 
         if (playerIndex != -1)
@@ -476,6 +480,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         await game.ResetBoard();
 
+        _runner.SessionInfo.IsOpen = true;
+
         GameSetUp = false;
         currentTurn = 0;
         SetupGame(true);
@@ -499,6 +505,18 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         onSceneLoaded?.Invoke();
 
         Destroy(this.gameObject);
+    }
+
+    private void HideButtons()
+    {
+        game.drawButton.gameObject.SetActive(false);
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+    }
+
+    private void ShowButtons()
+    {
+        game.drawButton.gameObject.SetActive(true);
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
     }
 }
 
