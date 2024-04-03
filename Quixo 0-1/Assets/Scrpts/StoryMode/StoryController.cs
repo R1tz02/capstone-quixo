@@ -12,6 +12,7 @@ public class StoryController : MonoBehaviour
     public Canvas HelpCanvas;
 
 
+
     void Start()
     {
         HelpCanvas.enabled = false;
@@ -36,7 +37,9 @@ public class StoryController : MonoBehaviour
         int lvl;
         GameObject gm = GameObject.Find("GameMaster");
         lvl = gm.GetComponent<StoryGameCore>().SMLvl;
-        
+        StoryGameCore comp;
+        GameObject GM = GameObject.Find("GameMaster");
+        comp = GM.GetComponent<StoryGameCore>();
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             StoryGameCore gcComponent;
@@ -46,7 +49,7 @@ public class StoryController : MonoBehaviour
             if (gcComponent != null)
             {
                 gcComponent.SMLvl = lvl;
-                gcComponent.StartStoryGame();
+                gcComponent.StartStoryGame(comp.playHard);
                 gcComponent.gamePaused = false;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
@@ -60,6 +63,9 @@ public class StoryController : MonoBehaviour
 
     public void StoryModeLevel1()
     {
+        StoryGameCore comp;
+        GameObject gm = GameObject.Find("GameMaster");
+        comp = gm.GetComponent<StoryGameCore>();
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             Time.timeScale = 1;
@@ -69,7 +75,7 @@ public class StoryController : MonoBehaviour
             if (gcComponent != null)
             {
                 gcComponent.SMLvl = 1;
-                gcComponent.StartStoryGame();
+                gcComponent.StartStoryGame(comp.playHard);
                 gcComponent.gamePaused = false;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
@@ -82,6 +88,9 @@ public class StoryController : MonoBehaviour
     }
     public void StoryModeLevel2()
     {
+        StoryGameCore comp;
+        GameObject gm = GameObject.Find("GameMaster");
+        comp = gm.GetComponent<StoryGameCore>();
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             Time.timeScale = 1;
@@ -91,7 +100,7 @@ public class StoryController : MonoBehaviour
             if (gcComponent != null)
             {
                 gcComponent.SMLvl = 2;
-                gcComponent.StartStoryGame();
+                gcComponent.StartStoryGame(comp.playHard);
                 gcComponent.gamePaused = false;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
@@ -105,6 +114,9 @@ public class StoryController : MonoBehaviour
 
     public void StoryModeLevel3()
     {
+        StoryGameCore comp;
+        GameObject gm = GameObject.Find("GameMaster");
+        comp = gm.GetComponent<StoryGameCore>();
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             Time.timeScale = 1;
@@ -115,7 +127,7 @@ public class StoryController : MonoBehaviour
             if (gcComponent != null)
             {
                 gcComponent.SMLvl = 3;
-                gcComponent.StartStoryGame();
+                gcComponent.StartStoryGame(comp.playHard);
                 gcComponent.gamePaused = false;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
@@ -129,6 +141,9 @@ public class StoryController : MonoBehaviour
 
     public void StoryModeLevel4()
     {
+        StoryGameCore comp;
+        GameObject gm = GameObject.Find("GameMaster");
+        comp = gm.GetComponent<StoryGameCore>();
         StartCoroutine(AsyncLoadGameScene(() =>
         {
             Time.timeScale = 1;
@@ -139,7 +154,7 @@ public class StoryController : MonoBehaviour
             if (gcComponent != null)
             {
                 gcComponent.SMLvl = 4;
-                gcComponent.StartStoryGame();
+                gcComponent.StartStoryGame(comp.playHard);
                 gcComponent.gamePaused = false;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                // gcComponent.openDialogMenu();

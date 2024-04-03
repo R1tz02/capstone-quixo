@@ -197,7 +197,24 @@ public class MenuController : MonoBehaviour
         }));
     }
 
-    public void StoryModeLevel1()
+    public void NewHardGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(4, () =>
+        {
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<AiGameCore>().StartAIGame();
+                gameMaster.GetComponent<AiGameCore>().playHard = true;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+
+    public void StoryModeLevel1Easy()
     {
         StartCoroutine(AsyncLoadGameScene(3, () =>
         {
@@ -206,7 +223,7 @@ public class MenuController : MonoBehaviour
             gcComponent = gameMaster.GetComponent<StoryGameCore>();
             if (gcComponent != null)
             {
-                gcComponent.StartStoryGame();
+                gcComponent.StartStoryGame(false);
                 gcComponent.SMLvl=1;
             }
             else
@@ -215,6 +232,27 @@ public class MenuController : MonoBehaviour
             }
         }));
     }
+
+    public void StoryModeLevel1Hard()
+    {
+        StartCoroutine(AsyncLoadGameScene(3, () =>
+        {
+            StoryGameCore gcComponent;
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
+            if (gcComponent != null)
+            {
+
+                gcComponent.StartStoryGame(true);
+                gcComponent.SMLvl = 1;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+
     public void LocalGame()
     {
         StartCoroutine(AsyncLoadGameScene(1, () =>
