@@ -76,6 +76,7 @@ public class GameCore : MonoBehaviour
         errorScreen.enabled = false;
         gamePaused = false;
         Time.timeScale = 1;
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
     }
 
     IEnumerator RotateCamera()
@@ -417,6 +418,13 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                if (currentGameMode == GameType.Online)
+                {
+                    NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+                    networkingManager._runner.SessionInfo.IsOpen = false;
+                }
+
                 buttonsCanvas.enabled = false;
                 GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
                 StartCoroutine(RotateCamera());
@@ -539,13 +547,25 @@ public class GameCore : MonoBehaviour
         buttonHandler.changeArrowsBack();
         winScreen.enabled = false;
         loseScreen.enabled = false;
-        
-        FindObjectOfType<PauseButton>().HideAllDrawMenus();
+        drawButton.gameObject.SetActive(true);
+        buttonsCanvas.enabled = true;
+
+        PauseButton pauseButton = FindObjectOfType<PauseButton>();
+        pauseButton.HideAllDrawMenus();
+        pauseButton.pauseButton.gameObject.SetActive(true);
+
+        ResetCameraRotation();
 
         Time.timeScale = 1;
 
         gamePaused = false;
 
         return Task.CompletedTask;
+    }
+
+    public void ResetCameraRotation()
+    {
+        // Use main Camera vaiable (CameraPosition) to reset Camera Position
+        CameraPosition.transform.rotation = Quaternion.Euler(59.205f, 270f, 0f);
     }
 }
