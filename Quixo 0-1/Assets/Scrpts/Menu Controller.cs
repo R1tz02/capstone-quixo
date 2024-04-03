@@ -58,11 +58,17 @@ public class MenuController : MonoBehaviour
     {
         errorText.text = error;
         errorCanvas.enabled = true;
+
+        
     }
 
     public void closeError()
     { 
         errorCanvas.enabled = false;
+                    
+        Time.timeScale = 1;
+
+        Destroy(GameObject.Find("NetworkErrorHandler"));
     }
 
 
