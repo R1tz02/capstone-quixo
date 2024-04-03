@@ -76,6 +76,7 @@ public class GameCore : MonoBehaviour
         errorScreen.enabled = false;
         gamePaused = false;
         Time.timeScale = 1;
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
     }
 
     IEnumerator RotateCamera()

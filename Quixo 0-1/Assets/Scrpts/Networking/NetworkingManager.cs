@@ -72,6 +72,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         _players.Add(new KeyValuePair<PlayerRef, NetworkedPlayer>(player, null));
 
+        if (runner.IsServer && _players.Count == 1)
+        {
+            game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+
+            game.showError("Waiting for client to join...");
+
+            Time.timeScale = 1;
+
+            HideButtons();
+        }
+
         if (_players.Count != 2) return;
 
         runner.SessionInfo.IsOpen = false;
@@ -83,12 +94,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             game.closeError();
 
             ShowButtons();
-        }
-
-        // Sync up the chat log if the client disconnected and came back
-        if (runner.IsServer)
-        {
-            //TODO: chat.RpcSyncChat(chat.chatLog.ToArray());
         }
 
         ButtonHandler.OnMoveMade += SendMove;
@@ -133,8 +138,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
 
-            game.showError("Client has disconnected from Game");
-
+            game.showError("Client has disconnected. Waiting until they rejoin...");
             HideButtons();
         }
 
@@ -511,12 +515,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         game.drawButton.gameObject.SetActive(false);
         GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+        game.buttonsCanvas.enabled = false;
     }
 
     private void ShowButtons()
     {
         game.drawButton.gameObject.SetActive(true);
         GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
+        game.buttonsCanvas.enabled = true;
     }
 }
 
