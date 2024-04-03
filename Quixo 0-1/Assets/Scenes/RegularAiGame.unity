@@ -2226,6 +2226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPiece: 79
   playerPiece: 88
+  SMLevel: 0
 --- !u!4 &429565308
 Transform:
   m_ObjectHideFlags: 0
@@ -2520,7 +2521,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -22.095581, y: -15.793823, z: -27.873291, w: -10.68602}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -6131,6 +6132,7 @@ MonoBehaviour:
   counter: 0
   gamePaused: 0
   aiMoving: 0
+  playHard: 0
   currentGameMode: 0
   CameraPosition: {fileID: 0}
   loseScreen: {fileID: 83578772}

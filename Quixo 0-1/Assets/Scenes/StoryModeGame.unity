@@ -2836,6 +2836,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPiece: 79
   playerPiece: 88
+  SMLevel: 0
 --- !u!4 &429565308
 Transform:
   m_ObjectHideFlags: 0
@@ -3357,7 +3358,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -27.647278, y: -13.163696, z: -27.80957, w: -8.013718}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -9361,6 +9362,7 @@ MonoBehaviour:
   SMLvl2: {fileID: 1509564356}
   SMLvl3: {fileID: 1490201937}
   SMLvl4: {fileID: 374554705}
+  playHard: 0
   IntroSMLvl1: {fileID: 963004853}
   IntroSMLvl2: {fileID: 1126071322}
   IntroSMLvl3: {fileID: 599672929}

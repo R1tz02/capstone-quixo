@@ -114,7 +114,7 @@ public static class Data
             { "drawDeny_key", new Dictionary<string, string>()
             {
                 {"English", "Draw Denied!" },
-                {"Español", "Es un EMPATE!" }
+                {"Español", "Empate Negado!" }
             }
             },
             { "resume_key", new Dictionary<string, string>()

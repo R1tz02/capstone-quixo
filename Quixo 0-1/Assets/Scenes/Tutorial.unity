@@ -792,7 +792,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4099550443105213279, guid: 103693f11af0cbe48b15b035c5a18c38, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3382980355847843341, guid: 103693f11af0cbe48b15b035c5a18c38,
         type: 3}
@@ -2255,6 +2256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPiece: 79
   playerPiece: 88
+  SMLevel: 0
 --- !u!4 &429565308
 Transform:
   m_ObjectHideFlags: 0
@@ -2757,7 +2759,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -24.878113, y: -13.164764, z: -17.672607, w: -8.016464}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4257,6 +4259,7 @@ MonoBehaviour:
   learningModes: {fileID: 116183969}
   stepOne: {fileID: 428728636}
   stepTwo: {fileID: 1494364888}
+  stepDisabled: 0
 --- !u!1 &826456791
 GameObject:
   m_ObjectHideFlags: 0
@@ -6592,7 +6595,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 119}
-  m_SizeDelta: {x: 1200, y: 300}
+  m_SizeDelta: {x: 1200, y: 310}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1229236099
 MonoBehaviour:
