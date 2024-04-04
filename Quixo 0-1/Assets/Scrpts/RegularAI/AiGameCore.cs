@@ -28,8 +28,9 @@ public class AiGameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public bool aiMoving = false;
-    public bool playHard = false;
-
+    public bool playHard = true;
+    public bool aiFirst = false;
+    public bool aiFirstCopy;
 
     public GameType currentGameMode;
 
@@ -42,6 +43,8 @@ public class AiGameCore : MonoBehaviour
     public bool requestDraw = false;
 
 
+
+
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
@@ -52,10 +55,13 @@ public class AiGameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
+        aiFirstCopy = aiFirst;
+
     }
 
     public void StartAIGame()
     {
+        playHard = true;
         currentGameMode = GameType.AIEasy;
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
@@ -70,6 +76,19 @@ public class AiGameCore : MonoBehaviour
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         hardAI = AI.AddComponent(typeof(HardAI)) as HardAI;
         populateBoard(); //Initialize board
+
+        if (aiFirst)
+        {
+            if (playHard)
+            {
+                HardAIMove(hardAI);
+            }
+            else
+            {
+                EasyAIMove(easyAI);
+            }
+
+        }
     }
 
     IEnumerator RotateCamera()
@@ -353,6 +372,8 @@ public class AiGameCore : MonoBehaviour
         {
             return false;
         }
+
+
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
@@ -374,14 +395,14 @@ public class AiGameCore : MonoBehaviour
                 currentPlayer = p1; 
             }
             gamePaused = false;
-
+            
             if (playHard)
             {
                 HardAIMove(hardAI);
             }
             else
             {
-                EasyAIMove(easyAI);
+               EasyAIMove(easyAI);
             }
 
             return true;
@@ -416,7 +437,8 @@ public class AiGameCore : MonoBehaviour
         Debug.Log("Fernando's mother");
         TimeSpan timeLimit = TimeSpan.FromSeconds(4);
 
-        (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit));
+        (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit, aiFirst));
+
         if(validPiece(move.Item1.row, move.Item1.col, true))
         {
             shiftBoard(move.Item2, currentPlayer.piece);
@@ -449,9 +471,10 @@ public class AiGameCore : MonoBehaviour
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
+        await Task.Delay(1500);
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0));
 
-        await WaitFor();
+        //await WaitFor();
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
@@ -475,15 +498,16 @@ public class AiGameCore : MonoBehaviour
 
 
 
-    public System.Collections.IEnumerator waitAI(EasyAI easyAI)
+    public IEnumerator waitAI(EasyAI easyAI)
     {
-        yield return new WaitForSeconds(1);
+        new WaitForSeconds(2);
         EasyAIMove(easyAI);
+        yield return null;
         
     }
-    private async Task WaitFor()
+    private void WaitFor(EasyAI easyAI)
     {
-        await Task.Delay(1000);
+        waitAI(easyAI);
     }
 
     public List<char> moveOptions(int row, int col)

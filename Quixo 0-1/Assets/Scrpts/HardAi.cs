@@ -418,11 +418,11 @@ public class HardAI : MonoBehaviour
 
         foreach(char piece in pieces)
         {
-            if(piece == 'O')
+            if(piece == AIPiece)
             {
                 count++;
             }
-            else if(piece == 'X')
+            else if(piece == playerPiece)
             {
                 opponentCount++;
             }
@@ -551,7 +551,7 @@ public class HardAI : MonoBehaviour
 
     public DateTime endTime;
 
-    public Task<(Piece, char)> IterativeDeepening(char[,] model, TimeSpan timeLimit, int level = 0)
+    public Task<(Piece, char)> IterativeDeepening(char[,] model, TimeSpan timeLimit, bool aiFirst, int level = 0)
     {
         SMLevel = level;
         endTime = DateTime.Now.Add(timeLimit);
@@ -560,7 +560,7 @@ public class HardAI : MonoBehaviour
 
         while(DateTime.Now < endTime)
         {
-            (Piece, char) curBestMove = FindBestMove(model, depth, SMLevel);
+            (Piece, char) curBestMove = FindBestMove(model, depth, aiFirst, SMLevel);
             if(curBestMove != (null, null))
             {
                 bestMove = curBestMove;
@@ -579,20 +579,26 @@ public class HardAI : MonoBehaviour
 
     public int SMLevel = 0;
 
-    public (Piece, char) FindBestMove(char[,] model, int depth, int level = 0)
+    public (Piece, char) FindBestMove(char[,] model, int depth, bool aiFirst, int level = 0)
     {
+
+        if (aiFirst)
+        {
+            AIPiece = 'X';
+            playerPiece = 'O';
+        }
         SMLevel = level;
         (Piece, char) bestMove = (null, ' ');
         int bestEval = int.MinValue;
         quixoModel newBoard = new quixoModel();
         newBoard.board = (char[,])model.Clone();
-        newBoard.playerOneTurn = false;
+        newBoard.playerOneTurn = aiFirst;
 
         foreach ((Piece, char) move in PossibleMoves(newBoard))
         {
             quixoModel copy = newBoard.Clone();
             copy.movePiece(move.Item1, move.Item2);
-            int evalScore = MinimaxAlphaBeta(copy, depth-1, false);
+            int evalScore = MinimaxAlphaBeta(copy, depth-1, !aiFirst);
 
             if (evalScore > bestEval)
             {

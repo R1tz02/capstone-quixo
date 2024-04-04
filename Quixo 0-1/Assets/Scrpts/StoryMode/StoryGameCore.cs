@@ -449,7 +449,7 @@ public class StoryGameCore : MonoBehaviour
                 }
                 else
                 {
-                    EasyAIMove(easyAI);
+                    waitAI(easyAI);
                 }
 
             }
@@ -465,7 +465,7 @@ public class StoryGameCore : MonoBehaviour
         char[,] board = translateBoard();
         TimeSpan timeLimit = TimeSpan.FromSeconds(4);
 
-        (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit, SMLvl));
+        (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit, false, SMLvl));
 
         await WaitFor();
         validPiece(move.Item1.row, move.Item1.col);
@@ -494,7 +494,7 @@ public class StoryGameCore : MonoBehaviour
 
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0, SMLvl));
 
-        await WaitFor();
+        //await WaitFor();
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);

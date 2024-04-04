@@ -192,7 +192,7 @@ public static class Data
             { "step2_key", new Dictionary<string, string>()
             {
                 {"English", "These arrows indicate which direction a peice can move. When an arrow is red, it indicates the peice can move that direction. Select the red arrow." },
-                {"Español", "Estas flechas indican English que direccion se puede mover una pieza. Cuando una flecha Español roja, indica que la pieza puede moverse English esa direccion. Seleccione la flecha roja." }
+                {"Español", "Estas flechas indican en que direccion se puede mover una pieza. Cuando una flecha Español roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja." }
             }
             },
             { "offerDraw_key", new Dictionary<string, string>()
