@@ -106,7 +106,14 @@ public class GameCore : MonoBehaviour
 
         GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
         TMP_Text text = congrats.GetComponent<TMP_Text>();
-        text.text = "Congrats " + currentPlayer.piece + " won!";
+        if (currentPlayer.piece == 'X')
+        {
+            text.text = "You have forged through the fury!";
+        }
+        else 
+        {
+            text.text = "The dragons fire consumes all!";
+        }
         winScreen.enabled = true;
     }
 
