@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System.Collections;
 using Unity.VisualScripting;
+using ExitGames.Client.Photon.StructWrapping;
 
 [Serializable]
 public struct PieceData
@@ -68,6 +69,13 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
+    public void Start()
+    {
+        HideChat();
+
+        HideButtons();
+    }
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         _players.Add(new KeyValuePair<PlayerRef, NetworkedPlayer>(player, null));
@@ -79,10 +87,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             game.showError("Waiting for client to join...");
 
             Time.timeScale = 1;
-
-            HideButtons();
-
-            // TODO: hide chat
         }
 
         if (_players.Count != 2) return;
@@ -94,9 +98,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             game.closeError();
-
-            ShowButtons();
         }
+
+        ShowButtons();
+        ShowChat();
 
         ButtonHandler.OnMoveMade += SendMove;
         GameCore.OnChosenPiece += SetChosenPiece;
@@ -115,7 +120,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             game.showError("Client has disconnected. Waiting until they rejoin...");
 
+            runner.Despawn(chat.GetComponent<NetworkObject>());
+            Destroy(chat.gameObject);
+
+            chat = null;
+
             HideButtons();
+
+            HideChat();
         }
 
         if (playerIndex != -1)
@@ -402,6 +414,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         // Use this callback to make sure that the players are created on the client before continuing
         StartCoroutine(NetworkedPlayer.WaitForClientConfirmation(OnComplete));
+
+        ShowChat();
     }
 
     public NetworkedPlayer SpawnNetworkedPlayer(PlayerRef playerRef, char playerSymbol)
@@ -449,7 +463,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         chat.RpcSendChatMessage(message, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
     }
 
-    public void UpdateLocalChatLog(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef)
+    public void UpdateLocalChatLog(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef, PlayerRef hostsPlayerRef)
     {
         chatLog.Add(new ChatMessage(message, sendingPlayerRef));
     }
@@ -474,6 +488,11 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private void HideButtons()
     {
+        if (game == null)
+        {
+            game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+        }
+
         game.drawButton.gameObject.SetActive(false);
         GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
         game.buttonsCanvas.enabled = false;
@@ -481,8 +500,25 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private void ShowButtons()
     {
+        if (game == null)
+        {
+            game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+        }
+
         game.drawButton.gameObject.SetActive(true);
         GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
         game.buttonsCanvas.enabled = true;
+    }
+
+    private void ShowChat()
+    {
+        Canvas chat = GameObject.Find("Chat").GetComponent<Canvas>();
+        chat.enabled = true;
+    }
+
+    private void HideChat()
+    {
+        Canvas chat = GameObject.Find("Chat").GetComponent<Canvas>();
+        chat.enabled = false;
     }
 }
