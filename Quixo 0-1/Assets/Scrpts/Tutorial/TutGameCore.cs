@@ -320,11 +320,13 @@ public class TutGameCore : MonoBehaviour
             usrCounter++;
             if (won())
             {
+                GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
                 WaitFor(3000);
                 winScreen.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
+                
                 return true;
             }
             //F: if not won, we change the currentPlayer
