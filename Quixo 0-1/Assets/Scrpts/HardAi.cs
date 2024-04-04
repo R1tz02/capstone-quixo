@@ -401,8 +401,8 @@ public class HardAI : MonoBehaviour
             }
         }
 
-        score += (pieceCount * 5);
-        score -= (opponentPieceCount * 5);
+        score += (pieceCount * 3);
+        score -= (opponentPieceCount * 3);
 
 
         return score;
@@ -428,15 +428,24 @@ public class HardAI : MonoBehaviour
             }
         }
 
-        score = (int)Math.Pow(5, (count * 1.2));
+        score = (int)Math.Pow(5, (count));
         if(SMLevel == 0)
         {
-           oppScore = -(int)Math.Pow(5, (opponentCount * 1.2) + .2);
+           oppScore = -(int)Math.Pow(5, (opponentCount + 1));
         }
         else
         {
             oppScore = -(int)Math.Pow(5, opponentCount + 1) - 5;
 
+        }
+
+        if(count == 5)
+        {
+            score += 1000000;
+        }
+        if(opponentCount == 5)
+        {
+            oppScore -= 2000000; 
         }
 
         return score + oppScore;
