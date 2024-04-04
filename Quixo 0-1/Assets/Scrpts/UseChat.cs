@@ -55,18 +55,19 @@ public class UseChat : MonoBehaviour
 
     public void HandleSubmit(string text)
     {
-        // Any other input logic should go here. I.E checking for pushing enter etc.
-        // Also need to clear the input field after submitting.
         if (text != "")
         {
             OnChatUpdated?.Invoke(text);
+
+            chat.text = "";
         }
     }
 
+    // This function will be called on both the client and server when a new chat message is sent.
     public void UpdateChat(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef, PlayerRef hostsPlayerRef)
     {
-        string playerNumber = hostsPlayerRef == localPlayerRef ? "P1: " : "P2: ";
-        // This function will be called on both the client and server when a new chat message is sent.
+        string playerNumber = hostsPlayerRef == sendingPlayerRef ? "P1: " : "P2: ";
+        
         if (sendingPlayerRef == localPlayerRef)
         {
             Message newMessage = new Message();
