@@ -55,24 +55,24 @@ public class UseChat : MonoBehaviour
 
     public void HandleSubmit(string text)
     {
-        // Any other input logic should go here. I.E checking for pushing enter etc.
-        // Also need to clear the input field after submitting.
         if (text != "")
         {
             OnChatUpdated?.Invoke(text);
+
+            chat.text = "";
         }
     }
 
-    public void UpdateChat(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef)
+    // This function will be called on both the client and server when a new chat message is sent.
+    public void UpdateChat(string message, PlayerRef sendingPlayerRef, PlayerRef localPlayerRef, PlayerRef hostsPlayerRef)
     {
-        // @R1tz02: This function will be called on both the client and server when a new chat message is sent.
-        // NetworkingManager.ChatLog contains a list of chatMessage which is an object with a string and the player that sent it.
+        string playerNumber = hostsPlayerRef == sendingPlayerRef ? "P1: " : "P2: ";
+        
         if (sendingPlayerRef == localPlayerRef)
         {
-
             Message newMessage = new Message();
 
-            newMessage.text = message;
+            newMessage.text = playerNumber + message;
 
             GameObject newText = Instantiate(textObjectOne, chatPanel.transform);
 
@@ -89,7 +89,7 @@ public class UseChat : MonoBehaviour
         {
             Message newMessage = new Message();
 
-            newMessage.text = message;
+            newMessage.text = playerNumber + message;
 
             GameObject newText = Instantiate(textObjectTwo, chatPanel.transform);
 
@@ -101,6 +101,11 @@ public class UseChat : MonoBehaviour
             // This is the remote player's message
             Debug.Log("They sent this message: " + message);
         }
+    }
+
+    public void OnDestroy()
+    {
+        NetworkChat.OnNetworkChatUpdated -= UpdateChat;
     }
 }
 
