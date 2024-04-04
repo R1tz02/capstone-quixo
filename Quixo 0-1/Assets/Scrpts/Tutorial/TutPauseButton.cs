@@ -116,14 +116,13 @@ public class TutPauseButton : MonoBehaviour
 
     public void openHelpMenu()
     {
-        pauseMenu.enabled = false;
+       // pauseMenu.enabled = false;
         helpMenu.enabled = true;
     }
 
     public void closeHelpMenu()
     {
         helpMenu.enabled = false;
-        pauseButton.gameObject.SetActive(true);
     }
 
     public void restartGame()
