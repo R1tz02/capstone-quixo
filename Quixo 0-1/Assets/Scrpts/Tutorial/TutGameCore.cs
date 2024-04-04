@@ -17,6 +17,7 @@ public class TutGameCore : MonoBehaviour
     public GameObject piecePrefab;
     public TutPieceLogic chosenPiece;
     public Canvas winScreen;
+    public Canvas helpMenu;
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
     public Player currentPlayer;
@@ -36,12 +37,17 @@ public class TutGameCore : MonoBehaviour
 
         currentPlayer = p1;
         winScreen.enabled = false;
+        helpMenu.enabled = false;
         populateBoard();
     }
 
-    public void StartTutorial()
+    public void StartTutorial(bool tryOtherMode = false)
     {
-
+        if (tryOtherMode)
+        {
+            helpMenu.enabled = false;
+        }
+        else { helpMenu.enabled = true; }
     }
     private bool horizontalWin()
     {
@@ -314,11 +320,13 @@ public class TutGameCore : MonoBehaviour
             usrCounter++;
             if (won())
             {
+                GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
                 WaitFor(3000);
                 winScreen.enabled = true;
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
+                
                 return true;
             }
             //F: if not won, we change the currentPlayer

@@ -3,6 +3,8 @@ using Fusion;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using UnityEngine.UI;
+using TMPro;
 
 public class NetworkedPlayer : NetworkBehaviour, IPlayer
 {
@@ -13,12 +15,12 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Networked]
     public PlayerRef PlayerRef { get; set; }
     public static int TotalPlayers = 0;
-    // Used to keep track of how many players want to play again
-    private static int playAgainCount { get; set; } = 0;
 
-    bool wantsToPlayAgain = false;
+    public static Dictionary<PlayerRef, bool> RematchDict = new();
 
     private NetworkingManager networkingManager;
+
+    private PauseButton pauseButton;
 
     public char piece
     {
@@ -29,6 +31,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void Start()
     {
         networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+        pauseButton = GameObject.FindObjectOfType<PauseButton>();
 
         TotalPlayers++;
 
@@ -102,14 +106,13 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
     // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcSendMove(byte direction)
+    public void RpcSendMove(byte direction, PlayerRef sendingPlayerRef)
     {
         NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
 
-        if (localPlayer.piece != networkingManager.game.currentPlayer.piece)
-        {
-            networkingManager.game.makeMove((char)direction);
-        }
+        if (localPlayer.PlayerRef == sendingPlayerRef) return;
+
+        networkingManager.game.makeMove((char)direction, true);
     }
 
     // Called by server
@@ -140,34 +143,36 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         networkingManager.game.chosenPiece = networkingManager.game.gameBoard[row, col].GetComponent<PieceLogic>();
     }
 
+    // Called by both client and server
     public void Rematch()
     {
+        PlayerRef localPlayerRef = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer).PlayerRef;
+
         // Prevent one player from spamming the play again button
-        if (wantsToPlayAgain) return;
+        if (RematchDict.ContainsKey(localPlayerRef) && RematchDict[localPlayerRef]) return;
 
-        wantsToPlayAgain = true;
-
-        RpcUpdatePlayAgainCount();
+        RpcUpdatePlayAgainCount(localPlayerRef);
     }
 
+    // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RpcUpdatePlayAgainCount()
+    public void RpcUpdatePlayAgainCount(PlayerRef wantsToPlayAgainRef)
     {
-        playAgainCount += 1;
+        RematchDict[wantsToPlayAgainRef] = true;
 
         // TODO #35: Change the GUI text to reflect the number of players who want to play again
-
-        if (playAgainCount == 2 && networkingManager._runner.IsServer)
+        //GameObject.Find("playAgainTxt").gameObject.GetComponent<Text>().text = "restart_one_key";
+        if (RematchDict.Count == 2 && networkingManager._runner.IsServer)
         {
             RpcResetGame();
         }
     }
 
+    // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcResetGame()
     {
-        playAgainCount = 0;
-        wantsToPlayAgain = false;
+        RematchDict.Clear();
         networkingManager.ResetGame();
     }
 
@@ -180,19 +185,26 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         if (callingPlayer != localPlayerRef)
         {
-            GameObject.FindObjectOfType<PauseButton>().requestDraw(true);
+            pauseButton.requestDraw(true);
         }
     }
 
+    // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcAcceptDraw()
     {
-        GameObject.FindObjectOfType<PauseButton>().acceptDraw(true);
+        pauseButton.acceptDraw(true);
+
+        if (networkingManager._runner.IsServer)
+        {
+            networkingManager._runner.SessionInfo.IsOpen = false;
+        }
     }
 
+    // Called by both client and server
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcDenyDraw()
     {
-        GameObject.FindObjectOfType<PauseButton>().denyDraw(true);
+        pauseButton.denyDraw(true);
     }
 }

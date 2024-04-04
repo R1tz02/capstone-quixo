@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -792,7 +792,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4099550443105213279, guid: 103693f11af0cbe48b15b035c5a18c38, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3382980355847843341, guid: 103693f11af0cbe48b15b035c5a18c38,
         type: 3}
@@ -2255,6 +2256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPiece: 79
   playerPiece: 88
+  SMLevel: 0
 --- !u!4 &429565308
 Transform:
   m_ObjectHideFlags: 0
@@ -2757,7 +2759,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -24.878113, y: -13.164764, z: -17.672607, w: -8.016464}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3050,7 +3052,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -2.45
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -4257,6 +4259,7 @@ MonoBehaviour:
   learningModes: {fileID: 116183969}
   stepOne: {fileID: 428728636}
   stepTwo: {fileID: 1494364888}
+  stepDisabled: 0
 --- !u!1 &826456791
 GameObject:
   m_ObjectHideFlags: 0
@@ -6513,15 +6516,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2855.4373
+      value: -2864.7
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 118.14727
+      value: 120.9
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 89.00481
+      value: 99.3
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6592,7 +6595,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 119}
-  m_SizeDelta: {x: 1200, y: 300}
+  m_SizeDelta: {x: 1200, y: 310}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1229236099
 MonoBehaviour:
@@ -6992,8 +6995,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 32
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -7021,7 +7024,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -16.690369, y: -13.645508, z: -18.84076, w: -11.041748}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -7435,8 +7438,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 32
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -7623,6 +7626,7 @@ MonoBehaviour:
     type: 3}
   chosenPiece: {fileID: 0}
   winScreen: {fileID: 2039624279}
+  helpMenu: {fileID: 1458110360}
   gamePaused: 0
   tutButtonHandler: {fileID: 0}
   tutLvl: -1

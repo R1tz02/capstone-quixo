@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using System.Collections;
+using UnityEngine.UI;
 
 
 public enum GameType
@@ -38,8 +39,12 @@ public class GameCore : MonoBehaviour
 
     public Canvas loseScreen;
     public Canvas winScreen;
-    public Canvas drawButtonCanvas;
+    public Button drawButton;
+    public Canvas errorScreen;
+    public Canvas buttonsCanvas;
+    public Text errorText;
     public Camera CameraPosition;
+    public Button restartButton;
 
     public GameType currentGameMode;
 
@@ -54,9 +59,27 @@ public class GameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
+        errorScreen.enabled = false;
+        restartButton.gameObject.SetActive(true);
     }
 
-    IEnumerator RotateCamera(Canvas canvasToShow)
+    public void showError(string error)
+    { 
+        errorText.text = error;
+        errorScreen.enabled = true;
+        gamePaused = true;
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+        Time.timeScale = 0;
+    }
+    public void closeError()
+    { 
+        errorScreen.enabled = false;
+        gamePaused = false;
+        Time.timeScale = 1;
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
+    }
+
+    IEnumerator RotateCamera()
     {
         float timeelapsed = 0;
 
@@ -83,16 +106,22 @@ public class GameCore : MonoBehaviour
 
         GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
         TMP_Text text = congrats.GetComponent<TMP_Text>();
-        text.text = "Congrats " + currentPlayer.piece + " won!";
+        if (currentPlayer.piece == 'X')
+        {
+            text.text = "You have forged through the fury!";
+        }
+        else 
+        {
+            text.text = "The dragons fire consumes all!";
+        }
         winScreen.enabled = true;
     }
 
     public async void StartNetworkedGame(string gameType, string code = null)
     {
         currentGameMode = GameType.Online;
-
-        drawButtonCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        drawButtonCanvas.enabled = false;
+        restartButton.gameObject.SetActive(false);
+        drawButton.gameObject.SetActive(false);
 
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {
@@ -276,21 +305,13 @@ public class GameCore : MonoBehaviour
         return false;
     }
 
-    private void chooseCanvasAndWinner(ref Canvas canvasToShow){
-
-        //GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
-        //TMP_Text text = congrats.GetComponent<TMP_Text>();
-        //text.text = "Congrats "+ currentPlayer.piece + " won!";
-        //winScreen.enabled = true;
-        StartCoroutine(RotateCamera(canvasToShow));
-    }
 
     public bool won()
     {
-        if (horizontalWin())    {chooseCanvasAndWinner(ref winScreen); return true;};
-        if (verticalWin())      {chooseCanvasAndWinner(ref winScreen); return true;};
-        if (leftDiagonalWin())  {chooseCanvasAndWinner(ref winScreen); return true;}; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) {chooseCanvasAndWinner(ref winScreen); return true;};
+        if (horizontalWin())    {return true;};
+        if (verticalWin())      {return true;};
+        if (leftDiagonalWin())  {return true;}; //separated checkDiagonalWin into two separate functions
+        if (rightDiagonalWin()) {return true;};
         return false;
 
     }
@@ -390,20 +411,30 @@ public class GameCore : MonoBehaviour
         gamePaused = false;
 
     }
-    public bool makeMove(char c)
+
+    // force is used to force a move, even if the game is paused. Used for networking
+    public bool makeMove(char c, bool force = false)
     {
-        if (gamePaused)
+        if (gamePaused && !force)
         {
             return false;
         }
-        if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
+        if (validPiece(chosenPiece.row, chosenPiece.col, force) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
-                //Time.timeScale = 0;
-                //gamePaused = true;
+                if (currentGameMode == GameType.Online)
+                {
+                    NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
+
+                    networkingManager._runner.SessionInfo.IsOpen = false;
+                }
+
+                buttonsCanvas.enabled = false;
+                GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+                StartCoroutine(RotateCamera());
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
             }
@@ -453,9 +484,10 @@ public class GameCore : MonoBehaviour
     }
 
     //checks to see if the passed piece is a selectable piece for the player to choose
-    public bool validPiece(int row, int col)
+    // force is used to force a move, even if the game is paused. Used for networking
+    public bool validPiece(int row, int col, bool force = false)
     {
-        if (gamePaused)
+        if (gamePaused && !force)
         {
             return false;
         }
@@ -522,10 +554,25 @@ public class GameCore : MonoBehaviour
         buttonHandler.changeArrowsBack();
         winScreen.enabled = false;
         loseScreen.enabled = false;
+        drawButton.gameObject.SetActive(true);
+        buttonsCanvas.enabled = true;
+
+        PauseButton pauseButton = FindObjectOfType<PauseButton>();
+        pauseButton.HideAllDrawMenus();
+        pauseButton.pauseButton.gameObject.SetActive(true);
+
+        ResetCameraRotation();
+
         Time.timeScale = 1;
 
         gamePaused = false;
 
         return Task.CompletedTask;
+    }
+
+    public void ResetCameraRotation()
+    {
+        // Use main Camera vaiable (CameraPosition) to reset Camera Position
+        CameraPosition.transform.rotation = Quaternion.Euler(59.205f, 270f, 0f);
     }
 }

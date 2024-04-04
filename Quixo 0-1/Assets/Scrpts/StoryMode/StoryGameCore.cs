@@ -5,6 +5,7 @@ using Fusion;
 using static UnityEngine.Rendering.DebugUI.Table;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 public class StoryGameCore : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
-    public int SMLvl = 0;
+    public int SMLvl = 1;
     public bool gamePaused;
 
     public Canvas loseScreen;
@@ -30,7 +31,15 @@ public class StoryGameCore : MonoBehaviour
     public Canvas SMLvl3;
     public Canvas SMLvl4;
     private EasyAI easyAI;
+    private HardAI hardAI;
     private bool playAI = false;
+
+    public bool playHard = false; 
+
+    public Canvas IntroSMLvl1;
+    public Canvas IntroSMLvl2;
+    public Canvas IntroSMLvl3;
+    public Canvas IntroSMLvl4;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -44,11 +53,21 @@ public class StoryGameCore : MonoBehaviour
         SMLvl4.enabled = false;
         winScreen.enabled = false;
         loseScreen.enabled = false;
+
+        IntroSMLvl1.enabled = false;
+        IntroSMLvl2.enabled = false;
+        IntroSMLvl3.enabled = false;
+        IntroSMLvl4.enabled = false;
+
+
+        Time.timeScale = 0;
+        gamePaused = true;
     }
 
-    public void StartStoryGame()
+    public void StartStoryGame(bool hardMode)
     {
         playAI = true;
+        playHard = hardMode;
 
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
@@ -61,7 +80,43 @@ public class StoryGameCore : MonoBehaviour
         currentPlayer = p1; //F: make X the first player/move
         buttonHandler = GameObject.FindObjectOfType<StoryButtonHandler>();
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
+        hardAI = AI.AddComponent(typeof(HardAI)) as HardAI;
         populateBoard(); //Initialize board
+    }
+
+    public void openDialogMenu()
+    {
+        switch (SMLvl)
+        {
+            case 1:
+                IntroSMLvl1.enabled = true;
+                IntroSMLvl2.enabled = false;
+                IntroSMLvl3.enabled = false;
+                IntroSMLvl4.enabled = false;
+                Debug.Log("Made it Here 1");
+                break;
+            case 2:
+                IntroSMLvl1.enabled = false;
+                IntroSMLvl2.enabled = true;
+                IntroSMLvl3.enabled = false;
+                IntroSMLvl4.enabled = false;
+                Debug.Log("Made it Here 2");
+                break;
+            case 3:
+                IntroSMLvl1.enabled = false;
+                IntroSMLvl2.enabled = false;
+                IntroSMLvl3.enabled = true;
+                IntroSMLvl4.enabled = false;
+                break;
+            case 4:
+                IntroSMLvl1.enabled = false;
+                IntroSMLvl2.enabled = false;
+                IntroSMLvl3.enabled = false;
+                IntroSMLvl4.enabled = true;
+                break;
+                //Time.timeScale = 0;
+                //gamePaused = true;
+        }
     }
 
     private bool horizontalWin()
@@ -218,7 +273,7 @@ public class StoryGameCore : MonoBehaviour
         char helmetPart4 = gameBoard[2, 3].GetComponent<StoryPieceLogic>().player;
         char helmetPart5 = gameBoard[3, 3].GetComponent<StoryPieceLogic>().player;
 
-        if (helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5)
+        if ((helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5) && helmetPart5!= '-')
         {
             if (p1.piece == helmetPart1)
             {
@@ -388,10 +443,15 @@ public class StoryGameCore : MonoBehaviour
 
             if (playAI)
             {
-                if (easyAI)
+                if (playHard)
                 {
-                    AIMove(easyAI);
+                    HardAIMove(hardAI);
                 }
+                else
+                {
+                    waitAI(easyAI);
+                }
+
             }
 
             return true;
@@ -399,13 +459,42 @@ public class StoryGameCore : MonoBehaviour
         return false;
     }
 
-    async void AIMove(EasyAI easyAI)
+    async void HardAIMove(HardAI hardAI)
+    {
+        Debug.Log("Jack's mother");
+        char[,] board = translateBoard();
+        TimeSpan timeLimit = TimeSpan.FromSeconds(4);
+
+        (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit, false, SMLvl));
+
+        await WaitFor();
+        validPiece(move.Item1.row, move.Item1.col);
+        shiftBoard(move.Item2, currentPlayer.piece);
+        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
+        if (won())
+        {
+            Time.timeScale = 0;
+            gamePaused = true;
+            Debug.Log(currentPlayer.piece + " won!");
+        }
+        else if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
+    }
+
+    async void EasyAIMove(EasyAI easyAI)
     {
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 2));
-        await WaitFor();
+        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0, SMLvl));
+
+        //await WaitFor();
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
@@ -430,7 +519,7 @@ public class StoryGameCore : MonoBehaviour
     public System.Collections.IEnumerator waitAI(EasyAI easyAI)
     {
         yield return new WaitForSeconds(2);
-        AIMove(easyAI);
+        EasyAIMove(easyAI);
 
     }
     private async Task WaitFor()
@@ -506,6 +595,7 @@ public class StoryGameCore : MonoBehaviour
             }
             x += 20;
         }
+        openDialogMenu();
     }
 
     public char[,] translateBoard()

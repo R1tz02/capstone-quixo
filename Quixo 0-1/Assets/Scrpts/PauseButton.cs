@@ -35,7 +35,7 @@ public class PauseButton : MonoBehaviour
     {
         pauseMenu.enabled = true;
         pauseButton.gameObject.SetActive(false);
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
     }
 
@@ -61,7 +61,7 @@ public class PauseButton : MonoBehaviour
         }
 
         Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     public void openHelpMenu()
@@ -122,6 +122,11 @@ public class PauseButton : MonoBehaviour
             return;
         }
 
+        GameCore game = gameMaster.GetComponent<GameCore>();
+        game.drawButton.gameObject.SetActive(false);
+        game.buttonsCanvas.enabled = false;
+        pauseButton.gameObject.SetActive(false);
+
         drawReqScreen.enabled = false;
         drawAccepted.enabled = true;
     }
@@ -151,8 +156,10 @@ public class PauseButton : MonoBehaviour
         return networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
     }
 
-    public void ResetNetworkGame()
+    public void HideAllDrawMenus()
     {
-        GameObject.Find("NetworkManager").GetComponent<NetworkingManager>().Rematch();
+        drawReqScreen.enabled = false;
+        drawAccepted.enabled = false;
+        drawDenied.enabled = false;
     }
 }

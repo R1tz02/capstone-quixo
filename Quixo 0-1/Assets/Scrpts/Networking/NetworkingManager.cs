@@ -5,6 +5,8 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System.Collections;
+using Unity.VisualScripting;
 
 [Serializable]
 public struct PieceData
@@ -58,6 +60,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public List<KeyValuePair<PlayerRef, NetworkedPlayer>> _players = new();
 
     public static bool GameSetUp = false;
+    private bool IsRunnerDestoryed = false;
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
@@ -69,45 +72,50 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         _players.Add(new KeyValuePair<PlayerRef, NetworkedPlayer>(player, null));
 
+        if (runner.IsServer && _players.Count == 1)
+        {
+            game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+
+            game.showError("Waiting for client to join...");
+
+            Time.timeScale = 1;
+
+            HideButtons();
+
+            // TODO: hide chat
+        }
+
         if (_players.Count != 2) return;
 
         runner.SessionInfo.IsOpen = false;
 
         SetupGame();
 
-        // Sync up the chat log if the client disconnected and came back
         if (runner.IsServer)
         {
-            //TODO: chat.RpcSyncChat(chat.chatLog.ToArray());
+            game.closeError();
+
+            ShowButtons();
         }
 
         ButtonHandler.OnMoveMade += SendMove;
         GameCore.OnChosenPiece += SetChosenPiece;
-        ChatMenu.OnChatUpdated += SendChat;
+        UseChat.OnChatUpdated += SendChat;
         NetworkChat.OnNetworkChatUpdated += UpdateLocalChatLog;
         PauseButton.OnNetworkingGameRestart += Rematch;
     }
 
-    public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
-
-        if (runner.IsClient && player != runner.LocalPlayer)
-        {
-            await DisconnectFromPhoton();
-
-            SceneManager.LoadScene(0);
-
-            // TODO @R1tz02: Display error message on main menu about the host leaving the game
-
-            return;
-        }
 
         if (runner.IsServer && player != runner.LocalPlayer)
         {
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
 
-            // TODO @R1tz02 #26: Display error message in the game scene about the client leaving the game
+            game.showError("Client has disconnected. Waiting until they rejoin...");
+
+            HideButtons();
         }
 
         if (playerIndex != -1)
@@ -118,13 +126,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             GameObject.Destroy(networkedPlayer.gameObject);
         }
 
-        //NetworkChat networkChat = GameObject.FindObjectOfType<NetworkChat>();
-        //runner.Despawn(networkChat.GetComponent<NetworkObject>());
-        //GameObject.Destroy(networkChat.gameObject);
-
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
-        ChatMenu.OnChatUpdated -= SendChat;
+        UseChat.OnChatUpdated -= SendChat;
         NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
         PauseButton.OnNetworkingGameRestart -= Rematch;
 
@@ -133,22 +137,39 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    public async void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        Debug.Log("Shutting down");
-        Destroy(this.gameObject);
+        if (IsRunnerDestoryed) return;
+
+        if (game != null)
+        {
+            game.gamePaused = true;
+
+            Time.timeScale = 0;
+        }
+
+        OnNetworkError?.Invoke(shutdownReason);
+
+        IsRunnerDestoryed = true;
+
+        await DisconnectFromPhoton();
     }
 
 #pragma warning disable UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
 
-    public void OnConnectedToServer(NetworkRunner runner) { }
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    public void OnConnectedToServer(NetworkRunner runner)
     {
-        Debug.Log("Disconnected from server");
+        Debug.Log("Connected to server");
+    }
+    public async void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        game.gamePaused = true;
 
-        SceneManager.LoadScene(0);
+        Time.timeScale = 0;
 
-        //TODO @R1tz02: Display vague error message on main menu about being disconnected
+        OnNetworkError?.Invoke(ShutdownReason.ConnectionTimeout);
+
+        await DisconnectFromPhoton();
     }
 
 #pragma warning restore UNT0006 // Incorrect message signature. Signature is correct, not sure why it is saying that it isn't
@@ -172,6 +193,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkChat chat;
 
     public List<ChatMessage> chatLog = new();
+
+    // Event used for error handler when the scene needs to change
+    public delegate void NetworkError(ShutdownReason shutdownReason);
+    public static event NetworkError OnNetworkError;
 
     public async Task StartGame(GameMode mode, string sessionName)
     {
@@ -205,7 +230,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             for (int i = 0; i < size; i++)
             {
-                // Selecting a index randomly 
                 ran += str[res.Next(26)];
             }
 
@@ -233,16 +257,18 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (!result.Ok)
         {
-            Debug.Log("Failed to start game: " + result);
+            IsRunnerDestoryed = true;
+
+            if (game != null)
+            {
+                game.gamePaused = true;
+
+                Time.timeScale = 0;
+            }
+
+            OnNetworkError?.Invoke(ShutdownReason.GameNotFound);
 
             await DisconnectFromPhoton();
-
-            SceneManager.LoadScene(0);
-            // TODO @R1tz02: Display error message on main menu about not being able to connect
-        }
-        else
-        {
-            Debug.Log("Game started");
         }
     }
 
@@ -279,7 +305,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             });
         }
 
-        game.drawButtonCanvas.enabled = true;
+        game.drawButton.gameObject.SetActive(true);
     }
 
     private void SyncBoard()
@@ -370,7 +396,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         // Spawn NetworkChat Object
-        NetworkObject networkedObject = _runner.Spawn(_networkChatPrefab);
+        if (chat == null)
+        {
+            _runner.Spawn(_networkChatPrefab);
+        }
 
         // Use this callback to make sure that the players are created on the client before continuing
         StartCoroutine(NetworkedPlayer.WaitForClientConfirmation(OnComplete));
@@ -391,14 +420,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         byte move = (byte)direction;
 
-        GetNetworkedPlayer(_runner.LocalPlayer).RpcSendMove(move);
+        GetNetworkedPlayer(_runner.LocalPlayer).RpcSendMove(move, GetNetworkedPlayer(_runner.LocalPlayer).PlayerRef);
     }
 
     public void OnDestroy()
     {
         ButtonHandler.OnMoveMade -= SendMove;
         GameCore.OnChosenPiece -= SetChosenPiece;
-        ChatMenu.OnChatUpdated -= SendChat;
+        UseChat.OnChatUpdated -= SendChat;
         NetworkChat.OnNetworkChatUpdated -= UpdateLocalChatLog;
         PauseButton.OnNetworkingGameRestart -= Rematch;
     }
@@ -409,6 +438,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     }
     public async Task DisconnectFromPhoton()
     {
+        IsRunnerDestoryed = true;
+
         GameSetUp = false;
 
         await _runner.Shutdown();
@@ -434,9 +465,25 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public async void ResetGame()
     {
         await game.ResetBoard();
-        
+
+        _runner.SessionInfo.IsOpen = true;
+
         GameSetUp = false;
         currentTurn = 0;
         SetupGame(true);
+    }
+
+    private void HideButtons()
+    {
+        game.drawButton.gameObject.SetActive(false);
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+        game.buttonsCanvas.enabled = false;
+    }
+
+    private void ShowButtons()
+    {
+        game.drawButton.gameObject.SetActive(true);
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
+        game.buttonsCanvas.enabled = true;
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System;
+using TMPro;
 
 public class MenuController : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class MenuController : MonoBehaviour
     public Canvas joinLobbyCanvas;
     public Canvas tutorialCanvas;
     public Canvas labelCanvas;
+    public Canvas errorCanvas;
+    public Text errorText;
+    public Text joinCode;
 
     public float moveDuration;
     public float rotaionDuration;
@@ -45,7 +49,28 @@ public class MenuController : MonoBehaviour
             HelpCanvas.enabled = false;
         if(joinLobbyCanvas)
             joinLobbyCanvas.enabled = false;
+        if(errorCanvas)
+            errorCanvas.enabled = false;
     }
+
+
+    public void displayError(string error)
+    {
+        errorText.text = error;
+        errorCanvas.enabled = true;
+
+        
+    }
+
+    public void closeError()
+    { 
+        errorCanvas.enabled = false;
+                    
+        Time.timeScale = 1;
+
+        Destroy(GameObject.Find("NetworkErrorHandler"));
+    }
+
 
     public void HostJoin()
     {
@@ -61,6 +86,7 @@ public class MenuController : MonoBehaviour
 
     public void openTutorialMenu()
     {
+        overlayCanvas.enabled = false;
         tutorialCanvas.enabled = true;
         Time.timeScale = 0;
         overlayCanvas.enabled = false;
@@ -68,6 +94,7 @@ public class MenuController : MonoBehaviour
 
     public void closeTutorialMenu()
     {
+        overlayCanvas.enabled = true;
         tutorialCanvas.enabled = false;
         Time.timeScale = 1;
         overlayCanvas.enabled = true;
@@ -132,6 +159,7 @@ public class MenuController : MonoBehaviour
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
         labelCanvas.enabled = true;
+        overlayCanvas.enabled = true;
 
         if (!moving)
         {
@@ -145,7 +173,7 @@ public class MenuController : MonoBehaviour
 
     public void loadTutorial() //need Jack to map this to the scene I need
     {
-        StartCoroutine(AsyncLoadGameScene(2, () =>
+        StartCoroutine(AsyncLoadGameScene(3, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
@@ -161,7 +189,7 @@ public class MenuController : MonoBehaviour
 
     public void NewEasyGame()
     {
-        StartCoroutine(AsyncLoadGameScene(4, () =>
+        StartCoroutine(AsyncLoadGameScene(5, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
@@ -175,16 +203,33 @@ public class MenuController : MonoBehaviour
         }));
     }
 
-    public void StoryModeLevel1()
+    public void NewHardGame()
     {
-        StartCoroutine(AsyncLoadGameScene(3, () =>
+        StartCoroutine(AsyncLoadGameScene(5, () =>
+        {
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<AiGameCore>().StartAIGame();
+                gameMaster.GetComponent<AiGameCore>().playHard = true;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+
+    public void StoryModeLevel1Easy()
+    {
+        StartCoroutine(AsyncLoadGameScene(4, () =>
         {
             StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
             gcComponent = gameMaster.GetComponent<StoryGameCore>();
             if (gcComponent != null)
             {
-                gcComponent.StartStoryGame();
+                gcComponent.StartStoryGame(true);
                 gcComponent.SMLvl=1;
             }
             else
@@ -193,9 +238,30 @@ public class MenuController : MonoBehaviour
             }
         }));
     }
+
+    public void StoryModeLevel1Hard()
+    {
+        StartCoroutine(AsyncLoadGameScene(4, () =>
+        {
+            StoryGameCore gcComponent;
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            gcComponent = gameMaster.GetComponent<StoryGameCore>();
+            if (gcComponent != null)
+            {
+
+                gcComponent.StartStoryGame(true);
+                gcComponent.SMLvl = 1;
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+
     public void LocalGame()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
@@ -211,8 +277,8 @@ public class MenuController : MonoBehaviour
 
     public void JoinNetworkedGame()
     {
-        string code = GameObject.Find("enterCode").GetComponent<InputField>().text;
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        string code = GameObject.Find("JoinMenu").GetComponentInChildren<TMP_InputField>().text;
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");
             GameObject gameMaster = GameObject.Find("GameMaster");
@@ -230,7 +296,7 @@ public class MenuController : MonoBehaviour
 
     public void HostNetworkedGame()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");
             GameObject gameMaster = GameObject.Find("GameMaster");
@@ -266,7 +332,7 @@ public class MenuController : MonoBehaviour
 
     public void QuickPlayGame()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");
             GameObject gameMaster = GameObject.Find("GameMaster");

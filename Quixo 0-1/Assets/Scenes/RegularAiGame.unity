@@ -2226,6 +2226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AIPiece: 79
   playerPiece: 88
+  SMLevel: 0
 --- !u!4 &429565308
 Transform:
   m_ObjectHideFlags: 0
@@ -2520,7 +2521,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -22.095581, y: -15.793823, z: -27.873291, w: -10.68602}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2625,11 +2626,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 789017402}
     - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: restartGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439463547768682753, guid: a1343ae76a9c0c24eabe5270144fd379,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AiPauseButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7442957656355487185, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -2967,7 +2973,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -2.45
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -4546,6 +4552,9 @@ MonoBehaviour:
   joinLobbyCanvas: {fileID: 0}
   tutorialCanvas: {fileID: 0}
   labelCanvas: {fileID: 0}
+  errorCanvas: {fileID: 0}
+  errorText: {fileID: 0}
+  joinCode: {fileID: 0}
   moveDuration: 0
   rotaionDuration: 0
 --- !u!224 &891386100 stripped
@@ -4816,15 +4825,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2855.4373
+      value: -2867.7
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 118.14727
+      value: 117.2
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 89.00481
+      value: 101.5
       objectReference: {fileID: 0}
     - target: {fileID: 4616576871649940, guid: 7f7e8efa4bf6ad741b611ac451b6eca8, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6122,9 +6131,14 @@ MonoBehaviour:
   chosenPiece: {fileID: 0}
   counter: 0
   gamePaused: 0
+  aiMoving: 0
+  playHard: 0
+  aiFirst: 0
+  currentGameMode: 0
   CameraPosition: {fileID: 0}
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
+  buttonsCanvas: {fileID: 1850532872}
   requestDraw: 0
 --- !u!1 &1429386287
 GameObject:
@@ -9045,6 +9059,12 @@ MonoBehaviour:
   up: {fileID: 274036759}
   down: {fileID: 1647443925}
   game: {fileID: 0}
+--- !u!223 &1850532872 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2081044094258837862, guid: 25faf3cad2629954db2939ba813bf8a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1850532869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1862863567
 GameObject:
   m_ObjectHideFlags: 0

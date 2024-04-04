@@ -4,224 +4,230 @@ using UnityEngine;
 using UnityEngine.Events;
 public static class Data
 {
-    public static string CURRENT_LANGUAGE = "en";
+    public static string CURRENT_LANGUAGE = "English";
 
     public static Dictionary<string, Dictionary<string, string>> LOCALIZATION =
         new Dictionary<string, Dictionary<string, string>>()
         {
             { "easyAI_key", new Dictionary<string, string>()
             {
-                {"en", "Easy" },
-                {"es", "Facil" }
+                {"English", "Easy" },
+                {"Español", "Facil" }
             }
             },
             { "hardAI_key", new Dictionary<string, string>()
             {
-                {"en", "Hard" },
-                {"es", "Dificil" }
+                {"English", "Hard" },
+                {"Español", "Dificil" }
             }
             },
             { "quickplayAI_key", new Dictionary<string, string>()
             {
-                {"en", "Quickplay" },
-                {"es", "Partida Rapida" }
+                {"English", "Quickplay" },
+                {"Español", "Partida Rapida" }
             }
             },
             { "settings_key", new Dictionary<string, string>()
             {
-                {"en", "Learn to Play" },
-                {"es", "Aprende a Jugar" }
+                {"English", "Learn to Play" },
+                {"Español", "Aprende a Jugar" }
             }
             },
             { "online_key", new Dictionary<string, string>()
             {
-                {"en", "Online" },
-                {"es", "En Linea" }
+                {"English", "Online" },
+                {"Español", "En Linea" }
             }
             },
             { "multiplayer_key", new Dictionary<string, string>()
             {
-                {"en", "Multiplayer" },
-                {"es", "Multijugador" }
+                {"English", "Multiplayer" },
+                {"Español", "Multijugador" }
             }
             },
             { "host_key", new Dictionary<string, string>()
             {
-                {"en", "Host" },
-                {"es", "Crear Sala" }
+                {"English", "Host" },
+                {"Español", "Crear Sala" }
             }
             },
             { "join_key", new Dictionary<string, string>()
             {
-                {"en", "Join" },
-                {"es", "Unirse" }
+                {"English", "Join" },
+                {"Español", "Unirse" }
             }
             },
             { "joinLobby_key", new Dictionary<string, string>()
             {
-                {"en", "Join Lobby" },
-                {"es", "Unirse A Sala" }
+                {"English", "Join Lobby" },
+                {"Español", "Unirse A Sala" }
             }
             },
             { "story_key", new Dictionary<string, string>()
             {
-                {"en", "Story Mode" },
-                {"es", "Modo Campaña" }
+                {"English", "Story Mode" },
+                {"Español", "Modo Campaña" }
             }
             },
             { "help_key", new Dictionary<string, string>()
             {
-                {"en", "Choose a clear ingot or an already hot ingot that is located on the edge of the forge. Once selected the player can move their piece to the end of one of the now incomplete rows and shift the other pieces. As a blacksmith your goal is to align five hot ingots in a row either diagonally, vertically or horizontally before the forge cools down by accomplishing the same task with cold coals." },
-                {"es", "Seleccione un lingote claro o un lingote ya caliente que se encuentre en el borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo es alinear cinco lingotes calientes en fila, ya sea en diagonal, vertical u horizontal antes de que la forja se enfrie, con los lingotes frios." }
+                {"English", "Choose a clear ingot or an already hot ingot that is located on the edge of the forge. Once selected the player can move their piece to the end of one of the now incomplete rows and shift the other pieces. As a blacksmith your goal is to align five hot ingots in a row either diagonally, vertically or horizontally before the forge cools down by accomplishing the same task with cold coals." },
+                {"Español", "Seleccione un lingote claro o un lingote ya caliente que se encuentre English el borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo Español alinear cinco lingotes calientes English fila, ya sea English diagonal, vertical u horizontal antes de que la forja se enfrie, con los lingotes frios." }
             }
             },
             { "congrats_key", new Dictionary<string, string>()
             {
-                {"en", "Congratulations" },
-                {"es", "Felicidades" }
+                {"English", "Congratulations" },
+                {"Español", "Felicidades" }
             }
             },
             { "restart_key", new Dictionary<string, string>()
             {
-                {"en", "Restart" },
-                {"es", "Reiniciar" }
+                {"English", "Restart" },
+                {"Español", "Reiniciar" }
+            }
+            },
+            { "restart_one_key", new Dictionary<string, string>()
+            {
+                {"English", "Restart (1/2)" },
+                {"Español", "Reiniciar (1/2)" }
             }
             },
             { "returnToMain_key", new Dictionary<string, string>()
             {
-                {"en", "Return to Main Menu" },
-                {"es", "Volver al Menu Principal" }
+                {"English", "Return to Main Menu" },
+                {"Español", "Volver al Menu Principal" }
             }
             },
             { "loss_key", new Dictionary<string, string>()
             {
-                {"en", "You lost! AI won!" },
-                {"es", "Perdiste! IA gano!" }
+                {"English", "You lost! AI won!" },
+                {"Español", "Perdiste! IA gano!" }
             }
             },
             { "tie_key", new Dictionary<string, string>()
             {
-                {"en", "It's a TIE!" },
-                {"es", "Es un EMPATE!" }
+                {"English", "It's a TIE!" },
+                {"Español", "Es un EMPATE!" }
             }
             },
             { "drawDeny_key", new Dictionary<string, string>()
             {
-                {"en", "Draw Denied!" },
-                {"es", "Es un EMPATE!" }
+                {"English", "Draw Denied!" },
+                {"Español", "Empate Negado!" }
             }
             },
             { "resume_key", new Dictionary<string, string>()
             {
-                {"en", "Resume" },
-                {"es", "Reanudar" }
+                {"English", "Resume" },
+                {"Español", "Reanudar" }
             }
             },
             { "accept_key", new Dictionary<string, string>()
             {
-                {"en", "Accept" },
-                {"es", "Aceptar" }
+                {"English", "Accept" },
+                {"Español", "Aceptar" }
             }
             },
             { "deny_key", new Dictionary<string, string>()
             {
-                {"en", "Deny" },
-                {"es", "Negar" }
+                {"English", "Deny" },
+                {"Español", "Negar" }
             }
             },
             { "pause_key", new Dictionary<string, string>()
             {
-                {"en", "Pause" },
-                {"es", "Pausa" }
+                {"English", "Pause" },
+                {"Español", "Pausa" }
             }
             },
             { "helpWord_key", new Dictionary<string, string>()
             {
-                {"en", "Help" },
-                {"es", "Ayuda" }
+                {"English", "Help" },
+                {"Español", "Ayuda" }
             }
             },
             { "lvl2_key", new Dictionary<string, string>()
             {
-                {"en", "Level 2" },
-                {"es", "Nivel 2" }
+                {"English", "Level 2" },
+                {"Español", "Nivel 2" }
             }
             },
             { "lvl3_key", new Dictionary<string, string>()
             {
-                {"en", "Level 3" },
-                {"es", "Nivel 3" }
+                {"English", "Level 3" },
+                {"Español", "Nivel 3" }
             }
             },
             { "lvl4_key", new Dictionary<string, string>()
             {
-                {"en", "Level 4 (Final Level)" },
-                {"es", "Nivel 4 (Nivel Final)" }
+                {"English", "Level 4 (Final Level)" },
+                {"Español", "Nivel 4 (Nivel Final)" }
             }
             },
             { "otherModes_key", new Dictionary<string, string>()
             {
-                {"en", "Try Another Mode" },
-                {"es", "Prueba Otro Modo" }
+                {"English", "Try Another Mode" },
+                {"Español", "Prueba Otro Modo" }
             }
             },
             { "leftDiag_key", new Dictionary<string, string>()
             {
-                {"en", "Left Diagonal" },
-                {"es", "Diagonal Izquierda" }
+                {"English", "Left Diagonal" },
+                {"Español", "Diagonal Izquierda" }
             }
             },
             { "rightDiag_key", new Dictionary<string, string>()
             {
-                {"en", "Right Diagonal" },
-                {"es", "Diagonal Derecha" }
+                {"English", "Right Diagonal" },
+                {"Español", "Diagonal Derecha" }
             }
             },
             { "step1_key", new Dictionary<string, string>()
             {
-                {"en", "The yellow cubes are your ingots. The black cubes are cooled coals. Select the highlighted grey cube." },
-                {"es", "Los cubos amarillos son tus lingotes. Los cubos negros son carbones enfriados. Seleccione el cubo gris resaltado." }
+                {"English", "The yellow cubes are your ingots. The black cubes are cooled coals. Select the highlighted grey cube." },
+                {"Español", "Los cubos amarillos son tus lingotes. Los cubos negros son carbones enfriados. Seleccione el cubo gris resaltado." }
             }
             },
             { "step2_key", new Dictionary<string, string>()
             {
-                {"en", "These arrows indicate which direction a peice can move. When an arrow is red, it indicates the peice can move that direction. Select the red arrow." },
-                {"es", "Estas flechas indican en que direccion se puede mover una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja." }
+                {"English", "These arrows indicate which direction a piece can move. When an arrow is red, it indicates the piece can move that direction. Select the red arrow." },
+                {"Español", "Estas flechas indican en que direccion se puede mover una pieza. Cuando una flecha Español roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja." }
             }
             },
             { "offerDraw_key", new Dictionary<string, string>()
             {
-                {"en", "Offer Draw"},
-                {"es", "Ofrecer Empate"}
+                {"English", "Offer Draw"},
+                {"Español", "Ofrecer Empate"}
             }
             },
             { "vertical_key", new Dictionary<string, string>()
             {
-                {"en", "Vertical"},
-                {"es", "Vertical"} 
+                {"English", "Vertical"},
+                {"Español", "Vertical"} 
             }
             },
             { "horizontal_key", new Dictionary<string, string>()
             {
-                {"en", "Horizontal"},
-                {"es", "Horizontal"}
+                {"English", "Horizontal"},
+                {"Español", "Horizontal"}
             }
             },
             { "local_key", new Dictionary<string, string>()
             {
-                {"en", "Local"},
-                {"es", "Local"}//Fernado needs to fix
+                {"English", "Local"},
+                {"Español", "Local"}
             }
             },
             { "single_key", new Dictionary<string, string>()
             {
-                {"en", "SinglePlayer"},
-                {"es", "Individual"}//Fernado needs to fix
+                {"English", "SinglePlayer"},
+                {"Español", "Individual"}
             }
             },
         };
 
-    public static string[] LANGUAGES = new string[] { "en", "es" };
+    public static string[] LANGUAGES = new string[] { "English", "Español" };
     private static UnityEvent _OnLanguageChanged;
     public static UnityEvent OnLanguageChanged
     {

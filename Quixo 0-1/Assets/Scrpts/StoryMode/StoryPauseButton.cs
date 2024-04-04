@@ -20,6 +20,7 @@ public class StoryPauseButton : MonoBehaviour
     {
         pauseMenu.enabled = false;
         helpMenu.enabled = false;
+        pauseButton.gameObject.SetActive(false);
     }
 
     public void openMenu()
@@ -41,7 +42,7 @@ public class StoryPauseButton : MonoBehaviour
     public async void returnToMain()
     {
         Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     public void openHelpMenu()

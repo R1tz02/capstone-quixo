@@ -1,12 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Diagnostics.Contracts;
 using System;
+
 //using UnityEditor.Overlays;
 
 public class TutPauseButton : MonoBehaviour
@@ -18,6 +15,7 @@ public class TutPauseButton : MonoBehaviour
     public Canvas learningModes;
     public Canvas stepOne;
     public Canvas stepTwo;
+    public int stepDisabled;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +23,6 @@ public class TutPauseButton : MonoBehaviour
         learningModes.enabled = true;
         pauseMenu.enabled = false;
         pauseButton.gameObject.SetActive(false);
-        helpMenu.enabled = true;
         stepOne.enabled = false;
         stepTwo.enabled = false;
 
@@ -67,13 +64,34 @@ public class TutPauseButton : MonoBehaviour
 
     public void tryDifMode()
     {
-        restartGame();
-        learningModes.enabled = true;
-        gameMaster.GetComponent<TutGameCore>().winScreen.enabled = false;
+        bool difMode = true;
+        StartCoroutine(AsyncLoadGameScene(3, () =>
+        {
+            if (gameMaster != null)
+            {
+                learningModes.enabled = true;
+                gameMaster.GetComponent<TutGameCore>().StartTutorial(difMode);
+
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
     }
 
     public void openMenu()
-    { 
+    {
+        if (stepOne.enabled)
+        {
+            stepOne.enabled = false;
+            stepDisabled = 1;
+        }
+        else if (stepTwo.enabled)
+        {
+            stepTwo.enabled = false;
+            stepDisabled = 2;
+        }
         pauseMenu.enabled = true;
         pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
@@ -82,6 +100,8 @@ public class TutPauseButton : MonoBehaviour
 
     public void closeMenu() 
     { 
+        if(stepDisabled == 1) { stepOne.enabled = true; }
+        else if (stepDisabled == 2) { stepTwo.enabled = true; }
         pauseMenu.enabled = false;
         pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1;
@@ -91,24 +111,34 @@ public class TutPauseButton : MonoBehaviour
     public async void returnToMain()
     {
         Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     public void openHelpMenu()
     {
-        pauseMenu.enabled = false;
+       // pauseMenu.enabled = false;
         helpMenu.enabled = true;
     }
 
     public void closeHelpMenu()
     {
         helpMenu.enabled = false;
-        pauseButton.gameObject.SetActive(true);
     }
 
     public void restartGame()
     {
-        Debug.Log("TODO: Need aid getting this restart to work with differnt tutorial types");
+        StartCoroutine(AsyncLoadGameScene(3, () =>
+        {
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<TutGameCore>().StartTutorial();
+                
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
     }
 
     public IEnumerator AsyncLoadGameScene(int sceneToLoad, Action onSceneLoaded)
@@ -125,6 +155,7 @@ public class TutPauseButton : MonoBehaviour
             }
 
             onSceneLoaded?.Invoke();
+
 
             Destroy(this.gameObject);
         }
