@@ -161,7 +161,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         RematchDict[wantsToPlayAgainRef] = true;
 
         // TODO #35: Change the GUI text to reflect the number of players who want to play again
-        //GameObject.Find("playAgainTxt").gameObject.GetComponent<Text>().text = "restart_one_key";
+        GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "restartOne_key";
         if (RematchDict.Count == 2 && networkingManager._runner.IsServer)
         {
             RpcResetGame();

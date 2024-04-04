@@ -64,7 +64,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
-    public string lobbyName;
+    public string lobbyName = null;
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
@@ -218,8 +218,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (mode == GameMode.Host)
         {
-            //TODO: Not sure if hiding the game when the player Host's is the best idea. Creates impression that Quickplay doesn't work if the game is hidden.
-            //isOpen = false;
+            isOpen = false;
 
             System.Random res = new System.Random();
 

@@ -87,7 +87,7 @@ public static class Data
                 {"Español", "Reiniciar" }
             }
             },
-            { "restart_one_key", new Dictionary<string, string>()
+            { "restartOne_key", new Dictionary<string, string>()
             {
                 {"English", "Restart (1/2)" },
                 {"Español", "Reiniciar (1/2)" }
@@ -223,6 +223,24 @@ public static class Data
             {
                 {"English", "SinglePlayer"},
                 {"Español", "Individual"}
+            }
+            },
+            { "order_key", new Dictionary<string, string>()
+            {
+                {"English", "Turn Order"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "first_key", new Dictionary<string, string>()
+            {
+                {"English", "First"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "second_key", new Dictionary<string, string>()
+            {
+                {"English", "Second"},
+                {"Español", "Individual"} // Fernando needs to translate
             }
             },
         };
