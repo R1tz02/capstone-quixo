@@ -173,7 +173,7 @@ public class MenuController : MonoBehaviour
 
     public void loadTutorial() //need Jack to map this to the scene I need
     {
-        StartCoroutine(AsyncLoadGameScene(2, () =>
+        StartCoroutine(AsyncLoadGameScene(3, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
@@ -189,7 +189,7 @@ public class MenuController : MonoBehaviour
 
     public void NewEasyGame()
     {
-        StartCoroutine(AsyncLoadGameScene(4, () =>
+        StartCoroutine(AsyncLoadGameScene(5, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
@@ -205,7 +205,7 @@ public class MenuController : MonoBehaviour
 
     public void NewHardGame()
     {
-        StartCoroutine(AsyncLoadGameScene(4, () =>
+        StartCoroutine(AsyncLoadGameScene(5, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
@@ -222,7 +222,7 @@ public class MenuController : MonoBehaviour
 
     public void StoryModeLevel1Easy()
     {
-        StartCoroutine(AsyncLoadGameScene(3, () =>
+        StartCoroutine(AsyncLoadGameScene(4, () =>
         {
             StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
@@ -241,7 +241,7 @@ public class MenuController : MonoBehaviour
 
     public void StoryModeLevel1Hard()
     {
-        StartCoroutine(AsyncLoadGameScene(3, () =>
+        StartCoroutine(AsyncLoadGameScene(4, () =>
         {
             StoryGameCore gcComponent;
             GameObject gameMaster = GameObject.Find("GameMaster");
@@ -261,7 +261,7 @@ public class MenuController : MonoBehaviour
 
     public void LocalGame()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
@@ -278,7 +278,7 @@ public class MenuController : MonoBehaviour
     public void JoinNetworkedGame()
     {
         string code = GameObject.Find("JoinMenu").GetComponentInChildren<TMP_InputField>().text;
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");
             GameObject gameMaster = GameObject.Find("GameMaster");
@@ -296,7 +296,7 @@ public class MenuController : MonoBehaviour
 
     public void HostNetworkedGame()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");
             GameObject gameMaster = GameObject.Find("GameMaster");
@@ -332,7 +332,7 @@ public class MenuController : MonoBehaviour
 
     public void QuickPlayGame()
     {
-        StartCoroutine(AsyncLoadGameScene(1, () =>
+        StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");
             GameObject gameMaster = GameObject.Find("GameMaster");

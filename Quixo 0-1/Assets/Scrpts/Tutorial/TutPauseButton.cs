@@ -65,7 +65,7 @@ public class TutPauseButton : MonoBehaviour
     public void tryDifMode()
     {
         bool difMode = true;
-        StartCoroutine(AsyncLoadGameScene(2, () =>
+        StartCoroutine(AsyncLoadGameScene(3, () =>
         {
             if (gameMaster != null)
             {
@@ -111,7 +111,7 @@ public class TutPauseButton : MonoBehaviour
     public async void returnToMain()
     {
         Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     public void openHelpMenu()
@@ -127,7 +127,7 @@ public class TutPauseButton : MonoBehaviour
 
     public void restartGame()
     {
-        StartCoroutine(AsyncLoadGameScene(2, () =>
+        StartCoroutine(AsyncLoadGameScene(3, () =>
         {
             if (gameMaster != null)
             {
