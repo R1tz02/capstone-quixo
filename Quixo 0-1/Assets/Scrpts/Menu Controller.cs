@@ -229,7 +229,7 @@ public class MenuController : MonoBehaviour
             gcComponent = gameMaster.GetComponent<StoryGameCore>();
             if (gcComponent != null)
             {
-                gcComponent.StartStoryGame(false);
+                gcComponent.StartStoryGame(true);
                 gcComponent.SMLvl=1;
             }
             else
