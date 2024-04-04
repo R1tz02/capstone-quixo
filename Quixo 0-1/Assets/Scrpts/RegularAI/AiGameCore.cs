@@ -30,7 +30,6 @@ public class AiGameCore : MonoBehaviour
     public bool aiMoving = false;
     public bool playHard = true;
     public bool aiFirst = false;
-    public bool aiFirstCopy;
 
     public GameType currentGameMode;
 
@@ -55,8 +54,6 @@ public class AiGameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
-        aiFirstCopy = aiFirst;
-
     }
 
     public void StartAIGame()
