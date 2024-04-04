@@ -35,7 +35,7 @@ public class NetworkErrorHandler : MonoBehaviour
     {
         Debug.Log("Disconnected by server");
 
-        StartCoroutine(AsyncLoadGameScene(0, () =>
+        StartCoroutine(AsyncLoadGameScene(1, () =>
         {
             MenuController menuController = GameObject.Find("Game Manager").GetComponent<MenuController>();
 
