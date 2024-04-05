@@ -4701,7 +4701,7 @@ GameObject:
   - component: {fileID: 913374356}
   - component: {fileID: 913374355}
   m_Layer: 5
-  m_Name: vikingSword
+  m_Name: vikingWeapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
