@@ -328,10 +328,6 @@ public class StoryGameCore : MonoBehaviour
         {
             canvasToShow.enabled = true;
         }
-        //else
-        //{
-        //    loseScreen.enabled = true;
-        //}
     }
 
     IEnumerator DelayedCanvasSelection(Canvas canvasType)
@@ -339,40 +335,6 @@ public class StoryGameCore : MonoBehaviour
         yield return new WaitForSeconds(2.5f); // 1 second delay
         chooseCanvasAndWinner(ref canvasType);
     }
-
-//public bool won()
-//    {
-//        switch (SMLvl)
-//        {
-//            case 1:
-//                if (verticalWin())
-//                {
-//                    chooseCanvasAndWinner(ref SMLvl2); return true;
-//                }
-//                break;
-//            case 2:
-//                if (horizontalWin())
-//                {
-//                    chooseCanvasAndWinner(ref SMLvl3); return true;
-//                }
-//                break;
-//            case 3:
-//                if (leftDiagonalWin() || rightDiagonalWin())
-//                {
-//                    chooseCanvasAndWinner(ref SMLvl4); return true;
-//                }
-//                break;
-//            case 4:
-//                if (helmetWin())
-//                {
-//                    chooseCanvasAndWinner(ref winScreen); return true;
-//                }
-//                break;
-//            default: return false;
-//        }
-
-//        return false;
-//    }
 
     public bool won()
     {
