@@ -2,12 +2,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Fusion;
-using static UnityEngine.Rendering.DebugUI.Table;
-using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine.UI;
+
 using static UnityEditor.Localization.LocalizationTableCollection;
 using UnityEngine.SocialPlatforms.Impl;
 
@@ -180,6 +178,7 @@ public class GameCore : MonoBehaviour
         for(int i = 0; i< 5; i++)
         {
             gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
+            gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<Outline>().OutlineWidth = 10;
         }
     }
 

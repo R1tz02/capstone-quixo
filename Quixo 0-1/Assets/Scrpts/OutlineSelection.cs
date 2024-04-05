@@ -41,7 +41,7 @@ public class OutlineSelection : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out raycastHit)) //Make sure you have EventSystem in the hierarchy before using EventSystem
         {
             highlight = raycastHit.transform;
-            if (highlight.CompareTag("Selectable") && highlight != selection)
+            if (highlight.CompareTag("Selectable") && highlight != selection && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
             {
                 if (highlight.gameObject.GetComponent<Outline>() != null)
                 {
@@ -63,7 +63,7 @@ public class OutlineSelection : MonoBehaviour
         }
 
         // Selection
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
         {
             if (highlight)
             {
