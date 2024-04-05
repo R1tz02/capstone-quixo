@@ -40,7 +40,7 @@ public class AnvilClick : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (currentCam.transform.position != endMarker.position)
+        if (currentCam.transform.position != endMarker.position && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
         {
             GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
             GameObject.Find("Game Manager").GetComponent<MenuController>().overlayCanvas.enabled = false;

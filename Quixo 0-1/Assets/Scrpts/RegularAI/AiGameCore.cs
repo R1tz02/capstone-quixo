@@ -1,14 +1,8 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using Fusion;
-using static UnityEngine.Rendering.DebugUI.Table;
-using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine.SocialPlatforms.Impl;
 using System;
 using System.Collections;
-using static UnityEditor.Localization.LocalizationTableCollection;
 
 public class AiGameCore : MonoBehaviour
 {

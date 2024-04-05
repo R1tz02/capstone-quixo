@@ -243,6 +243,12 @@ public static class Data
                 {"Español", "Individual"} // Fernando needs to translate
             }
             },
+            { "mediumAI_key", new Dictionary<string, string>()
+            {
+                {"English", "Medium"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
         };
 
     public static string[] LANGUAGES = new string[] { "English", "Español" };

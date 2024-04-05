@@ -25,11 +25,13 @@ public class MenuController : MonoBehaviour
     public Text errorText;
     public Text joinCode;
 
+    public bool isError = false;
+
     public float moveDuration;
     public float rotaionDuration;
 
     private bool aiFirst = false;
-    private bool aiEasy = false;
+    private int aiDiff = 1;
 
     bool rotating;
     bool moving;
@@ -65,7 +67,7 @@ public class MenuController : MonoBehaviour
         errorText.text = error;
         errorCanvas.enabled = true;
 
-        
+        isError = true;
     }
 
     public void closeError()
@@ -94,13 +96,20 @@ public class MenuController : MonoBehaviour
     { 
         quickCanvas.enabled = false;
         orderCanvas.enabled = true;
-        aiEasy = true;
+        aiDiff = 1;
+    }
+
+    public void moveOrderMedium()
+    {
+        quickCanvas.enabled = false;
+        orderCanvas.enabled = true;
+        aiDiff = 2;
     }
     public void moveOrderHard()
     {
         quickCanvas.enabled = false;
         orderCanvas.enabled = true;
-        aiEasy = false;
+        aiDiff = 3;
     }
 
     public void openTutorialMenu()
@@ -136,11 +145,15 @@ public class MenuController : MonoBehaviour
     public void moveFirst()
     {
         aiFirst = false;
-        if (aiEasy)
+        if (aiDiff == 1)
         {
             NewEasyGame();
         }
-        else 
+        else if (aiDiff == 2)
+        {
+            //NewMediumGame();
+        }
+        else if (aiDiff == 3)
         { 
             NewHardGame();
         }
@@ -148,11 +161,15 @@ public class MenuController : MonoBehaviour
     public void moveSecond()
     {
         aiFirst = true;
-        if (aiEasy)
+        if (aiDiff == 1)
         {
             NewEasyGame();
         }
-        else
+        else if (aiDiff == 2)
+        {
+            //NewMediumGame();
+        }
+        else if (aiDiff == 3)
         {
             NewHardGame();
         }
