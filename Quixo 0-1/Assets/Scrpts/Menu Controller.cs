@@ -75,6 +75,7 @@ public class MenuController : MonoBehaviour
         errorCanvas.enabled = false;
                     
         Time.timeScale = 1;
+        isError = false;
 
         Destroy(GameObject.Find("NetworkErrorHandler"));
     }
