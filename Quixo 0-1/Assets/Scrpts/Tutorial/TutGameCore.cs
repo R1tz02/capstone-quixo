@@ -28,6 +28,7 @@ public class TutGameCore : MonoBehaviour
     public int tutLvl = -1;
     public int AIcounter = 0;
     public int usrCounter = 0;
+    public List<(int, int)> winnerPieces = new List<(int, int)>();
 
 
     void Start()
@@ -49,6 +50,26 @@ public class TutGameCore : MonoBehaviour
         }
         else { helpMenu.enabled = true; }
     }
+    private void highlightPieces()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            if(gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<Outline>())
+            {
+                gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<Outline>().enabled = true;
+            }
+            else
+                gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
+        }
+        if(!winnerPieces.Contains((chosenPiece.row, chosenPiece.col)))
+        {
+            if (gameBoard[chosenPiece.row, chosenPiece.col].GetComponent<Outline>())
+            {
+                gameBoard[chosenPiece.row, chosenPiece.col].GetComponent<Outline>().enabled = false;
+            }
+        }
+    }
+
     private bool horizontalWin()
     {
         Debug.Log("checking for horizontal win");
@@ -62,6 +83,7 @@ public class TutGameCore : MonoBehaviour
             for (int col = 0; col < 5; col++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<TutPieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
+                winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
                     success = false; //F: if changed, not same symbols
@@ -82,6 +104,7 @@ public class TutGameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -99,6 +122,7 @@ public class TutGameCore : MonoBehaviour
             for (int row = 0; row < 5; row++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<TutPieceLogic>().player;
+                winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
                     success = false;
@@ -120,6 +144,7 @@ public class TutGameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -131,10 +156,12 @@ public class TutGameCore : MonoBehaviour
         char pieceToCheck = '-';
         bool success = true;
         //check for top left to bottom right win
-        baseSymbol = gameBoard[0, 0].GetComponent<TutPieceLogic>().player; ;
+        baseSymbol = gameBoard[0, 0].GetComponent<TutPieceLogic>().player;
+        winnerPieces.Add((0, 0));
         for (int i = 1; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, i].GetComponent<TutPieceLogic>().player;
+            winnerPieces.Add((i, i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -155,6 +182,7 @@ public class TutGameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
 
         return false;
     }
@@ -168,6 +196,7 @@ public class TutGameCore : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, 4 - i].GetComponent<TutPieceLogic>().player;
+            winnerPieces.Add((i, 4 - i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -189,6 +218,7 @@ public class TutGameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
         return false;
     }
 
@@ -299,7 +329,8 @@ public class TutGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<TutPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<TutPieceLogic>(), new Vector3(target.x, 96f, target.z)));
         gamePaused = false;
-
+        chosenPiece.row = row;
+        chosenPiece.col = col;
     }
 
     public bool makeMove(char c)
@@ -320,6 +351,7 @@ public class TutGameCore : MonoBehaviour
             usrCounter++;
             if (won())
             {
+                highlightPieces();
                 GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
                 WaitFor(3000);
                 winScreen.enabled = true;
@@ -588,6 +620,7 @@ public class TutGameCore : MonoBehaviour
         }
         else
         {
+
             if ((row == 0 || row == 4) || (col == 0 || col == 4))
             {
                 if (piece.player == '-' || currentPlayer.piece == piece.player)
