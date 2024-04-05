@@ -34,10 +34,11 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
 
-    Image vikingWeapon; 
-    public string spear = "spearWin";
-    public string sword = "sword win";
-    public string axe = "axe win";
+    Image vikingWeapon;
+    Sprite spear;
+    Sprite sword;
+    Sprite axe;
+    Sprite lose;
 
     public Canvas loseScreen;
     public Canvas winScreen;
@@ -65,6 +66,10 @@ public class GameCore : MonoBehaviour
         errorScreen.enabled = false;
         restartButton.gameObject.SetActive(true);
         vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
+        spear = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/spearWin.png");
+        sword = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/swordWin.png");
+        axe = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/axeWin.png");
+        lose = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/graveLose.png");
     }
 
     public void showError(string error)
@@ -110,8 +115,7 @@ public class GameCore : MonoBehaviour
 
         GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
 
-        Sprite newWeaponSprite = Resources.Load<Sprite>("Assets/Images/" + spear);
-        vikingWeapon.sprite = newWeaponSprite;
+        
 
         TMP_Text text = congrats.GetComponent<TMP_Text>();
         if (currentPlayer.piece == 'X')
@@ -120,6 +124,7 @@ public class GameCore : MonoBehaviour
         }
         else 
         {
+            vikingWeapon.sprite = lose;
             text.text = "The dragons fire consumes all!";
         }
         winScreen.enabled = true;
@@ -337,10 +342,23 @@ public class GameCore : MonoBehaviour
 
     public bool won()
     {
-        if (horizontalWin())    {return true;};
-        if (verticalWin())      {return true;};
-        if (leftDiagonalWin())  {return true;}; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) {return true;};
+        if (horizontalWin())    {
+            vikingWeapon.sprite = spear;
+            return true;
+        };
+        if (verticalWin())      {
+            vikingWeapon.sprite = sword;
+            return true;
+        };
+        if (leftDiagonalWin())  {
+            vikingWeapon.sprite = axe;
+            return true;
+        }; //separated checkDiagonalWin into two separate functions
+        if (rightDiagonalWin()) {
+            vikingWeapon.sprite = axe;
+
+            return true;
+        };
         return false;
 
     }
