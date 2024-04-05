@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using System.Collections;
+using UnityEngine.UI;
 
 public class StoryGameCore : MonoBehaviour
 {
@@ -62,7 +63,6 @@ public class StoryGameCore : MonoBehaviour
         IntroSMLvl2.enabled = false;
         IntroSMLvl3.enabled = false;
         IntroSMLvl4.enabled = false;
-
 
         Time.timeScale = 0;
         gamePaused = true;
@@ -347,7 +347,7 @@ public class StoryGameCore : MonoBehaviour
 
     private void chooseCanvasAndWinner(ref Canvas canvasToShow)
     {
-         //AI game, either SM or normal
+        //AI game, either SM or normal
         if (currentPlayer == p1)
         {
             canvasToShow.enabled = true;

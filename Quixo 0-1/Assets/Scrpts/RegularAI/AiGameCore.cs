@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System;
 using System.Collections;
+using UnityEngine.UI;
 
 public class AiGameCore : MonoBehaviour
 {
@@ -25,6 +26,11 @@ public class AiGameCore : MonoBehaviour
     public bool aiMoving = false;
     public bool playHard = true;
     public bool aiFirst = false;
+
+    Image vikingWeapon;
+    Sprite spear;
+    Sprite sword;
+    Sprite axe;
 
     public GameType currentGameMode;
 
@@ -50,6 +56,11 @@ public class AiGameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
+
+        vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
+        spear = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/spearWin.png");
+        sword = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/swordWin.png");
+        axe = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/axeWin.png");
     }
 
     public void StartAIGame()
@@ -277,10 +288,22 @@ public class AiGameCore : MonoBehaviour
 
     public bool won()
     {
-        if (horizontalWin())    { return true;};
-        if (verticalWin())      { return true;};
-        if (leftDiagonalWin())  { return true;}; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) { return true;};
+        if (horizontalWin())    {
+            vikingWeapon.sprite = spear;
+            return true;
+        };
+        if (verticalWin())      { 
+            vikingWeapon.sprite = sword;
+            return true;
+        };
+        if (leftDiagonalWin())  { 
+            vikingWeapon.sprite = axe;
+            return true;
+        }; //separated checkDiagonalWin into two separate functions
+        if (rightDiagonalWin()) { 
+            vikingWeapon.sprite = axe;
+            return true;
+        };
         return false;
     }
 
