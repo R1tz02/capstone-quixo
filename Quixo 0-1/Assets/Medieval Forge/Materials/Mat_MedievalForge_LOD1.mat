@@ -136,6 +136,6 @@ Material:
     - <noninit>: {r: 5.32482, g: 3.9302242, b: 2.1806405, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 2.367466, g: 1.7474153, b: 0.9695336, a: 0}
+    - _EmissionColor: {r: 3.1138134, g: 2.2982907, b: 1.2751807, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
