@@ -24,6 +24,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer p2;
     public int SMLvl = 1;
     public bool gamePaused;
+    public List<(int, int)> winnerPieces = new List<(int, int)>();
 
     public Canvas loseScreen;
     public Canvas winScreen;
@@ -119,6 +120,14 @@ public class StoryGameCore : MonoBehaviour
         }
     }
 
+    private void highlightPieces()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
+        }
+    }
+
     private bool horizontalWin()
     {
         Debug.Log("checking for horizontal win");
@@ -132,6 +141,7 @@ public class StoryGameCore : MonoBehaviour
             for (int col = 0; col < 5; col++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<StoryPieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
+                winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
                     success = false; //F: if changed, not same symbols
@@ -152,6 +162,7 @@ public class StoryGameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -169,6 +180,7 @@ public class StoryGameCore : MonoBehaviour
             for (int row = 0; row < 5; row++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<StoryPieceLogic>().player;
+                winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
                     success = false;
@@ -190,6 +202,7 @@ public class StoryGameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -201,10 +214,12 @@ public class StoryGameCore : MonoBehaviour
         char pieceToCheck = '-';
         bool success = true;
         //check for top left to bottom right win
-        baseSymbol = gameBoard[0, 0].GetComponent<StoryPieceLogic>().player; ;
+        baseSymbol = gameBoard[0, 0].GetComponent<StoryPieceLogic>().player;
+        winnerPieces.Add((0, 0));
         for (int i = 1; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, i].GetComponent<StoryPieceLogic>().player;
+            winnerPieces.Add((i, i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -225,6 +240,7 @@ public class StoryGameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
 
         return false;
     }
@@ -238,6 +254,7 @@ public class StoryGameCore : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, 4 - i].GetComponent<StoryPieceLogic>().player;
+            winnerPieces.Add((i, 4 - i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -259,6 +276,7 @@ public class StoryGameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
         return false;
     }
 
@@ -268,10 +286,15 @@ public class StoryGameCore : MonoBehaviour
 
         //check for top left to bottom right win
         char helmetPart1 = gameBoard[3, 1].GetComponent<StoryPieceLogic>().player;
+        winnerPieces.Add((3, 1));
         char helmetPart2 = gameBoard[2, 1].GetComponent<StoryPieceLogic>().player;
+        winnerPieces.Add((2, 1));
         char helmetPart3 = gameBoard[1, 2].GetComponent<StoryPieceLogic>().player;
+        winnerPieces.Add((1, 2));
         char helmetPart4 = gameBoard[2, 3].GetComponent<StoryPieceLogic>().player;
+        winnerPieces.Add((2, 3));
         char helmetPart5 = gameBoard[3, 3].GetComponent<StoryPieceLogic>().player;
+        winnerPieces.Add((3, 3));
 
         if ((helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5) && helmetPart5!= '-')
         {
@@ -287,7 +310,7 @@ public class StoryGameCore : MonoBehaviour
             }
             return true;
         }
-
+        winnerPieces.Clear();
         return false;
     }
 
@@ -426,6 +449,7 @@ public class StoryGameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won())
             {
+                highlightPieces();
                 Time.timeScale = 0;
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -473,6 +497,7 @@ public class StoryGameCore : MonoBehaviour
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
         {
+            highlightPieces();
             Time.timeScale = 0;
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
@@ -500,6 +525,7 @@ public class StoryGameCore : MonoBehaviour
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
         {
+            highlightPieces();
             Time.timeScale = 0;
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine.SocialPlatforms.Impl;
 using System;
 using System.Collections;
+using static UnityEditor.Localization.LocalizationTableCollection;
 
 public class AiGameCore : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class AiGameCore : MonoBehaviour
     public Canvas buttonsCanvas;
     private EasyAI easyAI;
     private HardAI hardAI;
+    public List<(int, int)> winnerPieces = new List<(int, int)>();
     public bool requestDraw = false;
 
 
@@ -114,6 +116,14 @@ public class AiGameCore : MonoBehaviour
         yield return new WaitForSeconds(3.5f);
     }
 
+    private void highlightPieces()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
+        }
+    }
+
     private bool horizontalWin()
     {
         Debug.Log("checking for horizontal win");
@@ -127,6 +137,7 @@ public class AiGameCore : MonoBehaviour
             for (int col = 0; col < 5; col++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<AiPieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
+                winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
                     success = false; //F: if changed, not same symbols
@@ -147,6 +158,7 @@ public class AiGameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -164,6 +176,7 @@ public class AiGameCore : MonoBehaviour
             for (int row = 0; row < 5; row++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<AiPieceLogic>().player;
+                winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
                     success = false;
@@ -185,6 +198,7 @@ public class AiGameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -196,10 +210,12 @@ public class AiGameCore : MonoBehaviour
         char pieceToCheck = '-';
         bool success = true;
         //check for top left to bottom right win
-        baseSymbol = gameBoard[0, 0].GetComponent<AiPieceLogic>().player; ;
+        baseSymbol = gameBoard[0, 0].GetComponent<AiPieceLogic>().player;
+        winnerPieces.Add((0, 0));
         for (int i = 1; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, i].GetComponent<AiPieceLogic>().player;
+            winnerPieces.Add((i, i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -220,6 +236,7 @@ public class AiGameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
 
         return false;
     }
@@ -233,6 +250,7 @@ public class AiGameCore : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, 4 - i].GetComponent<AiPieceLogic>().player;
+            winnerPieces.Add((i, 4 - i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -254,6 +272,7 @@ public class AiGameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
         return false;
     }
 
@@ -377,6 +396,7 @@ public class AiGameCore : MonoBehaviour
             aiButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                highlightPieces();
                 buttonsCanvas.enabled = false;
                 winScreen.enabled = true;
                 Time.timeScale = 0;
@@ -442,6 +462,7 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
+                highlightPieces();
                 buttonsCanvas.enabled = false;
                 loseScreen.enabled = true;
                 //Time.timeScale = 0;
@@ -477,6 +498,7 @@ public class AiGameCore : MonoBehaviour
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
         {
+            highlightPieces();
             Time.timeScale = 0;
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
