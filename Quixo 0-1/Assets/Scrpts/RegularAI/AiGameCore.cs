@@ -78,6 +78,10 @@ public class AiGameCore : MonoBehaviour
 
         if (aiFirst)
         {
+            Material temp = playerOneSpace;
+            playerOneSpace = playerTwoSpace;
+            playerTwoSpace = temp;
+
             if (playHard)
             {
                 HardAIMove(hardAI);
@@ -121,6 +125,7 @@ public class AiGameCore : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
+            gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<Outline>().OutlineWidth = 10;
         }
     }
 

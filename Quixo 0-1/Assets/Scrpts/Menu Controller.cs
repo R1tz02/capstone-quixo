@@ -21,11 +21,15 @@ public class MenuController : MonoBehaviour
     public Canvas tutorialCanvas;
     public Canvas labelCanvas;
     public Canvas errorCanvas;
+    public Canvas orderCanvas;
     public Text errorText;
     public Text joinCode;
 
     public float moveDuration;
     public float rotaionDuration;
+
+    private bool aiFirst = false;
+    private bool aiEasy = false;
 
     bool rotating;
     bool moving;
@@ -51,6 +55,8 @@ public class MenuController : MonoBehaviour
             joinLobbyCanvas.enabled = false;
         if(errorCanvas)
             errorCanvas.enabled = false;
+        if(orderCanvas)
+            orderCanvas.enabled = false;
     }
 
 
@@ -84,6 +90,19 @@ public class MenuController : MonoBehaviour
         joinLobbyCanvas.enabled = true;
     }
 
+    public void moveOrderEasy()
+    { 
+        quickCanvas.enabled = false;
+        orderCanvas.enabled = true;
+        aiEasy = true;
+    }
+    public void moveOrderHard()
+    {
+        quickCanvas.enabled = false;
+        orderCanvas.enabled = true;
+        aiEasy = false;
+    }
+
     public void openTutorialMenu()
     {
         overlayCanvas.enabled = false;
@@ -113,6 +132,32 @@ public class MenuController : MonoBehaviour
         HelpCanvas.enabled = false;
         overlayCanvas.enabled = true;
     }
+
+    public void moveFirst()
+    {
+        aiFirst = false;
+        if (aiEasy)
+        {
+            NewEasyGame();
+        }
+        else 
+        { 
+            NewHardGame();
+        }
+    }
+    public void moveSecond()
+    {
+        aiFirst = true;
+        if (aiEasy)
+        {
+            NewEasyGame();
+        }
+        else
+        {
+            NewHardGame();
+        }
+    }
+
 
     public void QuitGame()
     {
@@ -178,6 +223,7 @@ public class MenuController : MonoBehaviour
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
+                
                 gameMaster.GetComponent<TutGameCore>().StartTutorial();
             }
             else
@@ -194,6 +240,8 @@ public class MenuController : MonoBehaviour
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
+
+                gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
             }
             else
@@ -210,6 +258,7 @@ public class MenuController : MonoBehaviour
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
+                gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
                 gameMaster.GetComponent<AiGameCore>().playHard = true;
             }
