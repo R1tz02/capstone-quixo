@@ -175,6 +175,28 @@ public class GameCore : MonoBehaviour
         populateBoard(); //Initialize board
     }
 
+    private System.Collections.IEnumerator winAnimation()
+    {
+        List<int> verPos = new List<int> { -2876, -2866, -2856, -2846, -2836};
+        for(int i = 0; i<5; i++)
+        {
+            PieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>();
+            if (vikingWeapon.sprite == sword)
+            {
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], curPiece.transform.position.y, curPiece.transform.position.z)));        
+            }
+            else if (vikingWeapon == sword)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        
+    }
+
     private void highlightPieces()
     {
         for(int i = 0; i< 5; i++)
@@ -456,7 +478,7 @@ public class GameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), new Vector3(target.x, 96f, target.z)));
         gamePaused = false;
-
+        yield return new WaitForSecondsRealtime(2);
     }
 
     // force is used to force a move, even if the game is paused. Used for networking
@@ -472,6 +494,7 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                StartCoroutine(winAnimation());
                 highlightPieces();
                 if (currentGameMode == GameType.Online)
                 {
@@ -482,7 +505,7 @@ public class GameCore : MonoBehaviour
 
                 buttonsCanvas.enabled = false;
                 GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
-                StartCoroutine(RotateCamera());
+                //StartCoroutine(RotateCamera());
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
             }
