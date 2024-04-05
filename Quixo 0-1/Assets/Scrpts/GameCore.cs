@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using System.Collections;
 using UnityEngine.UI;
 
-using static UnityEditor.Localization.LocalizationTableCollection;
-using UnityEngine.SocialPlatforms.Impl;
-
 
 public enum GameType
 { 
