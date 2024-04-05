@@ -21,11 +21,17 @@ public class MenuController : MonoBehaviour
     public Canvas tutorialCanvas;
     public Canvas labelCanvas;
     public Canvas errorCanvas;
+    public Canvas orderCanvas;
     public Text errorText;
     public Text joinCode;
 
+    public bool isError = false;
+
     public float moveDuration;
     public float rotaionDuration;
+
+    private bool aiFirst = false;
+    private int aiDiff = 1;
 
     bool rotating;
     bool moving;
@@ -51,6 +57,8 @@ public class MenuController : MonoBehaviour
             joinLobbyCanvas.enabled = false;
         if(errorCanvas)
             errorCanvas.enabled = false;
+        if(orderCanvas)
+            orderCanvas.enabled = false;
     }
 
 
@@ -59,7 +67,7 @@ public class MenuController : MonoBehaviour
         errorText.text = error;
         errorCanvas.enabled = true;
 
-        
+        isError = true;
     }
 
     public void closeError()
@@ -67,6 +75,7 @@ public class MenuController : MonoBehaviour
         errorCanvas.enabled = false;
                     
         Time.timeScale = 1;
+        isError = false;
 
         Destroy(GameObject.Find("NetworkErrorHandler"));
     }
@@ -82,6 +91,26 @@ public class MenuController : MonoBehaviour
     {
         hostJoinCanvas.enabled = false;
         joinLobbyCanvas.enabled = true;
+    }
+
+    public void moveOrderEasy()
+    { 
+        quickCanvas.enabled = false;
+        orderCanvas.enabled = true;
+        aiDiff = 1;
+    }
+
+    public void moveOrderMedium()
+    {
+        quickCanvas.enabled = false;
+        orderCanvas.enabled = true;
+        aiDiff = 2;
+    }
+    public void moveOrderHard()
+    {
+        quickCanvas.enabled = false;
+        orderCanvas.enabled = true;
+        aiDiff = 3;
     }
 
     public void openTutorialMenu()
@@ -114,6 +143,40 @@ public class MenuController : MonoBehaviour
         overlayCanvas.enabled = true;
     }
 
+    public void moveFirst()
+    {
+        aiFirst = false;
+        if (aiDiff == 1)
+        {
+            NewEasyGame();
+        }
+        else if (aiDiff == 2)
+        {
+            //NewMediumGame();
+        }
+        else if (aiDiff == 3)
+        { 
+            NewHardGame();
+        }
+    }
+    public void moveSecond()
+    {
+        aiFirst = true;
+        if (aiDiff == 1)
+        {
+            NewEasyGame();
+        }
+        else if (aiDiff == 2)
+        {
+            //NewMediumGame();
+        }
+        else if (aiDiff == 3)
+        {
+            NewHardGame();
+        }
+    }
+
+
     public void QuitGame()
     {
         Application.Quit();
@@ -133,7 +196,8 @@ public class MenuController : MonoBehaviour
         }
         currentCam.transform.position = mMenuLocation.position;
         moving = false;
-   }
+        labelCanvas.enabled = true;
+    }
 
     IEnumerator RotateUp()
     {
@@ -158,7 +222,7 @@ public class MenuController : MonoBehaviour
         storyCanvas.enabled = false;
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
-        labelCanvas.enabled = true;
+        
         overlayCanvas.enabled = true;
 
         if (!moving)
@@ -178,6 +242,7 @@ public class MenuController : MonoBehaviour
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
+                
                 gameMaster.GetComponent<TutGameCore>().StartTutorial();
             }
             else
@@ -194,6 +259,8 @@ public class MenuController : MonoBehaviour
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
+
+                gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
             }
             else
@@ -210,6 +277,7 @@ public class MenuController : MonoBehaviour
             GameObject gameMaster = GameObject.Find("GameMaster");
             if (gameMaster != null)
             {
+                gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
                 gameMaster.GetComponent<AiGameCore>().playHard = true;
             }

@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Fusion;
-using static UnityEngine.Rendering.DebugUI.Table;
-using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine.UI;
+
 using static UnityEditor.Localization.LocalizationTableCollection;
+using UnityEngine.SocialPlatforms.Impl;
 
 
 public enum GameType
@@ -38,6 +37,11 @@ public class GameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
 
+    Image vikingWeapon; 
+    public string spear = "spearWin";
+    public string sword = "sword win";
+    public string axe = "axe win";
+
     public Canvas loseScreen;
     public Canvas winScreen;
     public Button drawButton;
@@ -63,6 +67,7 @@ public class GameCore : MonoBehaviour
         CameraPosition = Camera.main;
         errorScreen.enabled = false;
         restartButton.gameObject.SetActive(true);
+        vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
     }
 
     public void showError(string error)
@@ -107,6 +112,10 @@ public class GameCore : MonoBehaviour
         yield return new WaitForSeconds(1.75f);
 
         GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
+
+        Sprite newWeaponSprite = Resources.Load<Sprite>("Assets/Images/" + spear);
+        vikingWeapon.sprite = newWeaponSprite;
+
         TMP_Text text = congrats.GetComponent<TMP_Text>();
         if (currentPlayer.piece == 'X')
         {
@@ -169,6 +178,7 @@ public class GameCore : MonoBehaviour
         for(int i = 0; i< 5; i++)
         {
             gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
+            gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<Outline>().OutlineWidth = 10;
         }
     }
 
@@ -178,6 +188,7 @@ public class GameCore : MonoBehaviour
         bool success;
         char baseSymbol = '-';
         char pieceToCheck = '-';
+
         for (int row = 0; row < 5; row++)
         {
             success = true;
@@ -198,6 +209,8 @@ public class GameCore : MonoBehaviour
                 {
                     p1.won = true;
                     currentPlayer = p1;
+
+                    
                 }
                 else
                 {
@@ -502,7 +515,6 @@ public class GameCore : MonoBehaviour
         }
         return moveList;
     }
-
     //checks to see if the passed piece is a selectable piece for the player to choose
     // force is used to force a move, even if the game is paused. Used for networking
     public bool validPiece(int row, int col, bool force = false)
