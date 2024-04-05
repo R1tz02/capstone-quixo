@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine.UI;
+using static UnityEditor.Localization.LocalizationTableCollection;
 
 
 public enum GameType
@@ -45,6 +46,7 @@ public class GameCore : MonoBehaviour
     public Text errorText;
     public Camera CameraPosition;
     public Button restartButton;
+    public List<(int, int)> winnerPieces = new List<(int, int)>();
 
     public GameType currentGameMode;
 
@@ -162,6 +164,14 @@ public class GameCore : MonoBehaviour
         populateBoard(); //Initialize board
     }
 
+    private void highlightPieces()
+    {
+        for(int i = 0; i< 5; i++)
+        {
+            gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
+        }
+    }
+
     private bool horizontalWin()
     {
         Debug.Log("checking for horizontal win");
@@ -175,6 +185,7 @@ public class GameCore : MonoBehaviour
             for (int col = 0; col < 5; col++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
+                winnerPieces.Add((row,col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
                     success = false; //F: if changed, not same symbols
@@ -195,6 +206,7 @@ public class GameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -212,6 +224,7 @@ public class GameCore : MonoBehaviour
             for (int row = 0; row < 5; row++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player;
+                winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
                     success = false;
@@ -233,6 +246,7 @@ public class GameCore : MonoBehaviour
                 }
                 return true;
             }
+            winnerPieces.Clear();
         }
         return false;
     }
@@ -244,10 +258,12 @@ public class GameCore : MonoBehaviour
         char pieceToCheck = '-';
         bool success = true;
         //check for top left to bottom right win
-        baseSymbol = gameBoard[0, 0].GetComponent<PieceLogic>().player; ;
+        baseSymbol = gameBoard[0, 0].GetComponent<PieceLogic>().player;
+        winnerPieces.Add((0, 0));
         for (int i = 1; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, i].GetComponent<PieceLogic>().player;
+            winnerPieces.Add((i, i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -268,6 +284,7 @@ public class GameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
 
         return false;
     }
@@ -281,6 +298,7 @@ public class GameCore : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             pieceToCheck = gameBoard[i, 4 - i].GetComponent<PieceLogic>().player;
+            winnerPieces.Add((i, 4-i));
             if (pieceToCheck != baseSymbol || pieceToCheck == '-')
             {
                 success = false;
@@ -302,6 +320,7 @@ public class GameCore : MonoBehaviour
             }
             return true;
         }
+        winnerPieces.Clear();
         return false;
     }
 
@@ -425,6 +444,7 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                highlightPieces();
                 if (currentGameMode == GameType.Online)
                 {
                     NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
