@@ -196,7 +196,8 @@ public class MenuController : MonoBehaviour
         }
         currentCam.transform.position = mMenuLocation.position;
         moving = false;
-   }
+        labelCanvas.enabled = true;
+    }
 
     IEnumerator RotateUp()
     {
@@ -221,7 +222,7 @@ public class MenuController : MonoBehaviour
         storyCanvas.enabled = false;
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
-        labelCanvas.enabled = true;
+        
         overlayCanvas.enabled = true;
 
         if (!moving)

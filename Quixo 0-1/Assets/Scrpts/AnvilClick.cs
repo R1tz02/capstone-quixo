@@ -55,6 +55,22 @@ public class AnvilClick : MonoBehaviour
         }
     }
 
+    public void buttonMover()
+    {
+        if (currentCam.transform.position != endMarker.position && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
+        {
+            GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
+            GameObject.Find("Game Manager").GetComponent<MenuController>().overlayCanvas.enabled = false;
+            if (!rotating)
+            {
+                StartCoroutine(RotateDown());
+            }
+            if (!moving)
+            {
+                StartCoroutine(MoveToLocation());
+            }
+        }
+    }
 
     IEnumerator MoveToLocation() 
     { 
