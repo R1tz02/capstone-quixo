@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
@@ -333,6 +334,12 @@ public class TutGameCore : MonoBehaviour
         chosenPiece.col = col;
     }
 
+    public IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(2.0f);
+        winScreen.enabled = true;
+    }
+
     public bool makeMove(char c)
     {
         if (gamePaused)
@@ -353,9 +360,8 @@ public class TutGameCore : MonoBehaviour
             {
                 highlightPieces();
                 GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
-                WaitFor(3000);
-                winScreen.enabled = true;
-                Time.timeScale = 0;
+                StartCoroutine(Delay());
+                
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
                 
