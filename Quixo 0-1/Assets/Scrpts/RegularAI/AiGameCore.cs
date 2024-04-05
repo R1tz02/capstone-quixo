@@ -98,7 +98,7 @@ public class AiGameCore : MonoBehaviour
         Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
 
         // One second delay before rotation starts
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.5f);
 
         while (timeelapsed < 1)
         {
@@ -111,7 +111,7 @@ public class AiGameCore : MonoBehaviour
         CameraPosition.transform.rotation = targetRotation;
 
         // One second delay after rotation ends
-        yield return new WaitForSeconds(3.5f);
+        yield return new WaitForSeconds(1.75f);
     }
 
     private bool horizontalWin()
