@@ -119,6 +119,7 @@ public class MenuController : MonoBehaviour
         tutorialCanvas.enabled = true;
         Time.timeScale = 0;
         overlayCanvas.enabled = false;
+        isError = true;
     }
 
     public void closeTutorialMenu()
@@ -127,6 +128,7 @@ public class MenuController : MonoBehaviour
         tutorialCanvas.enabled = false;
         Time.timeScale = 1;
         overlayCanvas.enabled = true;
+        isError = false;
     }
 
     public void openHelpMenu()
