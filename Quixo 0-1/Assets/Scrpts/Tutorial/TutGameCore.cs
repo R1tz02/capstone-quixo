@@ -31,6 +31,8 @@ public class TutGameCore : MonoBehaviour
     public int usrCounter = 0;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
 
+    public Canvas buttonCanvas;
+
 
     void Start()
     {
@@ -40,6 +42,7 @@ public class TutGameCore : MonoBehaviour
         currentPlayer = p1;
         winScreen.enabled = false;
         helpMenu.enabled = false;
+        buttonCanvas.enabled = false;
         populateBoard();
     }
 
@@ -360,6 +363,7 @@ public class TutGameCore : MonoBehaviour
             {
                 highlightPieces();
                 GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
+                buttonCanvas.enabled = false;
                 StartCoroutine(Delay());
                 
                 gamePaused = true;

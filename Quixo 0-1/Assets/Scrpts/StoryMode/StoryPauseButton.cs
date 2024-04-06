@@ -29,6 +29,7 @@ public class StoryPauseButton : MonoBehaviour
         pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
         gameMaster.GetComponent<StoryGameCore>().gamePaused = true;
+        gameMaster.GetComponent<StoryGameCore>().buttonCanvas.enabled = false;
     }
 
     public void closeMenu()
@@ -37,6 +38,7 @@ public class StoryPauseButton : MonoBehaviour
         pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1;
         gameMaster.GetComponent<StoryGameCore>().gamePaused = false;
+        gameMaster.GetComponent<StoryGameCore>().buttonCanvas.enabled = true;
     }
 
     public async void returnToMain()

@@ -44,6 +44,7 @@ public class StoryGameCore : MonoBehaviour
     public Canvas IntroSMLvl3;
     public Canvas IntroSMLvl4;
     public Camera CameraPosition;
+    public Canvas buttonCanvas;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -64,7 +65,8 @@ public class StoryGameCore : MonoBehaviour
         IntroSMLvl3.enabled = false;
         IntroSMLvl4.enabled = false;
 
-        Time.timeScale = 0;
+        buttonCanvas.enabled = false;
+
         gamePaused = true;
     }
 
@@ -356,6 +358,8 @@ public class StoryGameCore : MonoBehaviour
 
     IEnumerator DelayedCanvasSelection(Canvas canvasType)
     {
+        buttonCanvas.enabled = false;
+        GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
         yield return new WaitForSeconds(2.5f); // 1 second delay
         chooseCanvasAndWinner(ref canvasType);
     }
@@ -552,6 +556,8 @@ public class StoryGameCore : MonoBehaviour
         {
             //Time.timeScale = 0;
             //gamePaused = true;
+            buttonCanvas.enabled = false;
+            GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
             StartCoroutine(RotateCamera());
             highlightPieces();
             Debug.Log(currentPlayer.piece + " won!");
@@ -581,6 +587,8 @@ public class StoryGameCore : MonoBehaviour
         {
             //Time.timeScale = 0;
             //gamePaused = true;
+            buttonCanvas.enabled = false;
+            GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
             StartCoroutine(RotateCamera());
             highlightPieces();
             Debug.Log(currentPlayer.piece + " won!");

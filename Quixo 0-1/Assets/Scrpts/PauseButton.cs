@@ -24,6 +24,7 @@ public class PauseButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        pauseButton.gameObject.SetActive(true);
         drawDenied.enabled = false;
         drawReqScreen.enabled = false;
         drawAccepted.enabled = false;
@@ -37,16 +38,18 @@ public class PauseButton : MonoBehaviour
         pauseButton.gameObject.SetActive(false);
         //Time.timeScale = 0;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
+        GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = false;
     }
 
     public void closeMenu()
     {
-        if (pauseMenu)
+        if (pauseMenu.enabled)
         {
             pauseMenu.enabled = false;
             pauseButton.gameObject.SetActive(true);
             Time.timeScale = 1;
             gameMaster.GetComponent<GameCore>().gamePaused = false;
+            GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = true;
         }
     }
 
@@ -111,6 +114,10 @@ public class PauseButton : MonoBehaviour
         text.text = "Player " + gameMaster.GetComponent<GameCore>().currentPlayer.piece + " is requesting a draw";
         drawReqScreen.enabled = true;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
+        pauseButton.gameObject.SetActive(false);
+        GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = false;
+        //GameObject.Find("Game Master").GetComponent<GameCore>().buttonHandler.gameObject.SetActive(false);
+        //GameObject.Find("Game Master").GetComponent<GameCore>().drawButton.gameObject.SetActive(false);
     }
 
     public void acceptDraw(bool bypass = false)
@@ -142,6 +149,8 @@ public class PauseButton : MonoBehaviour
 
         drawReqScreen.enabled = false;
         drawDenied.enabled = true;
+        pauseButton.gameObject.SetActive(true);
+        GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = true;
     }
 
     public void closeDrawMenu()

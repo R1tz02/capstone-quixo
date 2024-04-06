@@ -50,7 +50,7 @@ public class StoryController : MonoBehaviour
             {
                 gcComponent.SMLvl = lvl;
                 gcComponent.StartStoryGame(comp.playHard);
-                gcComponent.gamePaused = false;
+                gcComponent.gamePaused = true;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
             }
@@ -76,7 +76,7 @@ public class StoryController : MonoBehaviour
             {
                 gcComponent.SMLvl = 1;
                 gcComponent.StartStoryGame(comp.playHard);
-                gcComponent.gamePaused = false;
+                gcComponent.gamePaused = true;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
             }
@@ -101,7 +101,7 @@ public class StoryController : MonoBehaviour
             {
                 gcComponent.SMLvl = 2;
                 gcComponent.StartStoryGame(comp.playHard);
-                gcComponent.gamePaused = false;
+                gcComponent.gamePaused = true;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
             }
@@ -128,7 +128,7 @@ public class StoryController : MonoBehaviour
             {
                 gcComponent.SMLvl = 3;
                 gcComponent.StartStoryGame(comp.playHard);
-                gcComponent.gamePaused = false;
+                gcComponent.gamePaused = true;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                 //gcComponent.openDialogMenu();
             }
@@ -155,7 +155,7 @@ public class StoryController : MonoBehaviour
             {
                 gcComponent.SMLvl = 4;
                 gcComponent.StartStoryGame(comp.playHard);
-                gcComponent.gamePaused = false;
+                gcComponent.gamePaused = true;
                 GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
                // gcComponent.openDialogMenu();
             }

@@ -161,7 +161,16 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         RematchDict[wantsToPlayAgainRef] = true;
 
         // TODO #35: Change the GUI text to reflect the number of players who want to play again
-        GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "restartOne_key";
+        if (Data.CURRENT_LANGUAGE == "English")
+        {
+            GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart (1/2)";
+            GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart (1/2)";
+        }
+        else if (Data.CURRENT_LANGUAGE == "Español")
+        {
+            GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar (1/2)";
+            GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar (1/2)";
+        }
         if (RematchDict.Count == 2 && networkingManager._runner.IsServer)
         {
             RpcResetGame();
