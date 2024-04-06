@@ -81,7 +81,6 @@ public class AnvilClick : MonoBehaviour
         { 
             currentCam.transform.position = Vector3.Lerp(currentCam.transform.position, endMarker.position, timeElapsed / moveDuration);
             timeElapsed += Time.deltaTime;
-            Debug.Log("0");
             yield return null;
         }
         currentCam.transform.position = endMarker.position;

@@ -67,6 +67,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
     public string lobbyName = null;
+
+    public bool drawInProgress = false;
+
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
@@ -117,11 +120,20 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (runner.IsServer && player != runner.LocalPlayer)
         {
-            if (game.gameOver == true)
+            if (game.gameOver)
             {
                 await DisconnectFromPhoton();
 
                 OnNetworkError?.Invoke(ShutdownReason.OperationCanceled);
+
+                return;
+            }
+
+            if (drawInProgress)
+            {
+                await DisconnectFromPhoton();
+
+                OnNetworkError?.Invoke(ShutdownReason.IncompatibleConfiguration);
 
                 return;
             }
@@ -132,7 +144,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             runner.Despawn(chat.GetComponent<NetworkObject>());
             Destroy(chat.gameObject);
-
             chat = null;
 
             HideButtons();
