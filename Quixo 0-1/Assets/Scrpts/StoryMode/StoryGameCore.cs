@@ -152,6 +152,38 @@ public class StoryGameCore : MonoBehaviour
         }
     }
 
+    //private System.Collections.IEnumerator winAnimation()
+    //{
+    //    List<int> verPos = new List<int> { -2866, -2876, -2856, -2846, -2836 };
+    //    List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
+    //    List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
+    //    List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
+    //    for (int i = 0; i < 5; i++)
+    //    {
+    //        yield return new WaitUntil(() => gamePaused == false);
+    //        StoryPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<StoryPieceLogic>();
+    //        if (vikingWeapon.GetComponent<Sprite>().name == "swordWin")
+    //        {
+    //            yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
+    //        }
+    //        else if (vikingWeapon.GetComponent<Sprite>().name == "spearWin")
+    //        {
+    //            yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(-2856, 140, horPos[i])));
+    //        }
+    //        else
+    //        {
+    //            if (winnerPieces.Contains((0, 0))) //means it is left diagonal
+    //            {
+    //                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(leftDiagPos[i].Item1, 140, leftDiagPos[i].Item2)));
+    //            }
+    //            else //right diagonal
+    //            {
+    //                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
+    //            }
+    //        }
+    //    }
+    //}
+
     private void highlightPieces()
     {
         for (int i = 0; i < 5; i++)
@@ -508,6 +540,7 @@ public class StoryGameCore : MonoBehaviour
             {
                 //Time.timeScale = 0;
                 //gamePaused = true;
+                //StartCoroutine(winAnimation());
                 highlightPieces();
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
@@ -559,6 +592,7 @@ public class StoryGameCore : MonoBehaviour
             buttonCanvas.enabled = false;
             GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
             StartCoroutine(RotateCamera());
+            //StartCoroutine(winAnimation());
             highlightPieces();
             Debug.Log(currentPlayer.piece + " won!");
         }
@@ -590,6 +624,7 @@ public class StoryGameCore : MonoBehaviour
             buttonCanvas.enabled = false;
             GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
             StartCoroutine(RotateCamera());
+            //StartCoroutine(winAnimation());
             highlightPieces();
             Debug.Log(currentPlayer.piece + " won!");
         }
