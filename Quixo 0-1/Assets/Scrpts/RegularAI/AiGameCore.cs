@@ -28,9 +28,6 @@ public class AiGameCore : MonoBehaviour
     public bool aiFirst = false;
 
     Image vikingWeapon;
-    Sprite spear;
-    Sprite sword;
-    Sprite axe;
 
     public GameType currentGameMode;
 
@@ -58,9 +55,15 @@ public class AiGameCore : MonoBehaviour
         CameraPosition = Camera.main;
 
         vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
-        spear = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/spearWin.png");
-        sword = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/swordWin.png");
-        axe = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/axeWin.png");
+    }
+
+    void SetSprite(string spriteName, Image image)
+    {
+        // Load the sprite from the Resources folder
+        Sprite sprite = Resources.Load<Sprite>(spriteName);
+
+        // Assign the sprite to the Image component
+        image.sprite = sprite;
     }
 
     public void StartAIGame()
@@ -300,19 +303,19 @@ public class AiGameCore : MonoBehaviour
     public bool won()
     {
         if (horizontalWin())    {
-            vikingWeapon.sprite = spear;
+            SetSprite("spearWin", vikingWeapon);
             return true;
         };
         if (verticalWin())      { 
-            vikingWeapon.sprite = sword;
+            SetSprite("swordWin", vikingWeapon);
             return true;
         };
         if (leftDiagonalWin())  { 
-            vikingWeapon.sprite = axe;
+            SetSprite("axeWin", vikingWeapon);
             return true;
         }; //separated checkDiagonalWin into two separate functions
         if (rightDiagonalWin()) { 
-            vikingWeapon.sprite = axe;
+            SetSprite("axeWin", vikingWeapon);
             return true;
         };
         return false;
