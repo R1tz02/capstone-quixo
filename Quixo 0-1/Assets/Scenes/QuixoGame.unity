@@ -4421,8 +4421,10 @@ MonoBehaviour:
   tutorialCanvas: {fileID: 0}
   labelCanvas: {fileID: 0}
   errorCanvas: {fileID: 0}
+  orderCanvas: {fileID: 0}
   errorText: {fileID: 0}
   joinCode: {fileID: 0}
+  isError: 0
   moveDuration: 0
   rotaionDuration: 0
 --- !u!4 &796283575 stripped
@@ -8174,6 +8176,10 @@ MonoBehaviour:
   SMLvl: 0
   counter: 0
   gamePaused: 0
+  spear: {fileID: 0}
+  sword: {fileID: 0}
+  axe: {fileID: 0}
+  lose: {fileID: 0}
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
   drawButton: {fileID: 1306903039}
@@ -11814,7 +11820,7 @@ MonoBehaviour:
   m_LineType: 0
   m_HideMobileInput: 0
   m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterLimit: 255
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
