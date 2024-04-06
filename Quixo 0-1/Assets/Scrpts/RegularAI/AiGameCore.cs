@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System;
 using System.Collections;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class AiGameCore : MonoBehaviour
 {
@@ -59,6 +60,7 @@ public class AiGameCore : MonoBehaviour
 
     void SetSprite(string spriteName, Image image)
     {
+        
         // Load the sprite from the Resources folder
         Sprite sprite = Resources.Load<Sprite>(spriteName);
 
@@ -68,8 +70,14 @@ public class AiGameCore : MonoBehaviour
 
     public void StartAIGame()
     {
-        playHard = true;
-        currentGameMode = GameType.AIEasy;
+        if (playHard == true)
+        {
+            currentGameMode = GameType.AIHard;
+        }
+        else
+        {
+            currentGameMode = GameType.AIEasy;
+        }
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
         p1.Initialize('X');
@@ -111,7 +119,7 @@ public class AiGameCore : MonoBehaviour
         // Define the target rotation
         Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
 
-        if (currentPlayer == p2)
+        if (currentPlayer == p2 || (aiFirst && currentPlayer == p1))
         {
 
             // One second delay before rotation starts
@@ -433,8 +441,8 @@ public class AiGameCore : MonoBehaviour
             if (won()) 
             {
                 highlightPieces();
-                buttonsCanvas.enabled = false;
-
+                buttonsCanvas.enabled = false; 
+                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
                 StartCoroutine(RotateCamera());
 
                 gamePaused = true;
@@ -501,6 +509,7 @@ public class AiGameCore : MonoBehaviour
             {
                 highlightPieces();
                 buttonsCanvas.enabled = false;
+                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
                 gamePaused = true;
 
                 StartCoroutine(RotateCamera());
@@ -535,6 +544,8 @@ public class AiGameCore : MonoBehaviour
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
         {
+            buttonsCanvas.enabled = false;
+            GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
             highlightPieces();
 
             StartCoroutine(RotateCamera());

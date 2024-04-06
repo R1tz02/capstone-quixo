@@ -77,8 +77,8 @@ public static class Data
             },
             { "congrats_key", new Dictionary<string, string>()
             {
-                {"English", "Congratulations" },
-                {"Español", "Felicidades" }
+                {"English", "You Have Forged Through the Fury" },
+                {"Español", "Felicidades" } // Fernando needs to translate
             }
             },
             { "restart_key", new Dictionary<string, string>()
@@ -101,8 +101,8 @@ public static class Data
             },
             { "loss_key", new Dictionary<string, string>()
             {
-                {"English", "You lost! AI won!" },
-                {"Español", "Perdiste! IA gano!" }
+                {"English", "The Dragons Fire Consumes All!" },
+                {"Español", "Perdiste! IA gano!" } // Fernando needs to translate
             }
             },
             { "tie_key", new Dictionary<string, string>()

@@ -23,35 +23,10 @@ public class AiPauseButton : MonoBehaviour
     void Start()
     {
         drawAccepted.enabled = false;
-        //directionsAndDraw.enabled = false;
         drawDenied.enabled = false;
         pauseMenu.enabled = false;
         helpMenu.enabled = false;
-        //firstOrSecond.enabled = true;
-        //pauseButton.gameObject.SetActive(false);
-        //gameMaster.GetComponent<AiGameCore>().gamePaused = true;
-        //Time.timeScale = 0;
     }
-
-    //public void playFirst()
-    //{
-    //    pauseButton.gameObject.SetActive(true);
-    //    directionsAndDraw.enabled = true;
-    //    firstOrSecond.enabled = false;
-    //    gameMaster.GetComponent<AiGameCore>().gamePaused = false;
-    //    Time.timeScale = 1;
-    //    gameMaster.GetComponent<AiGameCore>().aiFirst = false;
-    //}
-
-    //public void playSecond()
-    //{
-    //    pauseButton.gameObject.SetActive(true);
-    //    directionsAndDraw.enabled = true;
-    //    firstOrSecond.enabled = false;
-    //    gameMaster.GetComponent<AiGameCore>().gamePaused = false;
-    //    Time.timeScale = 1;
-    //    gameMaster.GetComponent<AiGameCore>().aiFirst = true;
-    //}
 
     public void openMenu()
     { 
@@ -59,6 +34,7 @@ public class AiPauseButton : MonoBehaviour
         pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
         gameMaster.GetComponent<AiGameCore>().gamePaused = true;
+        directionsAndDraw.enabled = false;
     }
 
     public void closeMenu() 
@@ -67,6 +43,7 @@ public class AiPauseButton : MonoBehaviour
         pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1;
         gameMaster.GetComponent<AiGameCore>().gamePaused = false;
+        directionsAndDraw.enabled = true;
     }
 
     public async void returnToMain()
@@ -105,6 +82,7 @@ public class AiPauseButton : MonoBehaviour
                 menuController.NewEasyGame();
                 break;
             case GameType.AIHard:
+                menuController.NewHardGame();
                 break;
         }
     }
@@ -112,6 +90,8 @@ public class AiPauseButton : MonoBehaviour
     public void requestDraw()
     {
         gameMaster.GetComponent<AiGameCore>().gamePaused = true;
+        directionsAndDraw.enabled = false;
+        pauseButton.gameObject.SetActive(false);
         if (gameMaster.GetComponent<AiGameCore>().drawAccepted())
         {
             acceptDraw();
@@ -136,5 +116,7 @@ public class AiPauseButton : MonoBehaviour
     {
         drawDenied.enabled = false;
         gameMaster.GetComponent<AiGameCore>().gamePaused = false;
+        directionsAndDraw.enabled = true;
+        pauseButton.gameObject.SetActive(true);
     }
 }

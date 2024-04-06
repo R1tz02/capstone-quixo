@@ -263,6 +263,7 @@ public class MenuController : MonoBehaviour
             {
 
                 gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
+                gameMaster.GetComponent<AiGameCore>().playHard = false;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
             }
             else
@@ -280,8 +281,9 @@ public class MenuController : MonoBehaviour
             if (gameMaster != null)
             {
                 gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
-                gameMaster.GetComponent<AiGameCore>().StartAIGame();
                 gameMaster.GetComponent<AiGameCore>().playHard = true;
+                gameMaster.GetComponent<AiGameCore>().StartAIGame();
+                
             }
             else
             {
