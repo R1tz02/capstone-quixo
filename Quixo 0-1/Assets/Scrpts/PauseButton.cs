@@ -24,6 +24,7 @@ public class PauseButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        pauseButton.gameObject.SetActive(true);
         drawDenied.enabled = false;
         drawReqScreen.enabled = false;
         drawAccepted.enabled = false;

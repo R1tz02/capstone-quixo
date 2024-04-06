@@ -67,6 +67,7 @@ public class GameCore : MonoBehaviour
         CameraPosition = Camera.main;
         errorScreen.enabled = false;
         restartButton.gameObject.SetActive(true);
+
         vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
     }
 
@@ -143,6 +144,7 @@ public class GameCore : MonoBehaviour
         currentGameMode = GameType.Online;
         restartButton.gameObject.SetActive(false);
         drawButton.gameObject.SetActive(false);
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
 
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {
@@ -166,6 +168,9 @@ public class GameCore : MonoBehaviour
     }
     public void StartLocalGame()
     {
+        buttonsCanvas.enabled = true;
+        drawButton.gameObject.SetActive(true);
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
         currentGameMode = GameType.Local;
         winScreen.enabled = false;
         
