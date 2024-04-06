@@ -354,6 +354,9 @@ public class MenuController : MonoBehaviour
     public void JoinNetworkedGame()
     {
         string code = GameObject.Find("JoinMenu").GetComponentInChildren<TMP_InputField>().text;
+
+        if (code.Length == 0) return;
+        
         StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");
