@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using Unity.VisualScripting;
 using ExitGames.Client.Photon.StructWrapping;
+using TMPro;
 
 [Serializable]
 public struct PieceData
