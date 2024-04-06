@@ -112,6 +112,10 @@ public class PauseButton : MonoBehaviour
         text.text = "Player " + gameMaster.GetComponent<GameCore>().currentPlayer.piece + " is requesting a draw";
         drawReqScreen.enabled = true;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
+        pauseButton.gameObject.SetActive(false);
+        GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = false;
+        //GameObject.Find("Game Master").GetComponent<GameCore>().buttonHandler.gameObject.SetActive(false);
+        //GameObject.Find("Game Master").GetComponent<GameCore>().drawButton.gameObject.SetActive(false);
     }
 
     public void acceptDraw(bool bypass = false)
@@ -143,6 +147,8 @@ public class PauseButton : MonoBehaviour
 
         drawReqScreen.enabled = false;
         drawDenied.enabled = true;
+        pauseButton.gameObject.SetActive(true);
+        GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = true;
     }
 
     public void closeDrawMenu()

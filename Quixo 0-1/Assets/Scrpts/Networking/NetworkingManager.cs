@@ -492,10 +492,12 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             game = GameObject.Find("GameMaster").GetComponent<GameCore>();
         }
-
-        game.drawButton.gameObject.SetActive(false);
-        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
-        game.buttonsCanvas.enabled = false;
+        if (game.currentGameMode == GameType.Online)
+        {
+            game.drawButton.gameObject.SetActive(false);
+            GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+            game.buttonsCanvas.enabled = false;
+        }
     }
 
     private void ShowButtons()
