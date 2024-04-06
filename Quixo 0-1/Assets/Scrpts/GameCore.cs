@@ -34,6 +34,7 @@ public class GameCore : MonoBehaviour
     public int SMLvl = 0;
     public int counter = 0;
     public bool gamePaused;
+    public bool gameOver = false;
 
     Image vikingWeapon;
 
@@ -494,7 +495,10 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                gameOver = true;
+
                 highlightPieces();
+
                 if (currentGameMode == GameType.Online)
                 {
                     NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
@@ -625,6 +629,8 @@ public class GameCore : MonoBehaviour
         loseScreen.enabled = false;
         drawButton.gameObject.SetActive(true);
         buttonsCanvas.enabled = true;
+
+        gameOver = false;
 
         PauseButton pauseButton = FindObjectOfType<PauseButton>();
         pauseButton.HideAllDrawMenus();

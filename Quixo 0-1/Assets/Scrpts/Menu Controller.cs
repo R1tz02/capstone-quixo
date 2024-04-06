@@ -67,13 +67,17 @@ public class MenuController : MonoBehaviour
         errorText.text = error;
         errorCanvas.enabled = true;
 
+        overlayCanvas.enabled = false;
+
         isError = true;
     }
 
     public void closeError()
     { 
         errorCanvas.enabled = false;
-                    
+        
+        overlayCanvas.enabled = true;
+
         Time.timeScale = 1;
         isError = false;
 

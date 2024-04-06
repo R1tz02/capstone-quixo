@@ -24,6 +24,10 @@ public class NetworkErrorHandler : MonoBehaviour
         {
             LoadScene("Game not found");
         }
+        else if (shutdownReason == ShutdownReason.OperationCanceled)
+        {
+            LoadScene("Client disconnected");
+        }
         else
         {
             LoadScene("A network error occurred");

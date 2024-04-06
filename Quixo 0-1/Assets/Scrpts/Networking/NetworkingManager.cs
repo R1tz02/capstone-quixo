@@ -111,12 +111,21 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         PauseButton.OnNetworkingGameRestart += Rematch;
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
 
         if (runner.IsServer && player != runner.LocalPlayer)
         {
+            if (game.gameOver == true)
+            {
+                await DisconnectFromPhoton();
+
+                OnNetworkError?.Invoke(ShutdownReason.OperationCanceled);
+
+                return;
+            }
+
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
 
             game.showError("Client has disconnected. Waiting until they rejoin...");
