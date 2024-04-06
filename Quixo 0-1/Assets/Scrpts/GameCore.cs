@@ -178,20 +178,33 @@ public class GameCore : MonoBehaviour
     private System.Collections.IEnumerator winAnimation()
     {
         List<int> verPos = new List<int> { -2876, -2866, -2856, -2846, -2836};
-        for(int i = 0; i<5; i++)
+        List<int> horPos = new List<int> { -20, -10, 0, 10, 20};
+        List<(int,int)> leftDiagPos = new List<(int, int)> { (-2876, -20), (-2866, -10) , (-2856, 0) , (-2846, 10) , (-2836, 20) };
+        List<(int,int)> rightDiagPos = new List<(int, int)> { (-2876, 20), (-2866, 10), (-2856, 0), (-2846, -10), (-2836, -20) };
+
+
+        for (int i = 0; i<5; i++)
         {
+            yield return new WaitUntil(() => gamePaused == false);
             PieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>();
             if (vikingWeapon.sprite == sword)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], curPiece.transform.position.y, curPiece.transform.position.z)));        
             }
-            else if (vikingWeapon == sword)
+            else if (vikingWeapon.sprite == spear)
             {
-
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(curPiece.transform.position.x, curPiece.transform.position.y, horPos[i])));
             }
             else
             {
-
+                if (winnerPieces.Contains((0, 0))) //means it is left diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(leftDiagPos[i].Item1, leftDiagPos[i].Item2, curPiece.transform.position.z)));
+                }
+                else //right diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, rightDiagPos[i].Item2, curPiece.transform.position.z)));
+                }
             }
         }
         
@@ -478,7 +491,6 @@ public class GameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<PieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<PieceLogic>(), new Vector3(target.x, 96f, target.z)));
         gamePaused = false;
-        yield return new WaitForSecondsRealtime(2);
     }
 
     // force is used to force a move, even if the game is paused. Used for networking
