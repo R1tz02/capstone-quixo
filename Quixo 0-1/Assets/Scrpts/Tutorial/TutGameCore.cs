@@ -363,6 +363,7 @@ public class TutGameCore : MonoBehaviour
             {
                 highlightPieces();
                 GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
+                buttonCanvas.enabled = false;
                 StartCoroutine(Delay());
                 
                 gamePaused = true;
