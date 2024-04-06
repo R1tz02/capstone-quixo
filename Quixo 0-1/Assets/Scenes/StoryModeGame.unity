@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9694,6 +9694,7 @@ MonoBehaviour:
   IntroSMLvl3: {fileID: 599672929}
   IntroSMLvl4: {fileID: 1544522768}
   CameraPosition: {fileID: 0}
+  buttonCanvas: {fileID: 1850532870}
 --- !u!1 &1429386287
 GameObject:
   m_ObjectHideFlags: 0
@@ -13537,6 +13538,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1102538215}
   m_SourcePrefab: {fileID: 100100000, guid: 25faf3cad2629954db2939ba813bf8a4, type: 3}
+--- !u!223 &1850532870 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2081044094258837862, guid: 25faf3cad2629954db2939ba813bf8a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1850532869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1862863567
 GameObject:
   m_ObjectHideFlags: 0
