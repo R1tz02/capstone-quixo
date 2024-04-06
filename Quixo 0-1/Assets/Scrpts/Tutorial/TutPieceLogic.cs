@@ -37,6 +37,7 @@ public class TutPieceLogic : MonoBehaviour
             {
                 menu.GetComponent<TutPauseButton>().stepOne.enabled = false;
                 menu.GetComponent<TutPauseButton>().stepTwo.enabled = true;
+                GameObject.Find("GameMaster").GetComponent<TutGameCore>().buttonCanvas.enabled = true;
             }
             // C: Temporarily disable gravity to lift the piece
             StartCoroutine(game.MovePieceSmoothly(this, new Vector3(transform.position.x, 114f, transform.position.z)));

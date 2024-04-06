@@ -7547,6 +7547,7 @@ MonoBehaviour:
   tutLvl: -1
   AIcounter: 0
   usrCounter: 0
+  buttonCanvas: {fileID: 1850532870}
 --- !u!1001 &1414145136
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10026,6 +10027,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 891386105}
   m_SourcePrefab: {fileID: 100100000, guid: 25faf3cad2629954db2939ba813bf8a4, type: 3}
+--- !u!223 &1850532870 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2081044094258837862, guid: 25faf3cad2629954db2939ba813bf8a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1850532869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1862863567
 GameObject:
   m_ObjectHideFlags: 0

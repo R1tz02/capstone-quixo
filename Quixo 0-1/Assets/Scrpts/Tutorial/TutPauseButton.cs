@@ -96,12 +96,13 @@ public class TutPauseButton : MonoBehaviour
         pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
         gameMaster.GetComponent<TutGameCore>().gamePaused = true;
+        GameObject.Find("GameMaster").GetComponent<TutGameCore>().buttonCanvas.enabled = false;
     }
 
     public void closeMenu() 
     { 
         if(stepDisabled == 1) { stepOne.enabled = true; }
-        else if (stepDisabled == 2) { stepTwo.enabled = true; }
+        else if (stepDisabled == 2) { stepTwo.enabled = true; GameObject.Find("GameMaster").GetComponent<TutGameCore>().buttonCanvas.enabled = true; }
         pauseMenu.enabled = false;
         pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1;
