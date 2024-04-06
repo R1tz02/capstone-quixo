@@ -191,8 +191,8 @@ public static class Data
             },
             { "step2_key", new Dictionary<string, string>()
             {
-                {"English", "These arrows indicate which direction a piece can move. When an arrow is red, it indicates the piece can move that direction. Select the red arrow." },
-                {"Español", "Estas flechas indican en que direccion se puede mover una pieza. Cuando una flecha Español roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja." }
+                {"English", "These arrows indicate which direction a piece can move. When an arrow is red, it indicates the piece can move that direction. Select the red arrow or use the coresponding arrow key" },
+                {"Español", "Estas flechas indican en que direccion se puede mover una pieza. Cuando una flecha Español roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja." }//fendando needs to translate
             }
             },
             { "offerDraw_key", new Dictionary<string, string>()
@@ -252,6 +252,42 @@ public static class Data
             { "tutorial_key", new Dictionary<string, string>()
             {
                 {"English", "Tutorial"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "example_key", new Dictionary<string, string>()
+            {
+                {"English", "Enter Text..."},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "SMLIntroOne_key", new Dictionary<string, string>()
+            {
+                {"English", "Guess you're the new smith. Well no time for plesentries we need swords asap on the battle field! (You and the AI can only win by using the vertical pattern)"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "SMLIntroTwo_key", new Dictionary<string, string>()
+            {
+                {"English", "Seems like you got your chops on you. Well we aren't out of this yet. We need spears on the front line pronto! (You and the AI can only win using the horizontal pattern)"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "SMLIntroThree_key", new Dictionary<string, string>()
+            {
+                {"English", "Keep this up and you'll be the next smith for Odin in Asgard. We need new axes for our Beserkers. You up for the task. (You and the AI can only win using a diagonal patten)"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "SMLIntroFour_key", new Dictionary<string, string>()
+            {
+                {"English", "The dragons have been pushed back to their abominable mountains. We will need armor suitible for the gods to get through there. Pull this off and you will be the greatest Viking Smith to live!"},
+                {"Español", "Individual"} // Fernando needs to translate
+            }
+            },
+            { "ModeToLearn_key", new Dictionary<string, string>()
+            {
+                {"English", "Mode to Learn"},
                 {"Español", "Individual"} // Fernando needs to translate
             }
             },
