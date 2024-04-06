@@ -31,6 +31,7 @@ public class Dialoge : MonoBehaviour
         exampleWin.enabled = false;
         Time.timeScale = 1;
         GameObject.Find("GameMaster").GetComponent<StoryGameCore>().gamePaused = false;
+        GameObject.Find("GameMaster").GetComponent<StoryGameCore>().buttonCanvas.enabled = true;
         GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(true);
     }
 }

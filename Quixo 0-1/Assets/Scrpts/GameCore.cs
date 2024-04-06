@@ -5,6 +5,7 @@ using Fusion;
 using System.Threading.Tasks;
 using System.Collections;
 using UnityEngine.UI;
+using System.IO;
 
 
 public enum GameType
@@ -35,10 +36,11 @@ public class GameCore : MonoBehaviour
     public bool gamePaused;
 
     Image vikingWeapon;
-    Sprite spear;
-    Sprite sword;
-    Sprite axe;
-    Sprite lose;
+
+    public SpriteRenderer spear;
+    public SpriteRenderer sword;
+    public SpriteRenderer axe;
+    public SpriteRenderer lose;
 
     public Canvas loseScreen;
     public Canvas winScreen;
@@ -65,11 +67,17 @@ public class GameCore : MonoBehaviour
         CameraPosition = Camera.main;
         errorScreen.enabled = false;
         restartButton.gameObject.SetActive(true);
+
         vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
-        spear = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/spearWin.png");
-        sword = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/swordWin.png");
-        axe = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/axeWin.png");
-        lose = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Images/graveLose.png");
+    }
+
+    void SetSprite(string spriteName, Image image)
+    {
+        // Load the sprite from the Resources folder
+        Sprite sprite = Resources.Load<Sprite>(spriteName);
+
+        // Assign the sprite to the Image component
+        image.sprite = sprite;
     }
 
     public void showError(string error)
@@ -77,6 +85,11 @@ public class GameCore : MonoBehaviour
         errorText.text = error;
         errorScreen.enabled = true;
         gamePaused = true;
+        if (winScreen.enabled == true || loseScreen.enabled == true)
+        {
+            winScreen.enabled = false;
+            loseScreen.enabled = false;
+        }
         GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
     }
@@ -124,7 +137,8 @@ public class GameCore : MonoBehaviour
         }
         else 
         {
-            vikingWeapon.sprite = lose;
+            //vikingWeapon.sprite = lose;
+            SetSprite("graveLose", vikingWeapon);
             text.text = "The dragons fire consumes all!";
         }
         winScreen.enabled = true;
@@ -135,6 +149,8 @@ public class GameCore : MonoBehaviour
         currentGameMode = GameType.Online;
         restartButton.gameObject.SetActive(false);
         drawButton.gameObject.SetActive(false);
+        buttonsCanvas.enabled = false;
+        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
 
         if (gameType != "Host" && gameType != "Client" && gameType != "AutoHostOrClient")
         {
@@ -158,6 +174,9 @@ public class GameCore : MonoBehaviour
     }
     public void StartLocalGame()
     {
+        buttonsCanvas.enabled = true;
+        drawButton.gameObject.SetActive(true);
+        //GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
         currentGameMode = GameType.Local;
         winScreen.enabled = false;
         
@@ -380,20 +399,23 @@ public class GameCore : MonoBehaviour
     public bool won()
     {
         if (horizontalWin())    {
-            vikingWeapon.sprite = spear;
+            SetSprite("spearWin", vikingWeapon);
+            //vikingWeapon.sprite = spear;
             return true;
         };
         if (verticalWin())      {
-            vikingWeapon.sprite = sword;
+            SetSprite("swordWin", vikingWeapon);
+            //vikingWeapon.sprite = sword;
             return true;
         };
         if (leftDiagonalWin())  {
-            vikingWeapon.sprite = axe;
+            SetSprite("axeWin", vikingWeapon);
+            //vikingWeapon.sprite = axe;
             return true;
         }; //separated checkDiagonalWin into two separate functions
         if (rightDiagonalWin()) {
-            vikingWeapon.sprite = axe;
-
+            SetSprite("axeWin", vikingWeapon);
+            //vikingWeapon.sprite = axe;
             return true;
         };
         return false;

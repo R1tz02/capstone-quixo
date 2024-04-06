@@ -119,6 +119,7 @@ public class MenuController : MonoBehaviour
         tutorialCanvas.enabled = true;
         Time.timeScale = 0;
         overlayCanvas.enabled = false;
+        isError = true;
     }
 
     public void closeTutorialMenu()
@@ -127,6 +128,7 @@ public class MenuController : MonoBehaviour
         tutorialCanvas.enabled = false;
         Time.timeScale = 1;
         overlayCanvas.enabled = true;
+        isError = false;
     }
 
     public void openHelpMenu()
@@ -261,6 +263,7 @@ public class MenuController : MonoBehaviour
             {
 
                 gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
+                gameMaster.GetComponent<AiGameCore>().playHard = false;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
             }
             else
@@ -278,8 +281,9 @@ public class MenuController : MonoBehaviour
             if (gameMaster != null)
             {
                 gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
-                gameMaster.GetComponent<AiGameCore>().StartAIGame();
                 gameMaster.GetComponent<AiGameCore>().playHard = true;
+                gameMaster.GetComponent<AiGameCore>().StartAIGame();
+                
             }
             else
             {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
@@ -32,6 +31,8 @@ public class TutGameCore : MonoBehaviour
     public int usrCounter = 0;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
 
+    public Canvas buttonCanvas;
+
 
     void Start()
     {
@@ -41,6 +42,7 @@ public class TutGameCore : MonoBehaviour
         currentPlayer = p1;
         winScreen.enabled = false;
         helpMenu.enabled = false;
+        buttonCanvas.enabled = false;
         populateBoard();
     }
 
@@ -369,6 +371,12 @@ public class TutGameCore : MonoBehaviour
         chosenPiece.col = col;
     }
 
+    public IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(2.0f);
+        winScreen.enabled = true;
+    }
+
     public bool makeMove(char c)
     {
         if (gamePaused)
@@ -389,9 +397,9 @@ public class TutGameCore : MonoBehaviour
             {
                 highlightPieces();
                 GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
-                WaitFor(3000);
-                winScreen.enabled = true;
-                Time.timeScale = 0;
+                buttonCanvas.enabled = false;
+                StartCoroutine(Delay());
+                
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
                 

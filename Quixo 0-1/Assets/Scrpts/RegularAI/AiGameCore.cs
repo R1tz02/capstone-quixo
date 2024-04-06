@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System;
 using System.Collections;
+using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class AiGameCore : MonoBehaviour
 {
@@ -25,6 +27,8 @@ public class AiGameCore : MonoBehaviour
     public bool aiMoving = false;
     public bool playHard = true;
     public bool aiFirst = false;
+
+    Image vikingWeapon;
 
     public GameType currentGameMode;
 
@@ -50,12 +54,30 @@ public class AiGameCore : MonoBehaviour
         winScreen.enabled = false;
         loseScreen.enabled = false;
         CameraPosition = Camera.main;
+
+        vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
+    }
+
+    void SetSprite(string spriteName, Image image)
+    {
+        
+        // Load the sprite from the Resources folder
+        Sprite sprite = Resources.Load<Sprite>(spriteName);
+
+        // Assign the sprite to the Image component
+        image.sprite = sprite;
     }
 
     public void StartAIGame()
     {
-        playHard = true;
-        currentGameMode = GameType.AIEasy;
+        if (playHard == true)
+        {
+            currentGameMode = GameType.AIHard;
+        }
+        else
+        {
+            currentGameMode = GameType.AIEasy;
+        }
         GameObject player1Object = new GameObject("Player1");
         p1 = player1Object.AddComponent<LocalPlayer>();
         p1.Initialize('X');
@@ -97,21 +119,32 @@ public class AiGameCore : MonoBehaviour
         // Define the target rotation
         Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
 
-        // One second delay before rotation starts
-        yield return new WaitForSeconds(2.5f);
-
-        while (timeelapsed < 1)
+        if (currentPlayer == p2 || (aiFirst && currentPlayer == p1))
         {
-            // Smoothly rotate the camera towards the target rotation
-            CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
-            timeelapsed += Time.deltaTime;
-            yield return null;
+
+            // One second delay before rotation starts
+            yield return new WaitForSeconds(2.5f);
+
+            while (timeelapsed < 1)
+            {
+                // Smoothly rotate the camera towards the target rotation
+                CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
+                timeelapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            CameraPosition.transform.rotation = targetRotation;
+
+            // One second delay after rotation ends
+            yield return new WaitForSeconds(1.75f);
+
+            loseScreen.enabled = true;
         }
-
-        CameraPosition.transform.rotation = targetRotation;
-
-        // One second delay after rotation ends
-        yield return new WaitForSeconds(1.75f);
+        else
+        {
+            yield return new WaitForSeconds(2.25f);
+            winScreen.enabled = true;
+        }
     }
 
     private void highlightPieces()
@@ -277,10 +310,22 @@ public class AiGameCore : MonoBehaviour
 
     public bool won()
     {
-        if (horizontalWin())    { return true;};
-        if (verticalWin())      { return true;};
-        if (leftDiagonalWin())  { return true;}; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) { return true;};
+        if (horizontalWin())    {
+            SetSprite("spearWin", vikingWeapon);
+            return true;
+        };
+        if (verticalWin())      { 
+            SetSprite("swordWin", vikingWeapon);
+            return true;
+        };
+        if (leftDiagonalWin())  { 
+            SetSprite("axeWin", vikingWeapon);
+            return true;
+        }; //separated checkDiagonalWin into two separate functions
+        if (rightDiagonalWin()) { 
+            SetSprite("axeWin", vikingWeapon);
+            return true;
+        };
         return false;
     }
 
@@ -396,9 +441,10 @@ public class AiGameCore : MonoBehaviour
             if (won()) 
             {
                 highlightPieces();
-                buttonsCanvas.enabled = false;
-                winScreen.enabled = true;
-                Time.timeScale = 0;
+                buttonsCanvas.enabled = false; 
+                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+                StartCoroutine(RotateCamera());
+
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
@@ -463,10 +509,11 @@ public class AiGameCore : MonoBehaviour
             {
                 highlightPieces();
                 buttonsCanvas.enabled = false;
-                loseScreen.enabled = true;
-                //Time.timeScale = 0;
-                //gamePaused = true;
+                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+                gamePaused = true;
+
                 StartCoroutine(RotateCamera());
+
                 Debug.Log(currentPlayer.piece + " won!");
             }
             else if (currentPlayer.piece == 'X')
@@ -497,8 +544,12 @@ public class AiGameCore : MonoBehaviour
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
         {
+            buttonsCanvas.enabled = false;
+            GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
             highlightPieces();
-            Time.timeScale = 0;
+
+            StartCoroutine(RotateCamera());
+
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
         }
