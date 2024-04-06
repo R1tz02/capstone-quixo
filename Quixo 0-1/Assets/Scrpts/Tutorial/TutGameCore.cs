@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Player
 {
@@ -49,6 +51,40 @@ public class TutGameCore : MonoBehaviour
             helpMenu.enabled = false;
         }
         else { helpMenu.enabled = true; }
+    }
+
+    private System.Collections.IEnumerator winAnimation()
+    {
+        List<int> verPos = new List<int> { -2866, -2876, -2856, -2846, -2836 };
+        List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
+        List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
+        List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
+
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitUntil(() => gamePaused == false);
+            PieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>();
+            if (vikingWeapon.sprite == sword)
+            {
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
+            }
+            else if (vikingWeapon.sprite == spear)
+            {
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(-2856, 140, horPos[i])));
+            }
+            else
+            {
+                if (winnerPieces.Contains((0, 0))) //means it is left diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(leftDiagPos[i].Item1, 140, leftDiagPos[i].Item2)));
+                }
+                else //right diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
+                }
+            }
+        }
+
     }
     private void highlightPieces()
     {
