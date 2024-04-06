@@ -485,6 +485,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameSetUp = false;
         currentTurn = 0;
         SetupGame(true);
+
+        if (Data.CURRENT_LANGUAGE == "English")
+        {
+            GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart";
+            GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart";
+        }
+        else if (Data.CURRENT_LANGUAGE == "Espa�ol")
+        {
+            GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar";
+            GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar";
+        }
     }
 
     private void HideButtons()
