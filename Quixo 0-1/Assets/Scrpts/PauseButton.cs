@@ -38,16 +38,18 @@ public class PauseButton : MonoBehaviour
         pauseButton.gameObject.SetActive(false);
         //Time.timeScale = 0;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
+        GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = false;
     }
 
     public void closeMenu()
     {
-        if (pauseMenu)
+        if (pauseMenu.enabled)
         {
             pauseMenu.enabled = false;
             pauseButton.gameObject.SetActive(true);
             Time.timeScale = 1;
             gameMaster.GetComponent<GameCore>().gamePaused = false;
+            GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = true;
         }
     }
 
