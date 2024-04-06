@@ -108,21 +108,32 @@ public class AiGameCore : MonoBehaviour
         // Define the target rotation
         Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
 
-        // One second delay before rotation starts
-        yield return new WaitForSeconds(2.5f);
-
-        while (timeelapsed < 1)
+        if (currentPlayer == p2)
         {
-            // Smoothly rotate the camera towards the target rotation
-            CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
-            timeelapsed += Time.deltaTime;
-            yield return null;
+
+            // One second delay before rotation starts
+            yield return new WaitForSeconds(2.5f);
+
+            while (timeelapsed < 1)
+            {
+                // Smoothly rotate the camera towards the target rotation
+                CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
+                timeelapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            CameraPosition.transform.rotation = targetRotation;
+
+            // One second delay after rotation ends
+            yield return new WaitForSeconds(1.75f);
+
+            loseScreen.enabled = true;
         }
-
-        CameraPosition.transform.rotation = targetRotation;
-
-        // One second delay after rotation ends
-        yield return new WaitForSeconds(1.75f);
+        else
+        {
+            yield return new WaitForSeconds(2.25f);
+            winScreen.enabled = true;
+        }
     }
 
     private void highlightPieces()
@@ -420,8 +431,9 @@ public class AiGameCore : MonoBehaviour
             {
                 highlightPieces();
                 buttonsCanvas.enabled = false;
-                winScreen.enabled = true;
-                Time.timeScale = 0;
+
+                StartCoroutine(RotateCamera());
+
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
@@ -486,10 +498,10 @@ public class AiGameCore : MonoBehaviour
             {
                 highlightPieces();
                 buttonsCanvas.enabled = false;
-                loseScreen.enabled = true;
-                //Time.timeScale = 0;
-                //gamePaused = true;
+                gamePaused = true;
+
                 StartCoroutine(RotateCamera());
+
                 Debug.Log(currentPlayer.piece + " won!");
             }
             else if (currentPlayer.piece == 'X')
@@ -521,7 +533,9 @@ public class AiGameCore : MonoBehaviour
         if (won())
         {
             highlightPieces();
-            Time.timeScale = 0;
+
+            StartCoroutine(RotateCamera());
+
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
         }
