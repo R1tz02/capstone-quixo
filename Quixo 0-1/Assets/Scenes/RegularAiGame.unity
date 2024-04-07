@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
+  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6361,6 +6361,11 @@ MonoBehaviour:
   aiMoving: 0
   aiFirst: 0
   aiType: 0
+  hotPieceMoveSound: {fileID: 8300000, guid: 076c74b6eb359224eb64eac7ee98e553, type: 3}
+  coldPieceMoveSound: {fileID: 8300000, guid: ab805e44dc06e25418ba6f35a78e0b19, type: 3}
+  victory: {fileID: 8300000, guid: 20a79c634d4a1164a8dc71a3967f2056, type: 3}
+  defeat: {fileID: 8300000, guid: f85bbb4d7626e954b8df84a1beda2669, type: 3}
+  growl: {fileID: 8300000, guid: da5648ae720be3945b68e45239283407, type: 3}
   currentGameMode: 0
   swordPrefab: {fileID: 1378010598903046, guid: 431cd727a83ed3849b04c235677e13ae,
     type: 3}

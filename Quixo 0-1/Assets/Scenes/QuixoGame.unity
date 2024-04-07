@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
+  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8564,7 +8564,7 @@ MonoBehaviour:
   gamePaused: 0
   gameOver: 0
   pieceClickSound: {fileID: 8300000, guid: f4e8316786ae38946b3e8e8910b9b922, type: 3}
-  hotPieceMoveSound: {fileID: 8300000, guid: 8e87799865391a44589419f36012d277, type: 3}
+  hotPieceMoveSound: {fileID: 8300000, guid: 076c74b6eb359224eb64eac7ee98e553, type: 3}
   coldPieceMoveSound: {fileID: 8300000, guid: ab805e44dc06e25418ba6f35a78e0b19, type: 3}
   victory: {fileID: 8300000, guid: 20a79c634d4a1164a8dc71a3967f2056, type: 3}
   defeat: {fileID: 8300000, guid: f85bbb4d7626e954b8df84a1beda2669, type: 3}

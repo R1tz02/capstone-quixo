@@ -3,7 +3,27 @@ guid: fa86381ad7875274db79e82f28f461f2
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - piecePrefab: {instanceID: 0}
+  - gameCoreGameObject: {instanceID: 0}
+  - playerOneSpace: {instanceID: 0}
+  - playerTwoSpace: {instanceID: 0}
+  - aiButtonHandler: {instanceID: 0}
+  - AI: {instanceID: 0}
+  - chosenPiece: {instanceID: 0}
+  - hotPieceMoveSound: {fileID: 8300000, guid: 076c74b6eb359224eb64eac7ee98e553, type: 3}
+  - coldPieceMoveSound: {fileID: 8300000, guid: ab805e44dc06e25418ba6f35a78e0b19,
+      type: 3}
+  - victory: {fileID: 8300000, guid: 20a79c634d4a1164a8dc71a3967f2056, type: 3}
+  - defeat: {fileID: 8300000, guid: f85bbb4d7626e954b8df84a1beda2669, type: 3}
+  - growl: {fileID: 8300000, guid: da5648ae720be3945b68e45239283407, type: 3}
+  - swordPrefab: {instanceID: 0}
+  - axePrefab: {instanceID: 0}
+  - spearPrefab: {instanceID: 0}
+  - CameraPosition: {instanceID: 0}
+  - loseScreen: {instanceID: 0}
+  - winScreen: {instanceID: 0}
+  - buttonsCanvas: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

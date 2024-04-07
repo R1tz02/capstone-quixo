@@ -160,7 +160,7 @@ public class GameCore : MonoBehaviour
         CameraPosition.transform.rotation = targetRotation;
             SoundFXManage.Instance.PlaySoundFXClip(defeat, transform, 1f);
             // One second delay after rotation ends
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(2.75f);
 
            // text.text = "You have forged through the fury!";
             
@@ -170,7 +170,7 @@ public class GameCore : MonoBehaviour
         else 
         {
             //vikingWeapon.sprite = lose;
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(3.5f);
 
            // text.text = "The dragons fire consumes all!";
             

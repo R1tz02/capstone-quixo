@@ -31,6 +31,12 @@ public class AiGameCore : MonoBehaviour
     public bool aiFirst = false;
     public AIType aiType;
 
+    [SerializeField] private AudioClip hotPieceMoveSound;
+    [SerializeField] private AudioClip coldPieceMoveSound;
+    [SerializeField] private AudioClip victory;
+    [SerializeField] private AudioClip defeat;
+    [SerializeField] private AudioClip growl;
+
     Image vikingWeapon;
 
     public GameType currentGameMode;
@@ -153,7 +159,11 @@ public class AiGameCore : MonoBehaviour
         {
 
             // One second delay before rotation starts
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2.5f);
+
+            SoundFXManage.Instance.PlaySoundFXClip(growl, transform, 1f);
+
+            yield return new WaitForSeconds(1.0f);
 
             while (timeelapsed < 1)
             {
@@ -166,14 +176,16 @@ public class AiGameCore : MonoBehaviour
             CameraPosition.transform.rotation = targetRotation;
 
             // One second delay after rotation ends
-            yield return new WaitForSeconds(1.75f);
+            SoundFXManage.Instance.PlaySoundFXClip(defeat, transform, 1f);
+            yield return new WaitForSeconds(2.75f);
 
             loseScreen.enabled = true;
         }
         else
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(3.5f);
             winScreen.enabled = true;
+            SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
         }
     }
 
@@ -443,6 +455,18 @@ public class AiGameCore : MonoBehaviour
         return false;
     }
 
+    public void currentPlayerSFX()
+    {
+        if (currentPlayer == p1)
+        {
+            SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
+        }
+        else
+        {
+            SoundFXManage.Instance.PlaySoundFXClip(coldPieceMoveSound, transform, 1f);
+        }
+    }
+
 
     public void shiftBoard(char dir, char currentPiece)
     {
@@ -468,6 +492,7 @@ public class AiGameCore : MonoBehaviour
                 currentPieceObject.GetComponent<AiPieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position + new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[i, chosenPiece.col] = gameBoard[i - 1, chosenPiece.col];
             }
             StartCoroutine(moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
@@ -480,6 +505,7 @@ public class AiGameCore : MonoBehaviour
                 currentPieceObject.GetComponent<AiPieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col];
             }
             StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
@@ -492,6 +518,7 @@ public class AiGameCore : MonoBehaviour
                 currentPieceObject.GetComponent<AiPieceLogic>().col = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(0, 0, 20);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
             }
             StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
@@ -504,6 +531,7 @@ public class AiGameCore : MonoBehaviour
                 currentPieceObject.GetComponent<AiPieceLogic>().col = i;
                 Vector3 newPosition = currentPieceObject.transform.position + new Vector3(0, 0, 20);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
             }
             StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));

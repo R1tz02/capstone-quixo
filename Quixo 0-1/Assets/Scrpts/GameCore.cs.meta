@@ -3,7 +3,34 @@ guid: 12c1f6dcb83f7f5429dfb9c269fe75aa
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - piecePrefab: {instanceID: 0}
+  - playerOneSpace: {instanceID: 0}
+  - playerTwoSpace: {instanceID: 0}
+  - buttonHandler: {instanceID: 0}
+  - chosenPiece: {instanceID: 0}
+  - pieceClickSound: {instanceID: 0}
+  - hotPieceMoveSound: {fileID: 8300000, guid: 076c74b6eb359224eb64eac7ee98e553, type: 3}
+  - coldPieceMoveSound: {fileID: 8300000, guid: ab805e44dc06e25418ba6f35a78e0b19,
+      type: 3}
+  - victory: {fileID: 8300000, guid: 20a79c634d4a1164a8dc71a3967f2056, type: 3}
+  - defeat: {fileID: 8300000, guid: f85bbb4d7626e954b8df84a1beda2669, type: 3}
+  - growl: {fileID: 8300000, guid: 9ddd07e75145f79408a0a4d13d067279, type: 3}
+  - spear: {instanceID: 0}
+  - sword: {instanceID: 0}
+  - axe: {instanceID: 0}
+  - lose: {instanceID: 0}
+  - swordPrefab: {instanceID: 0}
+  - axePrefab: {instanceID: 0}
+  - spearPrefab: {instanceID: 0}
+  - loseScreen: {instanceID: 0}
+  - winScreen: {instanceID: 0}
+  - drawButton: {instanceID: 0}
+  - errorScreen: {instanceID: 0}
+  - buttonsCanvas: {instanceID: 0}
+  - errorText: {instanceID: 0}
+  - CameraPosition: {instanceID: 0}
+  - restartButton: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
