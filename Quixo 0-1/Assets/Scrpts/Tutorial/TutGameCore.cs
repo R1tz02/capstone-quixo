@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Player
 {
@@ -12,6 +12,7 @@ public class Player
 
 public class TutGameCore : MonoBehaviour
 {
+    public WinType winType;
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public GameObject[,] gameBoard = new GameObject[5, 6];
@@ -53,6 +54,38 @@ public class TutGameCore : MonoBehaviour
             helpMenu.enabled = false;
         }
         else { helpMenu.enabled = true; }
+    }
+
+    private System.Collections.IEnumerator winAnimation()
+    {
+        List<int> verPos = new List<int> { -2866, -2876, -2856, -2846, -2836 };
+        List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
+        List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
+        List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitUntil(() => gamePaused == false);
+            TutPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<TutPieceLogic>();
+            if (winType == WinType.vertical)
+            {
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
+            }
+            else if (winType == WinType.horizontal)
+            {
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(-2856, 140, horPos[i])));
+            }
+            else
+            {
+                if (winnerPieces.Contains((0, 0))) //means it is left diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(leftDiagPos[i].Item1, 140, leftDiagPos[i].Item2)));
+                }
+                else //right diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
+                }
+            }
+        }
     }
     private void highlightPieces()
     {
@@ -230,10 +263,10 @@ public class TutGameCore : MonoBehaviour
     {
         switch (tutLvl)
         {
-            case 0: if (leftDiagonalWin()) {  return true; } break;
-            case 1: if (rightDiagonalWin()) {  return true; } break;
-            case 2: if (horizontalWin()) {  return true; } break;
-            case 3: if (verticalWin()) {  return true; } break;
+            case 0: if (leftDiagonalWin()) {  winType = WinType.diagonal; return true;  } break;
+            case 1: if (rightDiagonalWin()) {  winType = WinType.diagonal; return true;  } break;
+            case 2: if (horizontalWin()) {  winType = WinType.horizontal; return true;  } break;
+            case 3: if (verticalWin()) { winType = WinType.vertical; return true;  } break;
         }
         return false;
     }
@@ -337,7 +370,7 @@ public class TutGameCore : MonoBehaviour
         chosenPiece.col = col;
     }
 
-    public IEnumerator Delay()
+    public System.Collections.IEnumerator Delay()
     {
         yield return new WaitForSeconds(2.0f);
         winScreen.enabled = true;
@@ -361,6 +394,7 @@ public class TutGameCore : MonoBehaviour
             usrCounter++;
             if (won())
             {
+                winAnimation();
                 highlightPieces();
                 GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
                 buttonCanvas.enabled = false;

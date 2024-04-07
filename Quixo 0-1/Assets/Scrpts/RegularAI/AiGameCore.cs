@@ -5,12 +5,13 @@ using System;
 using System.Collections;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class AiGameCore : MonoBehaviour
 {
     public GameObject piecePrefab;
     public GameObject gameCoreGameObject;
-
+    public WinType winType;
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public AiButtonHandler aiButtonHandler;
@@ -144,6 +145,38 @@ public class AiGameCore : MonoBehaviour
         {
             yield return new WaitForSeconds(2.25f);
             winScreen.enabled = true;
+        }
+    }
+
+    private System.Collections.IEnumerator winAnimation()
+    {
+        List<int> verPos = new List<int> { -2866, -2876, -2856, -2846, -2836 };
+        List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
+        List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
+        List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitUntil(() => gamePaused == false);
+            AiPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<AiPieceLogic>();
+            if (winType == WinType.vertical)
+            {
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
+            }
+            else if (winType == WinType.horizontal)
+            {
+                yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(-2856, 140, horPos[i])));
+            }
+            else
+            {
+                if (winnerPieces.Contains((0, 0))) //means it is left diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(leftDiagPos[i].Item1, 140, leftDiagPos[i].Item2)));
+                }
+                else //right diagonal
+                {
+                    yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
+                }
+            }
         }
     }
 
@@ -311,18 +344,22 @@ public class AiGameCore : MonoBehaviour
     public bool won()
     {
         if (horizontalWin())    {
+            winType = WinType.horizontal;
             SetSprite("spearWin", vikingWeapon);
             return true;
         };
-        if (verticalWin())      { 
+        if (verticalWin())      {
+            winType = WinType.vertical;
             SetSprite("swordWin", vikingWeapon);
             return true;
         };
-        if (leftDiagonalWin())  { 
+        if (leftDiagonalWin())  {
+            winType = WinType.diagonal;
             SetSprite("axeWin", vikingWeapon);
             return true;
         }; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) { 
+        if (rightDiagonalWin()) {
+            winType = WinType.diagonal;
             SetSprite("axeWin", vikingWeapon);
             return true;
         };
@@ -423,7 +460,7 @@ public class AiGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<AiPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<AiPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<AiPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        //gamePaused = false;
+        gamePaused = false;
 
     }
     public bool makeMove(char c)
@@ -440,10 +477,11 @@ public class AiGameCore : MonoBehaviour
             aiButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
+                StartCoroutine(winAnimation());
                 highlightPieces();
                 buttonsCanvas.enabled = false; 
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                StartCoroutine(RotateCamera());
+                //StartCoroutine(RotateCamera());
 
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -507,12 +545,13 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
+                StartCoroutine(winAnimation());
                 highlightPieces();
                 buttonsCanvas.enabled = false;
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
                 gamePaused = true;
 
-                StartCoroutine(RotateCamera());
+                //StartCoroutine(RotateCamera());
 
                 Debug.Log(currentPlayer.piece + " won!");
             }
@@ -546,9 +585,9 @@ public class AiGameCore : MonoBehaviour
         {
             buttonsCanvas.enabled = false;
             GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+            StartCoroutine(winAnimation());
             highlightPieces();
-
-            StartCoroutine(RotateCamera());
+            //StartCoroutine(RotateCamera());
 
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
