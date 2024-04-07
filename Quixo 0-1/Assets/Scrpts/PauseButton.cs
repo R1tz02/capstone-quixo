@@ -18,6 +18,8 @@ public class PauseButton : MonoBehaviour
     public Canvas drawReqScreen;
     public Canvas drawAccepted;
     public Canvas drawDenied;
+    public GameCore game;
+    public bool mouseOver = false;
 
     public delegate void RestartNetworkingGame();
     public static event RestartNetworkingGame OnNetworkingGameRestart;
@@ -30,6 +32,7 @@ public class PauseButton : MonoBehaviour
         drawAccepted.enabled = false;
         pauseMenu.enabled = false;
         helpMenu.enabled = false;
+        game = GameObject.FindObjectOfType<GameCore>();
     }
 
     public void openMenu()
@@ -98,6 +101,20 @@ public class PauseButton : MonoBehaviour
                 break;
         }
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void OnMouseOver()
+    {
+        if (mouseOver)
+        {
+            SoundFXManage.Instance.PlaySoundFXClip(game.menuHoverSound, transform, 1f);
+            mouseOver = true;
+        }
+    }
+
+    public void OnMouseExit()
+    {
+        mouseOver = false;
     }
 
     public void requestDraw(bool bypass = false)

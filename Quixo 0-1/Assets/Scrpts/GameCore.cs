@@ -46,6 +46,14 @@ public class GameCore : MonoBehaviour
     public bool gamePaused;
     public bool gameOver = false;
 
+    [SerializeField] public AudioClip pieceClickSound;
+
+    [SerializeField] private AudioClip hotPieceMoveSound;
+    [SerializeField] private AudioClip coldPieceMoveSound;
+    [SerializeField] private AudioClip victory;
+    [SerializeField] private AudioClip defeat;
+    [SerializeField] private AudioClip growl;
+
     Image vikingWeapon;
 
     public SpriteRenderer spear;
@@ -124,10 +132,20 @@ public class GameCore : MonoBehaviour
         // Define the target rotation
         Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
 
-        // One second delay before rotation starts
-        yield return new WaitForSeconds(2.5f);
+        GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
 
-        while (timeelapsed < 1)
+        TMP_Text text = congrats.GetComponent<TMP_Text>();
+        if (currentPlayer.piece == 'O')
+        {
+
+            // One second delay before rotation starts
+            yield return new WaitForSeconds(2.5f);
+
+        SoundFXManage.Instance.PlaySoundFXClip(growl, transform, 1f);
+
+            yield return new WaitForSeconds(1.0f);
+
+            while (timeelapsed < 1)
         {
             // Smoothly rotate the camera towards the target rotation
             CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
@@ -136,26 +154,26 @@ public class GameCore : MonoBehaviour
         }
 
         CameraPosition.transform.rotation = targetRotation;
+            SoundFXManage.Instance.PlaySoundFXClip(defeat, transform, 1f);
+            // One second delay after rotation ends
+            yield return new WaitForSeconds(2.5f);
 
-        // One second delay after rotation ends
-        yield return new WaitForSeconds(1.75f);
-
-        GameObject congrats = winScreen.transform.Find("Background/Header/Congrats").gameObject;
-
-        
-
-        TMP_Text text = congrats.GetComponent<TMP_Text>();
-        if (currentPlayer.piece == 'X')
-        {
             text.text = "You have forged through the fury!";
+            
+            SetSprite("graveLose", vikingWeapon);
+            winScreen.enabled = true;
         }
         else 
         {
             //vikingWeapon.sprite = lose;
-            SetSprite("graveLose", vikingWeapon);
+            yield return new WaitForSeconds(3.0f);
+
             text.text = "The dragons fire consumes all!";
+            
+            SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
+            winScreen.enabled = true;
         }
-        winScreen.enabled = true;
+        
     }
 
     public async void StartNetworkedGame(string gameType, string code = null)
@@ -414,13 +432,11 @@ public class GameCore : MonoBehaviour
         if (horizontalWin())    {
             SetSprite("spearWin", vikingWeapon);
             winType = WinType.horizontal;
-            //vikingWeapon.sprite = spear;
             return true;
         };
         if (verticalWin())      {
             SetSprite("swordWin", vikingWeapon);
             winType = WinType.vertical;
-            //vikingWeapon.sprite = sword;
             return true;
         };
         if (leftDiagonalWin() || rightDiagonalWin())  {
@@ -456,6 +472,7 @@ public class GameCore : MonoBehaviour
                 currentPieceObject.GetComponent<PieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position + new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[i, chosenPiece.col] = gameBoard[i - 1, chosenPiece.col];
             }
             StartCoroutine(moveChosenPiece(0, chosenPiece.col, pieceColor, currentPiece, (-40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
@@ -468,6 +485,7 @@ public class GameCore : MonoBehaviour
                 currentPieceObject.GetComponent<PieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col]; 
             }
              StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
@@ -480,6 +498,7 @@ public class GameCore : MonoBehaviour
                 currentPieceObject.GetComponent<PieceLogic>().col = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(0, 0, 20);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
             }
              StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
@@ -492,12 +511,24 @@ public class GameCore : MonoBehaviour
                 currentPieceObject.GetComponent<PieceLogic>().col = i;
                 Vector3 newPosition = currentPieceObject.transform.position + new Vector3(0, 0, 20);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
+                currentPlayerSFX();
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
             }
              StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
         }
     }
 
+    public void currentPlayerSFX()
+    {
+        if (currentPlayer == p1)
+        {
+            SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
+        }
+        else
+        {
+            SoundFXManage.Instance.PlaySoundFXClip(coldPieceMoveSound, transform, 1f);
+        }
+    }
     public System.Collections.IEnumerator MovePieceSmoothly(PieceLogic piece, Vector3 targetPosition)
     {
         float duration = 0.5f; // Adjust as needed
@@ -506,6 +537,7 @@ public class GameCore : MonoBehaviour
 
         while (elapsedTime < duration)
         {
+   
             piece.transform.position = Vector3.Lerp(startPosition, targetPosition, (elapsedTime / duration));
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -536,6 +568,7 @@ public class GameCore : MonoBehaviour
         }
         if (validPiece(chosenPiece.row, chosenPiece.col, force) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
+
             shiftBoard(c, currentPlayer.piece);
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
@@ -553,7 +586,7 @@ public class GameCore : MonoBehaviour
 
                 buttonsCanvas.enabled = false;
                 GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
-                //StartCoroutine(RotateCamera());
+                StartCoroutine(RotateCamera());
                 Debug.Log(currentPlayer.piece + " won!");
                 return true;
             }
