@@ -460,7 +460,7 @@ public class AiGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<AiPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<AiPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<AiPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        //gamePaused = false;
+        gamePaused = false;
 
     }
     public bool makeMove(char c)
@@ -481,7 +481,7 @@ public class AiGameCore : MonoBehaviour
                 highlightPieces();
                 buttonsCanvas.enabled = false; 
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                StartCoroutine(RotateCamera());
+                //StartCoroutine(RotateCamera());
 
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -551,7 +551,7 @@ public class AiGameCore : MonoBehaviour
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
                 gamePaused = true;
 
-                StartCoroutine(RotateCamera());
+                //StartCoroutine(RotateCamera());
 
                 Debug.Log(currentPlayer.piece + " won!");
             }
@@ -587,7 +587,7 @@ public class AiGameCore : MonoBehaviour
             GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
             StartCoroutine(winAnimation());
             highlightPieces();
-            StartCoroutine(RotateCamera());
+            //StartCoroutine(RotateCamera());
 
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
