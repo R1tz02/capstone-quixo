@@ -72,6 +72,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public bool drawInProgress = false;
     public TMP_Text lobbyCode;
     public Button pauseButton;
+    public TMP_Text playerIndicator;
+    private GameMode networkingType;
 
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _networkChatPrefab;
@@ -102,6 +104,9 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             CodeCanvas.gameObject.SetActive(false);
         }
+
+        PlayerIndicatorCanvas.gameObject.SetActive(true);
+
         runner.SessionInfo.IsOpen = false;
 
         SetupGame();
@@ -147,7 +152,12 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
 
-            CodeCanvas.gameObject.SetActive(true);
+            if (networkingType == GameMode.Host)
+            {
+                CodeCanvas.gameObject.SetActive(true);
+            }
+
+            PlayerIndicatorCanvas.gameObject.SetActive(false);
 
             game.showError("Client has disconnected. Waiting until they rejoin...");
 
@@ -234,6 +244,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public GameState gameState;
     public NetworkChat chat;
     public Canvas CodeCanvas;
+    public Canvas PlayerIndicatorCanvas;
 
     public List<ChatMessage> chatLog = new();
 
@@ -246,6 +257,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         _runner = gameObject.AddComponent<NetworkRunner>();
 
         _runner.ProvideInput = true;
+
+        networkingType = mode;
 
         bool enableClientSessionCreation = false;
 
@@ -275,6 +288,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             lobbyName = ran;
 
             CodeCanvas.gameObject.SetActive(true);
+            PlayerIndicatorCanvas.gameObject.SetActive(false);
 
             lobbyCode.text = ran;
         }
@@ -518,6 +532,8 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameSetUp = false;
         currentTurn = 0;
         SetupGame(true);
+        PlayerIndicatorCanvas.gameObject.SetActive(true);
+        playerIndicator.text = "Player 1's turn";
 
         if (Data.CURRENT_LANGUAGE == "English")
         {

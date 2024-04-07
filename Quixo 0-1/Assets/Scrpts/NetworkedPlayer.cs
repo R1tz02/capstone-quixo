@@ -101,7 +101,16 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
 
         networkingManager.chat = GameObject.FindObjectOfType<NetworkChat>();
 
-        networkingManager.game.currentPlayer = playerTurnLocal == 2 ? networkingManager.game.p2 : networkingManager.game.p1;
+        if (playerTurnLocal == 2)
+        {
+            networkingManager.game.currentPlayer = networkingManager.game.p2;
+            networkingManager.playerIndicator.text = "Player 2's turn";
+        }
+        else
+        {
+            networkingManager.game.currentPlayer = networkingManager.game.p1;
+            networkingManager.playerIndicator.text = "Player 1's turn";
+        }
     }
 
     // Called by both client and server
@@ -109,6 +118,15 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void RpcSendMove(byte direction, PlayerRef sendingPlayerRef)
     {
         NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
+
+        if (networkingManager.playerIndicator.text == "Player 1's turn")
+        {
+            networkingManager.playerIndicator.text = "Player 2's turn";
+        }
+        else
+        {
+            networkingManager.playerIndicator.text = "Player 1's turn";
+        }
 
         if (localPlayer.PlayerRef == sendingPlayerRef) return;
 
@@ -214,6 +232,8 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void RpcAcceptDraw()
     {
         pauseButton.acceptDraw(true);
+
+        networkingManager.PlayerIndicatorCanvas.gameObject.SetActive(false);
 
         networkingManager.drawInProgress = false;
 

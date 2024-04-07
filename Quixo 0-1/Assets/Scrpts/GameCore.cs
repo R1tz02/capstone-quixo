@@ -637,6 +637,8 @@ public class GameCore : MonoBehaviour
                     NetworkingManager networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
 
                     networkingManager._runner.SessionInfo.IsOpen = false;
+
+                    GameObject.Find("PlayerIndicatorCanvas").gameObject.SetActive(false);
                 }
 
                 buttonsCanvas.enabled = false;
