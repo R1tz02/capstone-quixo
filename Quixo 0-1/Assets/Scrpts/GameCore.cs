@@ -51,6 +51,7 @@ public class GameCore : MonoBehaviour
     public Text errorText;
     public Camera CameraPosition;
     public Button restartButton;
+    private PauseButton pauseButton;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
 
     public GameType currentGameMode;
@@ -68,6 +69,7 @@ public class GameCore : MonoBehaviour
         CameraPosition = Camera.main;
         errorScreen.enabled = false;
         restartButton.gameObject.SetActive(true);
+        pauseButton = GameObject.Find("Menu Manager").GetComponent<PauseButton>();
 
         vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
     }
@@ -91,7 +93,8 @@ public class GameCore : MonoBehaviour
             winScreen.enabled = false;
             loseScreen.enabled = false;
         }
-        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+
+        pauseButton.gameObject.SetActive(false);
         Time.timeScale = 0;
     }
     public void closeError()
@@ -99,7 +102,7 @@ public class GameCore : MonoBehaviour
         errorScreen.enabled = false;
         gamePaused = false;
         Time.timeScale = 1;
-        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
+        pauseButton.gameObject.SetActive(true);
     }
 
     IEnumerator RotateCamera()

@@ -110,8 +110,10 @@ public class PauseButton : MonoBehaviour
         }
 
         GameObject header = drawReqScreen.transform.Find("Background/Header/Congrats").gameObject;
-        TMP_Text text = header.GetComponent<TMP_Text>();
-        text.text = "Player " + gameMaster.GetComponent<GameCore>().currentPlayer.piece + " is requesting a draw";
+
+        int playerNumber = gameMaster.GetComponent<GameCore>().currentPlayer.piece == 'X' ? 1 : 2;
+
+        header.GetComponent<TMP_Text>().text = "Player " + playerNumber + " is requesting a draw";
         drawReqScreen.enabled = true;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
         pauseButton.gameObject.SetActive(false);
@@ -150,14 +152,18 @@ public class PauseButton : MonoBehaviour
 
         drawReqScreen.enabled = false;
         drawDenied.enabled = true;
-        pauseButton.gameObject.SetActive(true);
-        GameObject.Find("GameMaster").GetComponent<GameCore>().buttonsCanvas.enabled = true;
     }
 
     public void closeDrawMenu()
     {
         drawDenied.enabled = false;
-        gameMaster.GetComponent<GameCore>().gamePaused = false;
+
+        GameCore game = GameObject.Find("GameMaster").GetComponent<GameCore>();
+
+        game.gamePaused = false;
+        pauseButton.gameObject.SetActive(true);
+        game.buttonsCanvas.enabled = true;
+        game.drawButton.gameObject.SetActive(true);
     }
 
     private NetworkedPlayer GetNetworkedLocalPlayer()

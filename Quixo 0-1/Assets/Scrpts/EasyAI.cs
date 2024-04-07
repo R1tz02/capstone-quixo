@@ -432,8 +432,16 @@ public class EasyAI : MonoBehaviour
             }
         }
         System.Random rand = new System.Random();
-        score = (int)Math.Pow(2, count);
-        oppScore = ((-(int)Math.Pow(2, opponentCount + 1))) + rand.Next(1,12);
+        score = (int)Math.Pow(4, count);
+        oppScore = ((-(int)Math.Pow(4, opponentCount + 1))) + rand.Next(1,12);
+        if (count == 5)
+        {
+            score += 1000000;
+        }
+        if (opponentCount == 5)
+        {
+            oppScore -= 2000000;
+        }
 
         return score + oppScore;
 
