@@ -65,6 +65,10 @@ public class GameCore : MonoBehaviour
     public GameObject axePrefab;
     public GameObject spearPrefab;
 
+    private GameObject swordInstance;
+    private GameObject axeInstance;
+    private GameObject spearInstance;
+
     public Canvas loseScreen;
     public Canvas winScreen;
     public Button drawButton;
@@ -268,43 +272,43 @@ public class GameCore : MonoBehaviour
         }
         if (winType == WinType.vertical)
         {
-            GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
-            Vector3 scale = sword.transform.localScale;
+            swordInstance = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
+            Vector3 scale = swordInstance.transform.localScale;
             scale.y = 100f;
             scale.x = 100f;
             scale.z = 100f;
-            sword.transform.localScale = scale;
-            sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
+            swordInstance.transform.localScale = scale;
+            swordInstance.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
         }
         if (winType == WinType.Leftdiagonal)
         {
-            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
-            Vector3 scale = axe.transform.localScale;
+            axeInstance = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
+            Vector3 scale = axeInstance.transform.localScale;
             scale.y = 80;
             scale.x = 80;
             scale.z = 80;
-            axe.transform.localScale = scale;
-            axe.transform.Rotate(90.0f, 0, 135.0f, Space.Self);
+            axeInstance.transform.localScale = scale;
+            axeInstance.transform.Rotate(90.0f, 0, 135.0f, Space.Self);
         }
         if (winType == WinType.horizontal)
         {
-            GameObject spear = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
-            Vector3 scale = spear.transform.localScale;
+            spearInstance = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
+            Vector3 scale = spearInstance.transform.localScale;
             scale.y = 50f;
             scale.x = 50f;
             scale.z = 50f;
-            spear.transform.localScale = scale;
-            spear.transform.Rotate(0f, 0, 0, Space.Self);
+            spearInstance.transform.localScale = scale;
+            spearInstance.transform.Rotate(0f, 0, 0, Space.Self);
         }
         if (winType == WinType.Rightdiagonal)
         {
-            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
-            Vector3 scale = axe.transform.localScale;
+            axeInstance = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
+            Vector3 scale = axeInstance.transform.localScale;
             scale.y = 80;
             scale.x = 80;
             scale.z = 80;
-            axe.transform.localScale = scale;
-            axe.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
+            axeInstance.transform.localScale = scale;
+            axeInstance.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
         }
         gameOver = true;
     }
@@ -760,6 +764,21 @@ public class GameCore : MonoBehaviour
         buttonsCanvas.enabled = true;
 
         gameOver = false;
+
+        Destroy(vikingWeapon);
+
+        if (swordInstance != null)
+        {
+            Destroy(swordInstance);
+        }
+        if (axeInstance != null)
+        {
+            Destroy(axeInstance);
+        }
+        if (spearInstance != null)
+        {
+            Destroy(spearInstance);
+        }
 
         PauseButton pauseButton = FindObjectOfType<PauseButton>();
         pauseButton.HideAllDrawMenus();
