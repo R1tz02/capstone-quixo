@@ -162,7 +162,7 @@ public class GameCore : MonoBehaviour
             // One second delay after rotation ends
             yield return new WaitForSeconds(2.5f);
 
-            text.text = "You have forged through the fury!";
+           // text.text = "You have forged through the fury!";
             
             SetSprite("graveLose", vikingWeapon);
             winScreen.enabled = true;
@@ -172,7 +172,7 @@ public class GameCore : MonoBehaviour
             //vikingWeapon.sprite = lose;
             yield return new WaitForSeconds(3.0f);
 
-            text.text = "The dragons fire consumes all!";
+           // text.text = "The dragons fire consumes all!";
             
             SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
             winScreen.enabled = true;
@@ -623,7 +623,8 @@ public class GameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won()) 
             {
-                StartCoroutine(winAnimation());
+                if(currentPlayer.piece == 'X')
+                    StartCoroutine(winAnimation());
                 gameOver = true;
                 highlightPieces();
 

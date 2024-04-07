@@ -657,7 +657,7 @@ public class StoryGameCore : MonoBehaviour
             //gamePaused = true;
             buttonCanvas.enabled = false;
             GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
-            StartCoroutine(winAnimation());
+            //StartCoroutine(winAnimation());
             StartCoroutine(RotateCamera());
             highlightPieces();
             Debug.Log(currentPlayer.piece + " won!");
@@ -690,7 +690,7 @@ public class StoryGameCore : MonoBehaviour
             //gamePaused = true;
             buttonCanvas.enabled = false;
             GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
-            StartCoroutine(winAnimation());
+            //StartCoroutine(winAnimation());
             StartCoroutine(RotateCamera());
             highlightPieces();
             Debug.Log(currentPlayer.piece + " won!");
