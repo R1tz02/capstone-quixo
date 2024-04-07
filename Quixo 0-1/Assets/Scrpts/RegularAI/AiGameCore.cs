@@ -29,7 +29,7 @@ public class AiGameCore : MonoBehaviour
     public bool gameOver = false;
     public bool aiMoving = false;
     public bool aiFirst = false;
-    public AIType aiType; 
+    public AIType aiType;
 
     Image vikingWeapon;
 
@@ -55,7 +55,7 @@ public class AiGameCore : MonoBehaviour
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
     public static event ChosenPieceEvent OnChosenPiece;
-    
+
     void Start()
     {
         GameObject curPlayerVisual;
@@ -68,14 +68,14 @@ public class AiGameCore : MonoBehaviour
 
     public enum AIType
     {
-        EasyAI, 
+        EasyAI,
         MediumAI,
         HardAI
     };
 
     void SetSprite(string spriteName, Image image)
     {
-        
+
         // Load the sprite from the Resources folder
         Sprite sprite = Resources.Load<Sprite>(spriteName);
 
@@ -89,12 +89,12 @@ public class AiGameCore : MonoBehaviour
         {
             currentGameMode = GameType.AIHard;
         }
-        else if(aiType == AIType.MediumAI)
+        else if (aiType == AIType.MediumAI)
         {
             currentGameMode = GameType.AIMedium;
         }
-        else if(aiType == AIType.EasyAI) 
-        {         
+        else if (aiType == AIType.EasyAI)
+        {
             currentGameMode = GameType.AIEasy;
         }
         GameObject player1Object = new GameObject("Player1");
@@ -126,7 +126,7 @@ public class AiGameCore : MonoBehaviour
             {
                 MediumAIMove(mediumAI);
             }
-            else if(aiType == AIType.EasyAI)
+            else if (aiType == AIType.EasyAI)
             {
                 EasyAIMove(easyAI);
             }
@@ -207,7 +207,7 @@ public class AiGameCore : MonoBehaviour
         }
 
         foreach (AiPieceLogic piece in listOfPieces)
-        { 
+        {
             piece.gameObject.SetActive(false);
         }
         if (winType == WinType.vertical)
@@ -220,7 +220,7 @@ public class AiGameCore : MonoBehaviour
             sword.transform.localScale = scale;
             sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
         }
-        if(winType == WinType.Leftdiagonal) 
+        if (winType == WinType.Leftdiagonal)
         {
             GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
@@ -416,17 +416,17 @@ public class AiGameCore : MonoBehaviour
 
     public bool won()
     {
-        if (horizontalWin())    {
+        if (horizontalWin()) {
             winType = WinType.horizontal;
             SetSprite("spearWin", vikingWeapon);
             return true;
         };
-        if (verticalWin())      {
+        if (verticalWin()) {
             winType = WinType.vertical;
             SetSprite("swordWin", vikingWeapon);
             return true;
         };
-        if (leftDiagonalWin())  {
+        if (leftDiagonalWin()) {
             winType = WinType.Leftdiagonal;
             SetSprite("axeWin", vikingWeapon);
             return true;
@@ -447,7 +447,7 @@ public class AiGameCore : MonoBehaviour
         Material pieceColor;
         gamePaused = true;
         switch (currentPiece)
-        { 
+        {
             case 'X':
                 pieceColor = playerOneSpace;
                 break;
@@ -476,9 +476,9 @@ public class AiGameCore : MonoBehaviour
                 currentPieceObject.GetComponent<AiPieceLogic>().row = i;
                 Vector3 newPosition = currentPieceObject.transform.position - new Vector3(20, 0, 0);
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
-                gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col]; 
+                gameBoard[i, chosenPiece.col] = gameBoard[i + 1, chosenPiece.col];
             }
-             StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
+            StartCoroutine(moveChosenPiece(4, chosenPiece.col, pieceColor, currentPiece, (40 + -2856), 100f, gameBoard[1, chosenPiece.col].transform.position.z));
         }
         else if (dir == 'R')
         {
@@ -490,7 +490,7 @@ public class AiGameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i + 1];
             }
-             StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
+            StartCoroutine(moveChosenPiece(chosenPiece.row, 4, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, 40));
         }
         else if (dir == 'L')
         {
@@ -502,7 +502,7 @@ public class AiGameCore : MonoBehaviour
                 StartCoroutine(MovePieceSmoothly(currentPieceObject, newPosition));
                 gameBoard[chosenPiece.row, i] = gameBoard[chosenPiece.row, i - 1];
             }
-             StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
+            StartCoroutine(moveChosenPiece(chosenPiece.row, 0, pieceColor, currentPiece, gameBoard[chosenPiece.row, 1].transform.position.x, 100f, -40));
         }
 
     }
@@ -522,7 +522,7 @@ public class AiGameCore : MonoBehaviour
 
         piece.transform.position = targetPosition; // Ensure it reaches the target position precisely
     }
-  
+
     private System.Collections.IEnumerator moveChosenPiece(int row, int col, Material pieceColor, char currentPiece, float x, float y, float z)
     {
         gameBoard[row, col] = gameBoard[0, 5]; //F: set the selected piece to its new position in the array
@@ -533,7 +533,7 @@ public class AiGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<AiPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<AiPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<AiPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        if(GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseMenu.enabled == false && aiMoving)
+        if (GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseMenu.enabled == false && aiMoving)
             gamePaused = false;
     }
     public bool makeMove(char c)
@@ -548,11 +548,11 @@ public class AiGameCore : MonoBehaviour
         {
             shiftBoard(c, currentPlayer.piece);
             aiButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
-            if (won()) 
+            if (won())
             {
                 StartCoroutine(winAnimation());
                 highlightPieces();
-                buttonsCanvas.enabled = false; 
+                buttonsCanvas.enabled = false;
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
                 StartCoroutine(RotateCamera(true));
 
@@ -562,13 +562,13 @@ public class AiGameCore : MonoBehaviour
             }
             //F: if not won, we change the currentPlayer
             else if (currentPlayer.piece == 'X') {
-                currentPlayer = p2; 
+                currentPlayer = p2;
             }
             else {
-                currentPlayer = p1; 
+                currentPlayer = p1;
             }
             gamePaused = false;
-            aiMoving = true; 
+            aiMoving = true;
 
             if (aiType == AIType.HardAI)
             {
@@ -578,7 +578,7 @@ public class AiGameCore : MonoBehaviour
             {
                 MediumAIMove(mediumAI);
             }
-            else if(aiType == AIType.EasyAI)
+            else if (aiType == AIType.EasyAI)
             {
                 EasyAIMove(easyAI);
             }
@@ -617,7 +617,7 @@ public class AiGameCore : MonoBehaviour
 
         (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit, aiFirst));
 
-        if(validPiece(move.Item1.row, move.Item1.col, true))
+        if (validPiece(move.Item1.row, move.Item1.col, true))
         {
             shiftBoard(move.Item2, currentPlayer.piece);
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
@@ -681,7 +681,7 @@ public class AiGameCore : MonoBehaviour
             }
             //gamePaused = false;
             aiMoving = false;
-        }    
+        }
     }
     async void EasyAIMove(EasyAI easyAI)
     {
@@ -692,7 +692,7 @@ public class AiGameCore : MonoBehaviour
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0));
 
         //await WaitFor();
-        if(validPiece(move.Item1.row, move.Item1.col, true))
+        if (validPiece(move.Item1.row, move.Item1.col, true))
         {
             shiftBoard(move.Item2, currentPlayer.piece);
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
@@ -704,141 +704,142 @@ public class AiGameCore : MonoBehaviour
                 highlightPieces();
                 StartCoroutine(RotateCamera(false));
 
-            gamePaused = true;
-            Debug.Log(currentPlayer.piece + " won!");
+                gamePaused = true;
+                Debug.Log(currentPlayer.piece + " won!");
+            }
+            else if (currentPlayer.piece == 'X')
+            {
+                currentPlayer = p2;
+            }
+            else
+            {
+                currentPlayer = p1;
+            }
+            gamePaused = false;
+            await Task.Delay(750);
+            aiMoving = false;
         }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }
-        gamePaused = false;
-        await Task.Delay(750);
-        aiMoving = false;
     }
 
 
-    public IEnumerator waitAI(EasyAI easyAI)
-    {
-        new WaitForSeconds(2);
-        EasyAIMove(easyAI);
-        yield return null;
-        
-    }
-    private void WaitFor(EasyAI easyAI)
-    {
-        waitAI(easyAI);
-    }
+        public IEnumerator waitAI(EasyAI easyAI)
+        {
+            new WaitForSeconds(2);
+            EasyAIMove(easyAI);
+            yield return null;
 
-    public List<char> moveOptions(int row, int col)
-    {
-        aiButtonHandler.changeArrowsBack();
-        List<char> moveList = new List<char>();
-        if (row > 0)
-        {
-            moveList.Add('U');
-            aiButtonHandler.changeArrowColor('U');
         }
-        if (row < 4)
+        private void WaitFor(EasyAI easyAI)
         {
-            moveList.Add('D');
-            aiButtonHandler.changeArrowColor('D');
+            waitAI(easyAI);
         }
-        if (col > 0)
-        {
-            moveList.Add('L');
-            aiButtonHandler.changeArrowColor('L');
-        }
-        if (col < 4)
-        {
-            moveList.Add('R');
-            aiButtonHandler.changeArrowColor('R');
-        }
-        return moveList;
-    }
 
-    //checks to see if the passed piece is a selectable piece for the player to choose
-    public bool validPiece(int row, int col, bool aiTurn = false)
-    {
-        if ( gameOver || (aiMoving && !aiTurn))
+        public List<char> moveOptions(int row, int col)
         {
+            aiButtonHandler.changeArrowsBack();
+            List<char> moveList = new List<char>();
+            if (row > 0)
+            {
+                moveList.Add('U');
+                aiButtonHandler.changeArrowColor('U');
+            }
+            if (row < 4)
+            {
+                moveList.Add('D');
+                aiButtonHandler.changeArrowColor('D');
+            }
+            if (col > 0)
+            {
+                moveList.Add('L');
+                aiButtonHandler.changeArrowColor('L');
+            }
+            if (col < 4)
+            {
+                moveList.Add('R');
+                aiButtonHandler.changeArrowColor('R');
+            }
+            return moveList;
+        }
+
+        //checks to see if the passed piece is a selectable piece for the player to choose
+        public bool validPiece(int row, int col, bool aiTurn = false)
+        {
+            if (gameOver || (aiMoving && !aiTurn))
+            {
+                return false;
+            }
+            AiPieceLogic piece = gameBoard[row, col].GetComponent<AiPieceLogic>();
+            if ((row == 0 || row == 4) || (col == 0 || col == 4))
+            {
+                if (piece.player == '-' || currentPlayer.piece == piece.player)
+                {
+                    chosenPiece = piece;
+
+                    OnChosenPiece?.Invoke(row, col);
+
+                    return true;
+                }
+            }
             return false;
         }
-        AiPieceLogic piece = gameBoard[row, col].GetComponent<AiPieceLogic>();
-        if ((row == 0 || row == 4) || (col == 0 || col == 4))
+
+        //fills the board with GamePiece Objects and sets the important fields
+        public void populateBoard()
         {
-            if (piece.player == '-' || currentPlayer.piece == piece.player)
+            int x = -40;
+            int z = -40;
+            for (int i = 0; i < 5; i++)
             {
-                chosenPiece = piece;
-
-                OnChosenPiece?.Invoke(row, col);
-
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //fills the board with GamePiece Objects and sets the important fields
-    public void populateBoard() 
-    {
-        int x = -40;
-        int z = -40;
-        for (int i = 0; i < 5; i++)
-        {
-            z = -40;
-            for (int j = 0; j < 5; j++)
-            {
-                gameBoard[i, j] = Instantiate(piecePrefab, new Vector3((-2856 + x), 100f, z), Quaternion.identity);
-                gameBoard[i, j].GetComponent<AiPieceLogic>().row = i;
-                gameBoard[i, j].GetComponent<AiPieceLogic>().col = j;
-                gameBoard[i, j].GetComponent<AiPieceLogic>().player = '-';
-                gameBoard[i, j].GetComponent<AiPieceLogic>().game = this;
-                z += 20;
-            }
-            x += 20;
-        }
-    }
-
-    void makeDiagonalWin()
-    {
-        for (int i = 1; i < 5; i++)
-        {
-            gameBoard[i, i].GetComponent<AiPieceLogic>().player = 'X';
-            gameBoard[i, i].GetComponent<Renderer>().material = playerOneSpace;
-        }
-    }
-
-    void makeRightDiagonalWin()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            gameBoard[i, 4 - i].GetComponent<AiPieceLogic>().player = 'X';
-            gameBoard[i, 4 - i].GetComponent<Renderer>().material = playerOneSpace;
-        }
-    }
-
-
-    public char[,] translateBoard()
-    {
-        char[,] aiBoard = new char[5, 5];
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                aiBoard[i, j] = gameBoard[i, j].GetComponent<AiPieceLogic>().player;
+                z = -40;
+                for (int j = 0; j < 5; j++)
+                {
+                    gameBoard[i, j] = Instantiate(piecePrefab, new Vector3((-2856 + x), 100f, z), Quaternion.identity);
+                    gameBoard[i, j].GetComponent<AiPieceLogic>().row = i;
+                    gameBoard[i, j].GetComponent<AiPieceLogic>().col = j;
+                    gameBoard[i, j].GetComponent<AiPieceLogic>().player = '-';
+                    gameBoard[i, j].GetComponent<AiPieceLogic>().game = this;
+                    z += 20;
+                }
+                x += 20;
             }
         }
 
-        return aiBoard;
-    }
+        void makeDiagonalWin()
+        {
+            for (int i = 1; i < 5; i++)
+            {
+                gameBoard[i, i].GetComponent<AiPieceLogic>().player = 'X';
+                gameBoard[i, i].GetComponent<Renderer>().material = playerOneSpace;
+            }
+        }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.D)) { makeDiagonalWin(); }
-        if (Input.GetKeyDown(KeyCode.R)) { makeRightDiagonalWin(); }
-    }
+        void makeRightDiagonalWin()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                gameBoard[i, 4 - i].GetComponent<AiPieceLogic>().player = 'X';
+                gameBoard[i, 4 - i].GetComponent<Renderer>().material = playerOneSpace;
+            }
+        }
+
+
+        public char[,] translateBoard()
+        {
+            char[,] aiBoard = new char[5, 5];
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    aiBoard[i, j] = gameBoard[i, j].GetComponent<AiPieceLogic>().player;
+                }
+            }
+
+            return aiBoard;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.D)) { makeDiagonalWin(); }
+            if (Input.GetKeyDown(KeyCode.R)) { makeRightDiagonalWin(); }
+        }
 }
