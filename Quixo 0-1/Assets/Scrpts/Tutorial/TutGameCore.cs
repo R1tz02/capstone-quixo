@@ -417,7 +417,7 @@ public class TutGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<TutPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<TutPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<TutPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        if(aiTurn && !gamePaused)
+        if(aiTurn && GameObject.Find("Menu Manager").GetComponent<TutPauseButton>().pauseMenu.enabled == false)
             gamePaused = false;
         chosenPiece.row = row;
         chosenPiece.col = col;
@@ -477,7 +477,7 @@ public class TutGameCore : MonoBehaviour
             }
             aiMoving = false;
             aiTurn = false;
-
+            gamePaused = false;
             if (usrCounter > 0)
             {
                 for (int row = 0; row < 5; row++)
@@ -513,6 +513,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
+        gamePaused = false;
     }
 
     async void verFakeMove()
@@ -535,6 +536,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
+        gamePaused = false;
     }
 
     async void LDiagFakeMove()
@@ -568,7 +570,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-        
+        gamePaused = false;
         AIcounter++;
     }
 
@@ -603,7 +605,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-
+        gamePaused = false;
         AIcounter++;
     }
 
@@ -707,7 +709,7 @@ public class TutGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col)
     {
-        if (gamePaused || gameOver)
+        if ( gameOver)
         {
             return false;
         }
