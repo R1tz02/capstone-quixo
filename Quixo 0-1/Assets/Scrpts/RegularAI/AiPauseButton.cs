@@ -32,7 +32,7 @@ public class AiPauseButton : MonoBehaviour
     { 
         pauseMenu.enabled = true;
         pauseButton.gameObject.SetActive(false);
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         gameMaster.GetComponent<AiGameCore>().gamePaused = true;
         directionsAndDraw.enabled = false;
     }

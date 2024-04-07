@@ -93,8 +93,9 @@ public class TutPauseButton : MonoBehaviour
             stepDisabled = 2;
         }
         pauseMenu.enabled = true;
+
         pauseButton.gameObject.SetActive(false);
-        Time.timeScale = 0;
+       // Time.timeScale = 0;
         gameMaster.GetComponent<TutGameCore>().gamePaused = true;
         GameObject.Find("GameMaster").GetComponent<TutGameCore>().buttonCanvas.enabled = false;
     }
@@ -104,9 +105,10 @@ public class TutPauseButton : MonoBehaviour
         if(stepDisabled == 1) { stepOne.enabled = true; }
         else if (stepDisabled == 2) { stepTwo.enabled = true; GameObject.Find("GameMaster").GetComponent<TutGameCore>().buttonCanvas.enabled = true; }
         pauseMenu.enabled = false;
-        pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1;
+        pauseButton.gameObject.SetActive(true);
         gameMaster.GetComponent<TutGameCore>().gamePaused = false;
+        GameObject.Find("GameMaster").GetComponent<TutGameCore>().buttonCanvas.enabled = true;
     }
 
     public async void returnToMain()

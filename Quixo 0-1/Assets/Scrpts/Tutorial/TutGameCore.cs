@@ -29,11 +29,16 @@ public class TutGameCore : MonoBehaviour
     public Player p2 = new Player();
     public int tutLvl = -1;
     public int AIcounter = 0;
+    public bool aiMoving = false;
     public int usrCounter = 0;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
+    public bool gameOver = false;
 
     public Canvas buttonCanvas;
-
+    public bool aiTurn;
+    public GameObject swordPrefab;
+    public GameObject axePrefab;
+    public GameObject spearPrefab;
 
     void Start()
     {
@@ -62,10 +67,12 @@ public class TutGameCore : MonoBehaviour
         List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
         List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
         List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
+        List<TutPieceLogic> listOfPieces = new List<TutPieceLogic>();
         for (int i = 0; i < 5; i++)
         {
             yield return new WaitUntil(() => gamePaused == false);
             TutPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<TutPieceLogic>();
+            listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
@@ -86,6 +93,51 @@ public class TutGameCore : MonoBehaviour
                 }
             }
         }
+        foreach (TutPieceLogic piece in listOfPieces)
+        {
+            piece.gameObject.SetActive(false);
+        }
+        if (winType == WinType.vertical)
+        {
+            GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
+            Vector3 scale = sword.transform.localScale;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
+            sword.transform.localScale = scale;
+            sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
+        }
+        if (winType == WinType.Leftdiagonal)
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(90.0f, 0, 135.0f, Space.Self);
+        }
+        if (winType == WinType.horizontal)
+        {
+            GameObject spear = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
+            Vector3 scale = spear.transform.localScale;
+            scale.y = 50f;
+            scale.x = 50f;
+            scale.z = 50f;
+            spear.transform.localScale = scale;
+            spear.transform.Rotate(0f, 0, 0, Space.Self);
+        }
+        if (winType == WinType.Rightdiagonal)
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
+        }
+        gameOver = true;
     }
     private void highlightPieces()
     {
@@ -263,8 +315,8 @@ public class TutGameCore : MonoBehaviour
     {
         switch (tutLvl)
         {
-            case 0: if (leftDiagonalWin()) {  winType = WinType.diagonal; return true;  } break;
-            case 1: if (rightDiagonalWin()) {  winType = WinType.diagonal; return true;  } break;
+            case 0: if (leftDiagonalWin()) {  winType = WinType.Leftdiagonal; return true;  } break;
+            case 1: if (rightDiagonalWin()) {  winType = WinType.Rightdiagonal; return true;  } break;
             case 2: if (horizontalWin()) {  winType = WinType.horizontal; return true;  } break;
             case 3: if (verticalWin()) { winType = WinType.vertical; return true;  } break;
         }
@@ -365,7 +417,8 @@ public class TutGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<TutPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<TutPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<TutPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        gamePaused = false;
+        if(aiTurn && GameObject.Find("Menu Manager").GetComponent<TutPauseButton>().pauseMenu.enabled == false)
+            gamePaused = false;
         chosenPiece.row = row;
         chosenPiece.col = col;
     }
@@ -378,7 +431,7 @@ public class TutGameCore : MonoBehaviour
 
     public bool makeMove(char c)
     {
-        if (gamePaused)
+        if (gamePaused || (aiMoving && aiTurn))
         {
             return false;
         }
@@ -413,6 +466,8 @@ public class TutGameCore : MonoBehaviour
                 currentPlayer = p1;
             }
 
+            aiMoving = true;
+            aiTurn = true;
             switch (tutLvl)
             {
                 case 0: LDiagFakeMove(); break;
@@ -420,7 +475,9 @@ public class TutGameCore : MonoBehaviour
                 case 2: horFakeMove(); break;
                 case 3: verFakeMove(); break;
             }
-
+            aiMoving = false;
+            aiTurn = false;
+            gamePaused = false;
             if (usrCounter > 0)
             {
                 for (int row = 0; row < 5; row++)
@@ -444,9 +501,10 @@ public class TutGameCore : MonoBehaviour
         fakeAI.row = 4;
         fakeAI.col = 0;
         (Piece, char) fakeMove = (fakeAI, 'R');
-        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
+        TutPieceLogic piece = gameBoard[fakeAI.row, fakeAI.col].GetComponent<TutPieceLogic>();
+        chosenPiece = piece;
+        OnChosenPiece?.Invoke(fakeAI.row, fakeAI.col);
         shiftBoard(fakeMove.Item2, currentPlayer.piece);
-
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -455,6 +513,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
+        gamePaused = false;
     }
 
     async void verFakeMove()
@@ -464,9 +523,11 @@ public class TutGameCore : MonoBehaviour
         fakeAI.row = 0;
         fakeAI.col = 4;
         (Piece, char) fakeMove = new(fakeAI, 'D');
-        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
-        shiftBoard(fakeMove.Item2, currentPlayer.piece);
 
+        TutPieceLogic piece = gameBoard[fakeAI.row, fakeAI.col].GetComponent<TutPieceLogic>();
+        chosenPiece = piece;
+        OnChosenPiece?.Invoke(fakeAI.row, fakeAI.col);
+        shiftBoard(fakeMove.Item2, currentPlayer.piece);
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -475,12 +536,13 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
+        gamePaused = false;
     }
 
     async void LDiagFakeMove()
     {
+
         await WaitFor();
-        Piece fakeAI = new Piece();
         (Piece, char) fakeMove = new();
         (Piece, char) fakeMove1 = new(new Piece(0, 4), 'D');
         (Piece, char) fakeMove2 = new(new Piece(4, 1), 'U');
@@ -496,10 +558,10 @@ public class TutGameCore : MonoBehaviour
             case 3: fakeMove = fakeMove4; break;
             case 4: fakeMove = fakeMove5; break;
         }
-
-        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
-        shiftBoard(fakeMove.Item2, currentPlayer.piece);
-
+        TutPieceLogic piece = gameBoard[fakeMove.Item1.row, fakeMove.Item1.col].GetComponent<TutPieceLogic>();
+        chosenPiece = piece;
+        OnChosenPiece?.Invoke(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, 'O');
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -508,6 +570,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
+        gamePaused = false;
         AIcounter++;
     }
 
@@ -530,10 +593,10 @@ public class TutGameCore : MonoBehaviour
             case 3: fakeMove = fakeMove4; break;
             case 4: fakeMove = fakeMove5; break;
         }
-
-        validPiece(fakeMove.Item1.row, fakeMove.Item1.col);
-        shiftBoard(fakeMove.Item2, currentPlayer.piece);
-
+        TutPieceLogic piece = gameBoard[fakeMove.Item1.row, fakeMove.Item1.col].GetComponent<TutPieceLogic>();
+        chosenPiece = piece;
+        OnChosenPiece?.Invoke(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, 'O');
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -542,6 +605,7 @@ public class TutGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
+        gamePaused = false;
         AIcounter++;
     }
 
@@ -645,37 +709,23 @@ public class TutGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col)
     {
-        if (gamePaused)
+        if ( gameOver)
         {
             return false;
         }
         TutPieceLogic piece = gameBoard[row, col].GetComponent<TutPieceLogic>();
         if (currentPlayer.piece == p1.piece)
         {
-            List<(Piece, char)> tutMoves = allowedPieces();
-            if(piece.row == tutMoves[usrCounter].Item1.row && piece.col == tutMoves[usrCounter].Item1.col)
-            {
-                chosenPiece = piece;
-                OnChosenPiece?.Invoke(row, col);
-                return true;
-            }
-            tutButtonHandler.changeArrowsBack();
-            return false;
-        }
-        else
-        {
-
-            if ((row == 0 || row == 4) || (col == 0 || col == 4))
-            {
-                if (piece.player == '-' || currentPlayer.piece == piece.player)
+                List<(Piece, char)> tutMoves = allowedPieces();
+                if (piece.row == tutMoves[usrCounter].Item1.row && piece.col == tutMoves[usrCounter].Item1.col)
                 {
                     chosenPiece = piece;
-
                     OnChosenPiece?.Invoke(row, col);
-
                     return true;
                 }
-            }
+                tutButtonHandler.changeArrowsBack();
+                return false;
+            
         }
         return false;
     }

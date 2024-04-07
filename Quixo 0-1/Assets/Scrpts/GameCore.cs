@@ -21,7 +21,8 @@ public enum WinType
 {
     horizontal,
     vertical,
-    diagonal,
+    Leftdiagonal,
+    Rightdiagonal,
     helmet
 };
 
@@ -255,6 +256,7 @@ public class GameCore : MonoBehaviour
                 }
             }
         }
+        gameOver = true;
     }
 
     private void highlightPieces()
@@ -439,8 +441,8 @@ public class GameCore : MonoBehaviour
         };
         if (leftDiagonalWin() || rightDiagonalWin())  {
             SetSprite("axeWin", vikingWeapon);
-            winType = WinType.diagonal;
-
+            winType = WinType.Leftdiagonal;
+            //vikingWeapon.sprite = axe;
             return true;
         }; //separated checkDiagonalWin into two separate functions
         return false;
@@ -573,7 +575,6 @@ public class GameCore : MonoBehaviour
             {
                 StartCoroutine(winAnimation());
                 gameOver = true;
-
                 highlightPieces();
 
                 if (currentGameMode == GameType.Online)
@@ -637,8 +638,7 @@ public class GameCore : MonoBehaviour
     // force is used to force a move, even if the game is paused. Used for networking
     public bool validPiece(int row, int col, bool force = false)
     {
-        
-        if (gamePaused && !force)
+        if ((gamePaused || gameOver) && !force)
         {
             return false;
         }
