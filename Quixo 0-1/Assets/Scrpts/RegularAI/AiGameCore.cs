@@ -117,7 +117,7 @@ public class AiGameCore : MonoBehaviour
             Material temp = playerOneSpace;
             playerOneSpace = playerTwoSpace;
             playerTwoSpace = temp;
-
+            aiMoving = true;
             if (aiType == AIType.HardAI)
             {
                 HardAIMove(hardAI);
@@ -130,6 +130,7 @@ public class AiGameCore : MonoBehaviour
             {
                 EasyAIMove(easyAI);
             }
+            aiMoving = false;
 
         }
     }
@@ -538,7 +539,7 @@ public class AiGameCore : MonoBehaviour
     }
     public bool makeMove(char c)
     {
-        if (gamePaused)
+        if (gamePaused )
         {
             return false;
         }
@@ -722,66 +723,66 @@ public class AiGameCore : MonoBehaviour
     }
 
 
-        public IEnumerator waitAI(EasyAI easyAI)
-        {
-            new WaitForSeconds(2);
-            EasyAIMove(easyAI);
-            yield return null;
+    public IEnumerator waitAI(EasyAI easyAI)
+    {
+        new WaitForSeconds(2);
+        EasyAIMove(easyAI);
+        yield return null;
 
+    }
+    private void WaitFor(EasyAI easyAI)
+    {
+        waitAI(easyAI);
+    }
+
+    public List<char> moveOptions(int row, int col)
+    {
+        aiButtonHandler.changeArrowsBack();
+        List<char> moveList = new List<char>();
+        if (row > 0)
+        {
+            moveList.Add('U');
+            aiButtonHandler.changeArrowColor('U');
         }
-        private void WaitFor(EasyAI easyAI)
+        if (row < 4)
         {
-            waitAI(easyAI);
+            moveList.Add('D');
+            aiButtonHandler.changeArrowColor('D');
         }
-
-        public List<char> moveOptions(int row, int col)
+        if (col > 0)
         {
-            aiButtonHandler.changeArrowsBack();
-            List<char> moveList = new List<char>();
-            if (row > 0)
-            {
-                moveList.Add('U');
-                aiButtonHandler.changeArrowColor('U');
-            }
-            if (row < 4)
-            {
-                moveList.Add('D');
-                aiButtonHandler.changeArrowColor('D');
-            }
-            if (col > 0)
-            {
-                moveList.Add('L');
-                aiButtonHandler.changeArrowColor('L');
-            }
-            if (col < 4)
-            {
-                moveList.Add('R');
-                aiButtonHandler.changeArrowColor('R');
-            }
-            return moveList;
+            moveList.Add('L');
+            aiButtonHandler.changeArrowColor('L');
         }
-
-        //checks to see if the passed piece is a selectable piece for the player to choose
-        public bool validPiece(int row, int col, bool aiTurn = false)
+        if (col < 4)
         {
-            if (gameOver || (aiMoving && !aiTurn))
-            {
-                return false;
-            }
-            AiPieceLogic piece = gameBoard[row, col].GetComponent<AiPieceLogic>();
-            if ((row == 0 || row == 4) || (col == 0 || col == 4))
-            {
-                if (piece.player == '-' || currentPlayer.piece == piece.player)
-                {
-                    chosenPiece = piece;
+            moveList.Add('R');
+            aiButtonHandler.changeArrowColor('R');
+        }
+        return moveList;
+    }
 
-                    OnChosenPiece?.Invoke(row, col);
-
-                    return true;
-                }
-            }
+    //checks to see if the passed piece is a selectable piece for the player to choose
+    public bool validPiece(int row, int col, bool aiTurn = false)
+    {
+        if (gameOver || (aiMoving && !aiTurn))
+        {
             return false;
         }
+        AiPieceLogic piece = gameBoard[row, col].GetComponent<AiPieceLogic>();
+        if ((row == 0 || row == 4) || (col == 0 || col == 4))
+        {
+            if (piece.player == '-' || currentPlayer.piece == piece.player)
+            {
+                chosenPiece = piece;
+
+                OnChosenPiece?.Invoke(row, col);
+
+                return true;
+            }
+        }
+        return false;
+    }
 
         //fills the board with GamePiece Objects and sets the important fields
         public void populateBoard()

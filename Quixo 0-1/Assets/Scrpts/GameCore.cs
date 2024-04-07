@@ -223,7 +223,7 @@ public class GameCore : MonoBehaviour
         GameObject player2Object = new GameObject("Player2");
         p2 = player2Object.AddComponent<LocalPlayer>();
         p2.Initialize('O');
-
+        
         currentPlayer = p1;
 
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
@@ -327,6 +327,7 @@ public class GameCore : MonoBehaviour
         bool success;
         char baseSymbol = '-';
         char pieceToCheck = '-';
+        int winNum = 0;
 
         for (int row = 0; row < 5; row++)
         {
@@ -335,7 +336,7 @@ public class GameCore : MonoBehaviour
             for (int col = 0; col < 5; col++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
-                winnerPieces.Add((row,col));
+                winnerPieces.Add((row,col));               
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
                     success = false; //F: if changed, not same symbols
@@ -344,22 +345,36 @@ public class GameCore : MonoBehaviour
             }
             if (success) //F: If unchanged, we have a win
             {
+                winNum++;
                 if (p1.piece == baseSymbol)
                 {
                     p1.won = true;
                     currentPlayer = p1;
-
-                    
                 }
                 else
                 {
                     p2.won = true;
                     currentPlayer = p2;
                 }
-                return true;
             }
-            winnerPieces.Clear();
         }
+
+        if(winNum == 1)
+        {
+            return true;
+        }
+        else if (winNum == 2)
+        {
+            winnerPieces.RemoveRange(0, 5);
+            if (currentPlayer == p1)
+            {
+                currentPlayer = p2;
+            }
+            else
+                currentPlayer = p1;
+            return true;
+        }
+        winnerPieces.Clear();
         return false;
     }
 
@@ -778,4 +793,5 @@ public class GameCore : MonoBehaviour
         // Use main Camera vaiable (CameraPosition) to reset Camera Position
         CameraPosition.transform.rotation = Quaternion.Euler(59.205f, 270f, 0f);
     }
+
 }
