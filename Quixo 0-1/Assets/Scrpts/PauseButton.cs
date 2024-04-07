@@ -103,19 +103,6 @@ public class PauseButton : MonoBehaviour
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void OnMouseOver()
-    {
-        if (mouseOver)
-        {
-            SoundFXManage.Instance.PlaySoundFXClip(game.menuHoverSound, transform, 1f);
-            mouseOver = true;
-        }
-    }
-
-    public void OnMouseExit()
-    {
-        mouseOver = false;
-    }
 
     public void requestDraw(bool bypass = false)
     {
