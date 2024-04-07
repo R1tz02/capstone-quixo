@@ -235,21 +235,13 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         
         networkingManager.game.closeError();
 
-        pauseButton.gameObject.SetActive(false);
+        networkingManager.pauseButton.gameObject.SetActive(false);
     }
 
     private void HideButtons()
     {
-        pauseButton.gameObject.SetActive(false);
+        networkingManager.pauseButton.gameObject.SetActive(false);
         networkingManager.game.buttonsCanvas.enabled = false;
         networkingManager.game.drawButton.gameObject.SetActive(false);
-    }
-
-    private void ShowButtons()
-    {
-        networkingManager.game.gamePaused = false;
-        pauseButton.gameObject.SetActive(true);
-        networkingManager.game.buttonsCanvas.enabled = true;
-        networkingManager.game.drawButton.gameObject.SetActive(true);
     }
 }

@@ -12,9 +12,15 @@ public class NetworkErrorHandler : MonoBehaviour
         NetworkingManager.OnNetworkError += HandleError;
     }
 
+    private bool errorHandled = false;
+
     private void HandleError(ShutdownReason shutdownReason)
     {
         DontDestroyOnLoad(this.gameObject);
+
+        if (errorHandled) return;
+
+        errorHandled = true;
 
         if (shutdownReason == ShutdownReason.DisconnectedByPluginLogic)
         {
