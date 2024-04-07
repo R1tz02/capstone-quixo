@@ -16,11 +16,19 @@ public enum GameType
     Online
 };
 
+public enum WinType
+{
+    horizontal,
+    vertical,
+    diagonal,
+    helmet
+};
+
 
 public class GameCore : MonoBehaviour
 {
     public GameObject piecePrefab;
-
+    public WinType winType;
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public ButtonHandler buttonHandler;
@@ -204,11 +212,11 @@ public class GameCore : MonoBehaviour
         {
             yield return new WaitUntil(() => gamePaused == false);
             PieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>();
-            if (vikingWeapon.GetComponent<Sprite>().name == "swordWin")
+            if (winType == WinType.vertical)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
             }
-            else if (vikingWeapon.GetComponent<Sprite>().name == "spearWin")
+            else if (winType == WinType.horizontal)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(-2856, 140, horPos[i])));
             }
@@ -398,16 +406,19 @@ public class GameCore : MonoBehaviour
     {
         if (horizontalWin())    {
             SetSprite("spearWin", vikingWeapon);
+            winType = WinType.horizontal;
             //vikingWeapon.sprite = spear;
             return true;
         };
         if (verticalWin())      {
             SetSprite("swordWin", vikingWeapon);
+            winType = WinType.vertical;
             //vikingWeapon.sprite = sword;
             return true;
         };
         if (leftDiagonalWin() || rightDiagonalWin())  {
             SetSprite("axeWin", vikingWeapon);
+            winType = WinType.diagonal;
             //vikingWeapon.sprite = axe;
             return true;
         }; //separated checkDiagonalWin into two separate functions

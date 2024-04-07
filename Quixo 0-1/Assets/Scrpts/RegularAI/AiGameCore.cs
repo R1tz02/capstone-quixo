@@ -11,7 +11,7 @@ public class AiGameCore : MonoBehaviour
 {
     public GameObject piecePrefab;
     public GameObject gameCoreGameObject;
-
+    public WinType winType;
     public Material playerOneSpace;
     public Material playerTwoSpace;
     public AiButtonHandler aiButtonHandler;
@@ -158,11 +158,11 @@ public class AiGameCore : MonoBehaviour
         {
             yield return new WaitUntil(() => gamePaused == false);
             AiPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<AiPieceLogic>();
-            if (vikingWeapon.GetComponent<Sprite>().name == "swordWin")
+            if (winType == WinType.vertical)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
             }
-            else if (vikingWeapon.GetComponent<Sprite>().name == "spearWin")
+            else if (winType == WinType.horizontal)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(-2856, 140, horPos[i])));
             }
@@ -344,18 +344,22 @@ public class AiGameCore : MonoBehaviour
     public bool won()
     {
         if (horizontalWin())    {
+            winType = WinType.horizontal;
             SetSprite("spearWin", vikingWeapon);
             return true;
         };
-        if (verticalWin())      { 
+        if (verticalWin())      {
+            winType = WinType.vertical;
             SetSprite("swordWin", vikingWeapon);
             return true;
         };
-        if (leftDiagonalWin())  { 
+        if (leftDiagonalWin())  {
+            winType = WinType.diagonal;
             SetSprite("axeWin", vikingWeapon);
             return true;
         }; //separated checkDiagonalWin into two separate functions
-        if (rightDiagonalWin()) { 
+        if (rightDiagonalWin()) {
+            winType = WinType.diagonal;
             SetSprite("axeWin", vikingWeapon);
             return true;
         };
