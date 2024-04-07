@@ -25,6 +25,8 @@ public class MenuController : MonoBehaviour
     public Text errorText;
     public Text joinCode;
 
+    AnvilClick anvilClick;
+
     public bool isError = false;
 
     public float moveDuration;
@@ -39,7 +41,9 @@ public class MenuController : MonoBehaviour
     
     void Start()
     {
-        if(labelCanvas)
+        anvilClick = GetComponent<AnvilClick>();
+
+        if (labelCanvas)
             labelCanvas.enabled = true;
         if(tutorialCanvas)
             tutorialCanvas.enabled = false;
@@ -59,6 +63,15 @@ public class MenuController : MonoBehaviour
             errorCanvas.enabled = false;
         if(orderCanvas)
             orderCanvas.enabled = false;
+    }
+
+    public void UpdateHasBeenClickedStatus(bool newStatus)
+    {
+        // Update the click status in the AnvilClick script
+        //anvilClick.UpdateClickStatus(newStatus);
+        GameObject.Find("AnvilMenu").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
+        GameObject.Find("TableMenu").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
+        GameObject.Find("forgeFurnace_LOD1").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
     }
 
 
@@ -220,6 +233,7 @@ public class MenuController : MonoBehaviour
         }
         currentCam.transform.rotation = targetRotation;
         rotating = false;
+        UpdateHasBeenClickedStatus(false);
     }
     public void goBack()
     {

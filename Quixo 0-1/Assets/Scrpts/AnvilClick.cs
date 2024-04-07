@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
 
 public class AnvilClick : MonoBehaviour
@@ -8,40 +9,60 @@ public class AnvilClick : MonoBehaviour
     public Canvas currentCanvas;
     public Material highlightMaterial;
 
+    [SerializeField] private AudioClip objectClick;
+    [SerializeField] private AudioClip mouseOverSound;
+
     GameObject menuItem;
 
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
 
-    private bool hasBeenClicked = false;
-    
+    public bool hasBeenClicked = false;
+
     bool rotating;
     bool moving;
+    bool hoverSoundPLayed = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        
         menuItem = GameObject.FindGameObjectWithTag("MenuItem");
     }
 
-    //void OnMouseOver()
-    //{
-    //    // Change the material to the highlight material when the mouse is over the object
-    //    if (!hasBeenClicked)
-    //    {
-    //        Renderer rend = menuItem.GetComponent<Renderer>();
-    //        if (rend != null && highlightMaterial != null)
-    //        {
-    //            rend.material = highlightMaterial;
-    //        }
-    //    }
-    //}
+
+    public void UpdateClickStatus(bool newStatus)
+    {
+        hasBeenClicked = newStatus;
+    }
+
+    void OnMouseOver()
+    {
+        if (!hoverSoundPLayed && !hasBeenClicked)
+        {
+            SoundFXManage.Instance.PlaySoundFXClip(mouseOverSound, transform, 0.5f);
+            hoverSoundPLayed = true;
+        }
+        //    // Change the material to the highlight material when the mouse is over the object
+        //    if (!hasBeenClicked)
+        //    {
+        //        Renderer rend = menuItem.GetComponent<Renderer>();
+        //        if (rend != null && highlightMaterial != null)
+        //        {
+        //            rend.material = highlightMaterial;
+        //        }
+        //    }
+    }
+    private void OnMouseExit()
+    {
+        hoverSoundPLayed = false;
+    }
 
     void OnMouseDown()
     {
         if (currentCam.transform.position != endMarker.position && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
         {
+            UpdateClickStatus(true);
+            SoundFXManage.Instance.PlaySoundFXClip(objectClick, transform, 1f);
             GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
             GameObject.Find("Game Manager").GetComponent<MenuController>().overlayCanvas.enabled = false;
             if (!rotating)
@@ -57,6 +78,7 @@ public class AnvilClick : MonoBehaviour
 
     public void buttonMover()
     {
+        UpdateClickStatus(true);
         if (currentCam.transform.position != endMarker.position && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
         {
             GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
