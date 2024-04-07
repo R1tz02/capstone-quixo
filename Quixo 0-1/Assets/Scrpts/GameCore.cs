@@ -46,8 +46,7 @@ public class GameCore : MonoBehaviour
     public bool gameOver = false;
 
     [SerializeField] public AudioClip pieceClickSound;
-    [SerializeField] public AudioClip menuHoverSound;
-    [SerializeField] public AudioClip menuClickSound;
+
     [SerializeField] private AudioClip hotPieceMoveSound;
     [SerializeField] private AudioClip coldPieceMoveSound;
     [SerializeField] private AudioClip victory;
