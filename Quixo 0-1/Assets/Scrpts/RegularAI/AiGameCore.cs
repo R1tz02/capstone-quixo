@@ -85,6 +85,10 @@ public class AiGameCore : MonoBehaviour
 
     public void StartAIGame()
     {
+        if (aiFirst)
+        {
+            gamePaused = true; 
+        }
         if (aiType == AIType.HardAI)
         {
             currentGameMode = GameType.AIHard;
@@ -536,14 +540,19 @@ public class AiGameCore : MonoBehaviour
         if (GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseMenu.enabled == false && aiMoving)
             gamePaused = false;
     }
+
+
     public bool makeMove(char c)
     {
+
+   
         if (gamePaused)
         {
             return false;
         }
 
 
+       
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
@@ -585,6 +594,7 @@ public class AiGameCore : MonoBehaviour
             aiMoving = false;
             return true;
         }
+    
         return false;
     }
 
@@ -641,7 +651,7 @@ public class AiGameCore : MonoBehaviour
             {
                 currentPlayer = p1;
             }
-            //gamePaused = false;
+            gamePaused = false;
             aiMoving = false;
             Debug.Log("Board State Score: " + hardAI.Evaluate(translateBoard()));
 
@@ -679,7 +689,7 @@ public class AiGameCore : MonoBehaviour
             {
                 currentPlayer = p1;
             }
-            //gamePaused = false;
+            gamePaused = false;
             aiMoving = false;
         }
     }
@@ -689,7 +699,7 @@ public class AiGameCore : MonoBehaviour
         char[,] board = translateBoard();
 
         await Task.Delay(1500);
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0));
+        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0, aiFirst));
 
         //await WaitFor();
         if (validPiece(move.Item1.row, move.Item1.col, true))

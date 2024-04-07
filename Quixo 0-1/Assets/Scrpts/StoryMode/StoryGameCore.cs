@@ -678,7 +678,7 @@ public class StoryGameCore : MonoBehaviour
         char[,] board = translateBoard();
 
         await Task.Delay(1500);
-        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0, SMLvl));
+        (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0, level: SMLvl));
 
         //await WaitFor();
         validPiece(move.Item1.row, move.Item1.col, true);

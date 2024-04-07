@@ -423,18 +423,18 @@ public class EasyAI : MonoBehaviour
 
         foreach(char piece in pieces)
         {
-            if(piece == 'O')
+            if(piece == AIPiece)
             {
                 count++;
             }
-            else if(piece == 'X')
+            else if(piece == playerPiece)
             {
                 opponentCount++;
             }
         }
         System.Random rand = new System.Random();
         score = (int)Math.Pow(4, count);
-        oppScore = ((-(int)Math.Pow(4, opponentCount + 1))) + rand.Next(1,12);
+        oppScore = ((-(int)Math.Pow(4, opponentCount + 1))) + rand.Next(1, 1000);
         if (count == 5)
         {
             score += 1000000;
@@ -556,7 +556,7 @@ public class EasyAI : MonoBehaviour
 
     public DateTime endTime;
 
-    public Task<(Piece, char)> IterativeDeepening(char[,] model, TimeSpan timeLimit, int level = 0)
+    public Task<(Piece, char)> IterativeDeepening(char[,] model, TimeSpan timeLimit, bool aiFirst = false, int level = 0)
     {
         SMLevel = level;
         endTime = DateTime.Now.Add(timeLimit);
@@ -565,7 +565,7 @@ public class EasyAI : MonoBehaviour
 
         while(DateTime.Now < endTime)
         {
-            (Piece, char) curBestMove = FindBestMove(model, depth, SMLevel);
+            (Piece, char) curBestMove = FindBestMove(model, depth, level: SMLevel);
             if(curBestMove != (null, null))
             {
                 bestMove = curBestMove;
@@ -584,20 +584,25 @@ public class EasyAI : MonoBehaviour
 
     public int SMLevel = 0;
 
-    public (Piece, char) FindBestMove(char[,] model, int depth, int level = 0)
+    public (Piece, char) FindBestMove(char[,] model, int depth, bool aiFirst = false, int level = 0)
     {
+        if (aiFirst)
+        {
+            AIPiece = 'X';
+            playerPiece = 'O';
+        }
         SMLevel = level;
         (Piece, char) bestMove = (null, ' ');
         int bestEval = int.MinValue;
         quixoModel newBoard = new quixoModel();
         newBoard.board = (char[,])model.Clone();
-        newBoard.playerOneTurn = false;
+        newBoard.playerOneTurn = aiFirst;
 
         foreach ((Piece, char) move in PossibleMoves(newBoard))
         {
             quixoModel copy = newBoard.Clone();
             copy.movePiece(move.Item1, move.Item2);
-            int evalScore = MinimaxAlphaBeta(copy, depth-1, false);
+            int evalScore = MinimaxAlphaBeta(copy, depth-1, !aiFirst);
 
             if (evalScore > bestEval)
             {

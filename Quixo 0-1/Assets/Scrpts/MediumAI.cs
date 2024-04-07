@@ -19,9 +19,9 @@ public class mediumQuixoModel
     public bool playerOneTurn;
 
 
-    public quixoModel Clone()
+    public mediumQuixoModel Clone()
     {
-        quixoModel copy = new quixoModel();
+        mediumQuixoModel copy = new mediumQuixoModel();
         char[,] clonedBoard = {    { '-', '-', '-', '-', '-' },
                                     { '-', '-', '-', '-', '-' },
                                     { '-', '-', '-', '-', '-' },
@@ -457,7 +457,7 @@ public class MediumAI : MonoBehaviour
 
 
     //need to create function that creates a list of all possible moves
-    public List<(Piece, char)> PossibleMoves(quixoModel model)
+    public List<(Piece, char)> PossibleMoves(mediumQuixoModel model)
     {
         List<(Piece, Char)> PosMoves = new List<(Piece, Char)>();
 
@@ -484,9 +484,9 @@ public class MediumAI : MonoBehaviour
 
 
     //
-    public int Minimax(quixoModel board, int depth, bool maximizing, int alpha, int beta)
+    public int Minimax(mediumQuixoModel board, int depth, bool maximizing, int alpha, int beta)
     {
-        quixoModel copy = board.Clone();
+        mediumQuixoModel copy = board.Clone();
         if (board.checkForWin() != '-' || depth == 0)
         {
             return Evaluate(board.board);
@@ -552,7 +552,7 @@ public class MediumAI : MonoBehaviour
         }
     }
 
-    public int MinimaxAlphaBeta(quixoModel board, int depth, bool aiTurn)
+    public int MinimaxAlphaBeta(mediumQuixoModel board, int depth, bool aiTurn)
     {
         return Minimax(board, depth, aiTurn, int.MinValue, int.MaxValue);
     }
@@ -564,7 +564,7 @@ public class MediumAI : MonoBehaviour
 
     private int SMLevel = 0;
 
-    public Task<(Piece, char)> FindBestMove(char[,] model, int depth, bool aiFirst, int level = 0)
+    public (Piece, char) FindBestMove(char[,] model, int depth, bool aiFirst, int level = 0)
     {
 
         if (aiFirst)
@@ -575,13 +575,13 @@ public class MediumAI : MonoBehaviour
         SMLevel = level;
         (Piece, char) bestMove = (null, ' ');
         int bestEval = int.MinValue;
-        quixoModel newBoard = new quixoModel();
+        mediumQuixoModel newBoard = new mediumQuixoModel();
         newBoard.board = (char[,])model.Clone();
         newBoard.playerOneTurn = aiFirst;
 
         foreach ((Piece, char) move in PossibleMoves(newBoard))
         {
-            quixoModel copy = newBoard.Clone();
+            mediumQuixoModel copy = newBoard.Clone();
             copy.movePiece(move.Item1, move.Item2);
             int evalScore = MinimaxAlphaBeta(copy, depth - 1, !aiFirst);
 
@@ -591,7 +591,7 @@ public class MediumAI : MonoBehaviour
                 bestMove = move;
             }
         }
-        return Task.FromResult(bestMove);
+        return bestMove;
         // Update is called once per frame
     }
 
