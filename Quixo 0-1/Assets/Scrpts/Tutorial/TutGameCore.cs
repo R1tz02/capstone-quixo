@@ -541,7 +541,6 @@ public class TutGameCore : MonoBehaviour
     {
 
         await WaitFor();
-        Piece fakeAI = new Piece();
         (Piece, char) fakeMove = new();
         (Piece, char) fakeMove1 = new(new Piece(0, 4), 'D');
         (Piece, char) fakeMove2 = new(new Piece(4, 1), 'U');
@@ -557,10 +556,10 @@ public class TutGameCore : MonoBehaviour
             case 3: fakeMove = fakeMove4; break;
             case 4: fakeMove = fakeMove5; break;
         }
-        TutPieceLogic piece = gameBoard[fakeAI.row, fakeAI.col].GetComponent<TutPieceLogic>();
+        TutPieceLogic piece = gameBoard[fakeMove.Item1.row, fakeMove.Item1.col].GetComponent<TutPieceLogic>();
         chosenPiece = piece;
-        OnChosenPiece?.Invoke(fakeAI.row, fakeAI.col);
-        shiftBoard(fakeMove.Item2, currentPlayer.piece);
+        OnChosenPiece?.Invoke(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, 'O');
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -592,10 +591,10 @@ public class TutGameCore : MonoBehaviour
             case 3: fakeMove = fakeMove4; break;
             case 4: fakeMove = fakeMove5; break;
         }
-        TutPieceLogic piece = gameBoard[fakeAI.row, fakeAI.col].GetComponent<TutPieceLogic>();
+        TutPieceLogic piece = gameBoard[fakeMove.Item1.row, fakeMove.Item1.col].GetComponent<TutPieceLogic>();
         chosenPiece = piece;
-        OnChosenPiece?.Invoke(fakeAI.row, fakeAI.col);
-        shiftBoard(fakeMove.Item2, currentPlayer.piece);
+        OnChosenPiece?.Invoke(fakeMove.Item1.row, fakeMove.Item1.col);
+        shiftBoard(fakeMove.Item2, 'O');
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;

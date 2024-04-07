@@ -391,22 +391,23 @@ public class EasyAI : MonoBehaviour
 
 
 
-
-        for (int i = 0; i < 5; i++)
+        if (SMLevel == 0)
         {
-            for (int j = 0; j < 5; j++)
+            for (int i = 0; i < 5; i++)
             {
-                if (board[i, j] == AIPiece)
+                for (int j = 0; j < 5; j++)
                 {
-                    score += (postWeights[i, j] * 2);
-                }
-                else if (board[i, j] == playerPiece)
-                {
-                    score -= (postWeights[i, j] * 2);
+                    if (board[i, j] == AIPiece)
+                    {
+                        score += (postWeights[i, j] * 2);
+                    }
+                    else if (board[i, j] == playerPiece)
+                    {
+                        score -= (postWeights[i, j] * 2);
+                    }
                 }
             }
         }
-
 
 
         return score;
