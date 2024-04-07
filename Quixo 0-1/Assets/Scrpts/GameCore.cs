@@ -21,7 +21,8 @@ public enum WinType
 {
     horizontal,
     vertical,
-    diagonal,
+    Leftdiagonal,
+    Rightdiagonal,
     helmet
 };
 
@@ -424,7 +425,7 @@ public class GameCore : MonoBehaviour
         };
         if (leftDiagonalWin() || rightDiagonalWin())  {
             SetSprite("axeWin", vikingWeapon);
-            winType = WinType.diagonal;
+            winType = WinType.Leftdiagonal;
             //vikingWeapon.sprite = axe;
             return true;
         }; //separated checkDiagonalWin into two separate functions

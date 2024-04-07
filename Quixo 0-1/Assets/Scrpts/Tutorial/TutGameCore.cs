@@ -106,15 +106,15 @@ public class TutGameCore : MonoBehaviour
             sword.transform.localScale = scale;
             sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
         }
-        if (winType == WinType.diagonal)
+        if (winType == WinType.Leftdiagonal)
         {
-            GameObject axe = Instantiate(axePrefab, new Vector3(-2836, 140, -10), Quaternion.identity);
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
-            scale.y = 100f;
-            scale.x = 100f;
-            scale.z = 100f;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
             axe.transform.localScale = scale;
-            axe.transform.Rotate(90.0f, 0, 90.0f, Space.Self);
+            axe.transform.Rotate(90.0f, 0, 135.0f, Space.Self);
         }
         if (winType == WinType.horizontal)
         {
@@ -125,6 +125,16 @@ public class TutGameCore : MonoBehaviour
             scale.z = 50f;
             spear.transform.localScale = scale;
             spear.transform.Rotate(0f, 0, 0, Space.Self);
+        }
+        if (winType == WinType.Rightdiagonal)
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
         }
         gameOver = true;
     }
@@ -304,8 +314,8 @@ public class TutGameCore : MonoBehaviour
     {
         switch (tutLvl)
         {
-            case 0: if (leftDiagonalWin()) {  winType = WinType.diagonal; return true;  } break;
-            case 1: if (rightDiagonalWin()) {  winType = WinType.diagonal; return true;  } break;
+            case 0: if (leftDiagonalWin()) {  winType = WinType.Leftdiagonal; return true;  } break;
+            case 1: if (rightDiagonalWin()) {  winType = WinType.Rightdiagonal; return true;  } break;
             case 2: if (horizontalWin()) {  winType = WinType.horizontal; return true;  } break;
             case 3: if (verticalWin()) { winType = WinType.vertical; return true;  } break;
         }
