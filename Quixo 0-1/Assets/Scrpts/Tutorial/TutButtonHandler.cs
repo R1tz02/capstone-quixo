@@ -28,10 +28,14 @@ public class TutButtonHandler : MonoBehaviour
 
     private void doOnClick(char dir)
     {
-        bool success = game.makeMove(dir);
+        if (game.aiTurn == false && game.aiMoving == false)
+        {
+            bool success = game.makeMove(dir);
 
-        if (success) {
-            OnMoveMade?.Invoke(dir); // Call the event to let other classes know that a move was made
+            if (success)
+            {
+                OnMoveMade?.Invoke(dir); // Call the event to let other classes know that a move was made
+            }
         }
     }
 
