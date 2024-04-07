@@ -339,6 +339,7 @@ public class GameCore : MonoBehaviour
                 winnerPieces.Add((row,col));               
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
+                    winnerPieces.RemoveRange(winnerPieces.Count-col-1, col+1);
                     success = false; //F: if changed, not same symbols
                     break; //F: get out if not same symbol or blank, and try the next
                 }
@@ -366,12 +367,6 @@ public class GameCore : MonoBehaviour
         else if (winNum == 2)
         {
             winnerPieces.RemoveRange(0, 5);
-            if (currentPlayer == p1)
-            {
-                currentPlayer = p2;
-            }
-            else
-                currentPlayer = p1;
             return true;
         }
         winnerPieces.Clear();
