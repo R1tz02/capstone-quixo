@@ -17,8 +17,8 @@ public class AnvilClick : MonoBehaviour
     public float moveDuration = 1f;
     public float rotaionDuration = 1f;
 
-    private bool hasBeenClicked = false;
-    
+    public bool hasBeenClicked = false;
+
     bool rotating;
     bool moving;
     bool hoverSoundPLayed = false;
@@ -26,13 +26,18 @@ public class AnvilClick : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         menuItem = GameObject.FindGameObjectWithTag("MenuItem");
+    }
+
+
+    public void UpdateClickStatus(bool newStatus)
+    {
+        hasBeenClicked = newStatus;
     }
 
     void OnMouseOver()
     {
-        if (!hoverSoundPLayed)
+        if (!hoverSoundPLayed && !hasBeenClicked)
         {
             SoundFXManage.Instance.PlaySoundFXClip(mouseOverSound, transform, 0.5f);
             hoverSoundPLayed = true;
@@ -56,6 +61,7 @@ public class AnvilClick : MonoBehaviour
     {
         if (currentCam.transform.position != endMarker.position && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
         {
+            UpdateClickStatus(true);
             SoundFXManage.Instance.PlaySoundFXClip(objectClick, transform, 1f);
             GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
             GameObject.Find("Game Manager").GetComponent<MenuController>().overlayCanvas.enabled = false;
