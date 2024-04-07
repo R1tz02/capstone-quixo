@@ -27,6 +27,7 @@ public class StoryGameCore : MonoBehaviour
     public int SMLvl = 1;
     public bool gamePaused;
     public bool gameOver = false;
+    public bool aiMoving = false;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
 
     public Canvas loseScreen;
@@ -567,6 +568,8 @@ public class StoryGameCore : MonoBehaviour
             {
                 currentPlayer = p1;
             }
+            gamePaused = false;
+            aiMoving = true;
 
             if (playAI)
             {
@@ -576,7 +579,7 @@ public class StoryGameCore : MonoBehaviour
                 }
                 else
                 {
-                    waitAI(easyAI);
+                    EasyAIMove(easyAI);
                 }
 
             }
@@ -624,10 +627,11 @@ public class StoryGameCore : MonoBehaviour
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
+        await Task.Delay(1500);
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0, SMLvl));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col);
+        validPiece(move.Item1.row, move.Item1.col, true);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
@@ -649,16 +653,16 @@ public class StoryGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-    }
+        gamePaused = false;
+        await Task.Delay(750);
 
-
-
-    public System.Collections.IEnumerator waitAI(EasyAI easyAI)
-    {
-        yield return new WaitForSeconds(2);
-        EasyAIMove(easyAI);
+        aiMoving = false;
 
     }
+
+
+
+  
     private async Task WaitFor()
     {
         await Task.Delay(1000);
@@ -692,9 +696,9 @@ public class StoryGameCore : MonoBehaviour
     }
 
     //checks to see if the passed piece is a selectable piece for the player to choose
-    public bool validPiece(int row, int col)
+    public bool validPiece(int row, int col, bool aiTurn = false)
     {
-        if (gamePaused || gameOver)
+        if ((gamePaused || gameOver) || (aiMoving && !aiTurn))
         {
             return false;
         }

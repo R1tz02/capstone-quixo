@@ -663,6 +663,7 @@ public class AiGameCore : MonoBehaviour
             currentPlayer = p1;
         }
         gamePaused = false;
+        await Task.Delay(750);
         aiMoving = false;
     }
 
