@@ -31,7 +31,7 @@ public class AiPieceLogic : MonoBehaviour
             StartCoroutine(game.MovePieceSmoothly(selectedPiece, new Vector3(selectedPiece.transform.position.x, 96f, selectedPiece.transform.position.z)));
         }
 
-        if (game.validPiece(row, col))
+        if (game.validPiece(row, col) && game.gamePaused == false)
         {
             // C: Temporarily disable gravity to lift the piece
             StartCoroutine(game.MovePieceSmoothly(this, new Vector3(transform.position.x, 114f, transform.position.z)));

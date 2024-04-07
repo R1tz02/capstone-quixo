@@ -417,7 +417,8 @@ public class TutGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<TutPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<TutPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<TutPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        gamePaused = false;
+        if(aiTurn && !gamePaused)
+            gamePaused = false;
         chosenPiece.row = row;
         chosenPiece.col = col;
     }

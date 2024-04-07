@@ -533,8 +533,8 @@ public class AiGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<AiPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<AiPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<AiPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        gamePaused = false;
-
+        if(GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseMenu.enabled == false && aiMoving)
+            gamePaused = false;
     }
     public bool makeMove(char c)
     {
@@ -582,6 +582,7 @@ public class AiGameCore : MonoBehaviour
             {
                 EasyAIMove(easyAI);
             }
+            aiMoving = false;
             return true;
         }
         return false;
@@ -640,7 +641,7 @@ public class AiGameCore : MonoBehaviour
             {
                 currentPlayer = p1;
             }
-            gamePaused = false;
+            //gamePaused = false;
             aiMoving = false;
             Debug.Log("Board State Score: " + hardAI.Evaluate(translateBoard()));
 
@@ -655,9 +656,8 @@ public class AiGameCore : MonoBehaviour
         (Piece, char) move = await Task.Run(() => mediumAI.FindBestMove(board, 2, aiFirst));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col, true);
-        
-
+        if (validPiece(move.Item1.row, move.Item1.col, true))
+        {
             shiftBoard(move.Item2, currentPlayer.piece);
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
@@ -679,9 +679,9 @@ public class AiGameCore : MonoBehaviour
             {
                 currentPlayer = p1;
             }
-            gamePaused = false;
+            //gamePaused = false;
             aiMoving = false;
-        
+        }    
     }
     async void EasyAIMove(EasyAI easyAI)
     {
@@ -692,31 +692,33 @@ public class AiGameCore : MonoBehaviour
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col, true);
-        shiftBoard(move.Item2, currentPlayer.piece);
-        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
-        if (won())
+        if(validPiece(move.Item1.row, move.Item1.col, true))
         {
-            buttonsCanvas.enabled = false;
-            GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-            StartCoroutine(winAnimation());
-            highlightPieces();
-            //StartCoroutine(RotateCamera());
+            shiftBoard(move.Item2, currentPlayer.piece);
+            Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
+            if (won())
+            {
+                buttonsCanvas.enabled = false;
+                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+                StartCoroutine(winAnimation());
+                highlightPieces();
+                //StartCoroutine(RotateCamera());
 
-            gamePaused = true;
-            Debug.Log(currentPlayer.piece + " won!");
+                gamePaused = true;
+                Debug.Log(currentPlayer.piece + " won!");
+            }
+            else if (currentPlayer.piece == 'X')
+            {
+                currentPlayer = p2;
+            }
+            else
+            {
+                currentPlayer = p1;
+            }
+            //gamePaused = false;
+            await Task.Delay(750);
+            aiMoving = false;
         }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }
-        gamePaused = false;
-        await Task.Delay(750);
-        aiMoving = false;
     }
 
 
@@ -763,7 +765,7 @@ public class AiGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col, bool aiTurn = false)
     {
-        if ((gamePaused||gameOver) || (aiMoving && !aiTurn))
+        if ( gameOver || (aiMoving && !aiTurn))
         {
             return false;
         }
