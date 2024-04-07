@@ -586,7 +586,7 @@ public class HardAI : MonoBehaviour
     }
 
 
-    public int SMLevel = 0;
+    private int SMLevel = 0;
 
     public (Piece, char) FindBestMove(char[,] model, int depth, bool aiFirst, int level = 0)
     {

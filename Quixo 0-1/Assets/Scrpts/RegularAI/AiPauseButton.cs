@@ -84,6 +84,9 @@ public class AiPauseButton : MonoBehaviour
             case GameType.AIHard:
                 menuController.NewHardGame();
                 break;
+            case GameType.AIMedium:
+                menuController.NewMediumGame();
+                break;
         }
     }
 

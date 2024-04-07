@@ -12,6 +12,7 @@ public enum GameType
 { 
     AIEasy,
     AIHard,
+    AIMedium,
     Local,
     Online
 };
