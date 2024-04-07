@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class hardQuixoModel
+public class mediumQuixoModel
 {
     Piece piece = new Piece();
 
@@ -21,14 +21,14 @@ public class hardQuixoModel
 
     public quixoModel Clone()
     {
-            quixoModel copy = new quixoModel();
-            char[,] clonedBoard = {    { '-', '-', '-', '-', '-' },
+        quixoModel copy = new quixoModel();
+        char[,] clonedBoard = {    { '-', '-', '-', '-', '-' },
                                     { '-', '-', '-', '-', '-' },
                                     { '-', '-', '-', '-', '-' },
                                     { '-', '-', '-', '-', '-' },
                                     { '-', '-', '-', '-', '-' }
         };
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
             for (int j = 0; j < 5; j++)
             {
@@ -39,7 +39,7 @@ public class hardQuixoModel
         copy.board = clonedBoard;
         copy.playerOneTurn = playerOneTurn;
         return copy;
-}
+    }
 
 
     public void movePiece(Piece piece, char dir)
@@ -341,7 +341,7 @@ public class hardQuixoModel
     }
 }
 
-public class HardAI : MonoBehaviour
+public class MediumAI : MonoBehaviour
 {
 
     // Start is called before the first frame update
@@ -412,26 +412,26 @@ public class HardAI : MonoBehaviour
     private int EvalLine(params char[] pieces)
     {
         int count = 0;
-        int opponentCount= 0;
+        int opponentCount = 0;
         int score = 0;
         int oppScore = 0;
 
-        foreach(char piece in pieces)
+        foreach (char piece in pieces)
         {
-            if(piece == AIPiece)
+            if (piece == AIPiece)
             {
                 count++;
             }
-            else if(piece == playerPiece)
+            else if (piece == playerPiece)
             {
                 opponentCount++;
             }
         }
 
         score = (int)Math.Pow(10, (count));
-        if(SMLevel == 0)
+        if (SMLevel == 0)
         {
-           oppScore = (-(int)Math.Pow(10, (opponentCount)));
+            oppScore = (-(int)Math.Pow(10, (opponentCount)));
         }
         else
         {
@@ -439,13 +439,13 @@ public class HardAI : MonoBehaviour
 
         }
 
-        if(count == 5)
+        if (count == 5)
         {
             score += 1000000;
         }
-        if(opponentCount == 5)
+        if (opponentCount == 5)
         {
-            oppScore -= 2000000; 
+            oppScore -= 2000000;
         }
 
         return score + oppScore;
@@ -487,7 +487,7 @@ public class HardAI : MonoBehaviour
     public int Minimax(quixoModel board, int depth, bool maximizing, int alpha, int beta)
     {
         quixoModel copy = board.Clone();
-        if (board.checkForWin() != '-' || depth == 0 ||DateTime.Now >= endTime)
+        if (board.checkForWin() != '-' || depth == 0 || DateTime.Now >= endTime)
         {
             return Evaluate(board.board);
         }
@@ -520,7 +520,7 @@ public class HardAI : MonoBehaviour
                 maxEval = Math.Max(maxEval, Minimax(copy.Clone(), depth - 1, false, alpha, beta));
                 copy = board.Clone();
                 alpha = Math.Max(alpha, maxEval);
-                if(beta <= alpha)
+                if (beta <= alpha)
                 {
                     break;
                 }
@@ -528,17 +528,18 @@ public class HardAI : MonoBehaviour
             return maxEval;
 
         }
-        else if(!maximizing)
+        else if (!maximizing)
         {
             sortedMoves = weightedMoves.OrderBy(s => s.Item3).ToList();
             int minEval = int.MaxValue;
-            foreach ((Piece, char, int) move in sortedMoves) {
+            foreach ((Piece, char, int) move in sortedMoves)
+            {
 
                 copy.movePiece(move.Item1, move.Item2);
                 minEval = Math.Min(minEval, Minimax(copy.Clone(), depth - 1, true, alpha, beta));
                 copy = board.Clone();
                 beta = Math.Min(beta, minEval);
-                if(beta <= alpha)
+                if (beta <= alpha)
                 {
                     break;
                 }
@@ -567,10 +568,10 @@ public class HardAI : MonoBehaviour
         (Piece, char) bestMove = (null, ' ');
         int depth = 1;
 
-        while(DateTime.Now < endTime)
+        while (DateTime.Now < endTime)
         {
             (Piece, char) curBestMove = FindBestMove(model, depth, aiFirst, SMLevel);
-            if(curBestMove != (null, ' '))
+            if (curBestMove != (null, ' '))
             {
                 bestMove = curBestMove;
             }
@@ -607,7 +608,7 @@ public class HardAI : MonoBehaviour
         {
             quixoModel copy = newBoard.Clone();
             copy.movePiece(move.Item1, move.Item2);
-            int evalScore = MinimaxAlphaBeta(copy, depth-1, !aiFirst);
+            int evalScore = MinimaxAlphaBeta(copy, depth - 1, !aiFirst);
 
             if (evalScore > bestEval)
             {

@@ -26,8 +26,8 @@ public class AiGameCore : MonoBehaviour
     public int counter = 0;
     public bool gamePaused;
     public bool aiMoving = false;
-    public bool playHard = true;
     public bool aiFirst = false;
+    public AIType aiType; 
 
     Image vikingWeapon;
 
@@ -39,6 +39,7 @@ public class AiGameCore : MonoBehaviour
     public Canvas buttonsCanvas;
     private EasyAI easyAI;
     private HardAI hardAI;
+    private MediumAI mediumAI;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
     public bool requestDraw = false;
 
@@ -59,6 +60,13 @@ public class AiGameCore : MonoBehaviour
         vikingWeapon = winScreen.transform.Find("Background/vikingWeapon").GetComponent<Image>();
     }
 
+    public enum AIType
+    {
+        EasyAI, 
+        MediumAI,
+        HardAI
+    };
+
     void SetSprite(string spriteName, Image image)
     {
         
@@ -71,9 +79,13 @@ public class AiGameCore : MonoBehaviour
 
     public void StartAIGame()
     {
-        if (playHard == true)
+        if (aiType == AIType.HardAI)
         {
             currentGameMode = GameType.AIHard;
+        }
+        if(aiType == AIType.MediumAI)
+        {
+            currentGameMode = GameType.AIMedium;
         }
         else
         {
@@ -91,6 +103,7 @@ public class AiGameCore : MonoBehaviour
         aiButtonHandler = GameObject.FindObjectOfType<AiButtonHandler>();
         easyAI = AI.AddComponent(typeof(EasyAI)) as EasyAI;
         hardAI = AI.AddComponent(typeof(HardAI)) as HardAI;
+        mediumAI = AI.AddComponent(typeof(MediumAI)) as MediumAI;
         populateBoard(); //Initialize board
 
         if (aiFirst)
@@ -99,17 +112,23 @@ public class AiGameCore : MonoBehaviour
             playerOneSpace = playerTwoSpace;
             playerTwoSpace = temp;
 
-            if (playHard)
+            if (aiType == AIType.HardAI)
             {
                 HardAIMove(hardAI);
             }
-            else
+            if (aiType == AIType.MediumAI)
+            {
+                MediumAIMove(mediumAI);
+            }
+            else if(aiType == AIType.EasyAI)
             {
                 EasyAIMove(easyAI);
             }
 
         }
     }
+
+
 
     IEnumerator RotateCamera()
     {
@@ -495,16 +514,19 @@ public class AiGameCore : MonoBehaviour
                 currentPlayer = p1; 
             }
             gamePaused = false;
-            
-            if (playHard)
+
+            if (aiType == AIType.HardAI)
             {
                 HardAIMove(hardAI);
             }
-            else
+            if (aiType == AIType.MediumAI)
             {
-               EasyAIMove(easyAI);
+                MediumAIMove(mediumAI);
             }
-
+            else if(aiType == AIType.EasyAI)
+            {
+                EasyAIMove(easyAI);
+            }
             return true;
         }
         return false;
@@ -514,7 +536,7 @@ public class AiGameCore : MonoBehaviour
     {
         int score;
         char[,] board = translateBoard();
-        if (playHard)
+        if (aiType == AIType.HardAI)
         {
             score = hardAI.Evaluate(board);
 
@@ -568,6 +590,40 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Board State Score: " + hardAI.Evaluate(translateBoard()));
 
         }
+    }
+    async void MediumAIMove(MediumAI mediumAI)
+    {
+        Debug.Log("Fernando's mother");
+        char[,] board = translateBoard();
+
+        await Task.Delay(1500);
+        (Piece, char) move = await Task.Run(() => mediumAI.FindBestMove(board, 2, aiFirst));
+
+        //await WaitFor();
+        validPiece(move.Item1.row, move.Item1.col);
+        shiftBoard(move.Item2, currentPlayer.piece);
+        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
+        if (won())
+        {
+            buttonsCanvas.enabled = false;
+            GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+            highlightPieces();
+
+            StartCoroutine(RotateCamera());
+
+            gamePaused = true;
+            Debug.Log(currentPlayer.piece + " won!");
+        }
+        else if (currentPlayer.piece == 'X')
+        {
+            currentPlayer = p2;
+        }
+        else
+        {
+            currentPlayer = p1;
+        }
+        gamePaused = false;
+        aiMoving = false;
     }
     async void EasyAIMove(EasyAI easyAI)
     {

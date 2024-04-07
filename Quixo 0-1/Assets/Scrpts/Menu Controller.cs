@@ -281,7 +281,7 @@ public class MenuController : MonoBehaviour
             {
 
                 gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
-                gameMaster.GetComponent<AiGameCore>().playHard = false;
+                gameMaster.GetComponent<AiGameCore>().aiType = AiGameCore.AIType.EasyAI;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
             }
             else
@@ -299,9 +299,27 @@ public class MenuController : MonoBehaviour
             if (gameMaster != null)
             {
                 gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
-                gameMaster.GetComponent<AiGameCore>().playHard = true;
+                gameMaster.GetComponent<AiGameCore>().aiType = AiGameCore.AIType.HardAI;
                 gameMaster.GetComponent<AiGameCore>().StartAIGame();
                 
+            }
+            else
+            {
+                Debug.Log("GameMaster not found.");
+            }
+        }));
+    }
+    public void NewMediumGame()
+    {
+        StartCoroutine(AsyncLoadGameScene(5, () =>
+        {
+            GameObject gameMaster = GameObject.Find("GameMaster");
+            if (gameMaster != null)
+            {
+                gameMaster.GetComponent<AiGameCore>().aiFirst = aiFirst;
+                gameMaster.GetComponent<AiGameCore>().aiType = AiGameCore.AIType.MediumAI;
+                gameMaster.GetComponent<AiGameCore>().StartAIGame();
+
             }
             else
             {
