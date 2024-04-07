@@ -586,7 +586,8 @@ public class StoryGameCore : MonoBehaviour
         gameBoard[row, col].GetComponent<StoryPieceLogic>().row = row; //F: changing the moved piece's row
         gameBoard[row, col].GetComponent<StoryPieceLogic>().col = col; //F: changing the moved piece's col
         yield return StartCoroutine(MovePieceSmoothly(gameBoard[row, col].GetComponent<StoryPieceLogic>(), new Vector3(target.x, 96f, target.z)));
-        gamePaused = false;
+        if (GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseMenu.enabled == false && aiMoving)
+            gamePaused = false;
 
     }
     public bool makeMove(char c)
@@ -702,7 +703,7 @@ public class StoryGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-        gamePaused = false;
+        //gamePaused = false;
         await Task.Delay(750);
 
         aiMoving = false;
@@ -747,7 +748,7 @@ public class StoryGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col, bool aiTurn = false)
     {
-        if ((gamePaused || gameOver) || (aiMoving && !aiTurn))
+        if (gameOver || (aiMoving && !aiTurn))
         {
             return false;
         }

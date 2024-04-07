@@ -38,7 +38,6 @@ public class ButtonHandler : MonoBehaviour
             NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
             if (localPlayer.piece != game.currentPlayer.piece) return;
         }
-        if (aiGame.aiMoving) return;
         bool success = game.makeMove(dir);
 
         if (success) {

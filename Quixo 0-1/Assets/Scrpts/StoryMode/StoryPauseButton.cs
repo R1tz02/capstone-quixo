@@ -27,7 +27,7 @@ public class StoryPauseButton : MonoBehaviour
     {
         pauseMenu.enabled = true;
         pauseButton.gameObject.SetActive(false);
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         gameMaster.GetComponent<StoryGameCore>().gamePaused = true;
         gameMaster.GetComponent<StoryGameCore>().buttonCanvas.enabled = false;
     }
