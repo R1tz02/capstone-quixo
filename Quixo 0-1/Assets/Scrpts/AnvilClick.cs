@@ -12,6 +12,7 @@ public class AnvilClick : MonoBehaviour
     [SerializeField] private AudioClip objectClick;
     [SerializeField] private AudioClip mouseOverSound;
 
+
     GameObject menuItem;
 
     public float moveDuration = 1f;

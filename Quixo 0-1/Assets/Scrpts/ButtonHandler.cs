@@ -40,7 +40,9 @@ public class ButtonHandler : MonoBehaviour
         bool success = game.makeMove(dir);
 
         if (success) {
-            OnMoveMade?.Invoke(dir); // Call the event to let other classes know that a move was made
+            OnMoveMade?.Invoke(dir);
+            //SoundFXManage.Instance.PlaySoundFXClip(game.pieceClickSound, transform, 1f);
+            // Call the event to let other classes know that a move was made
         }
     }
 
