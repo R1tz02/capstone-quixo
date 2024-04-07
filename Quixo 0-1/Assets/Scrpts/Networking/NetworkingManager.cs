@@ -9,6 +9,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using ExitGames.Client.Photon.StructWrapping;
 using TMPro;
+using UnityEngine.UI;
 
 [Serializable]
 public struct PieceData
@@ -62,11 +63,16 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public List<KeyValuePair<PlayerRef, NetworkedPlayer>> _players = new();
 
     public static bool GameSetUp = false;
-    private bool IsRunnerDestoryed = false;
+    public bool IsRunnerDestoryed = false;
 
     // Only used in the case of disconnects and reconnects
     public int currentTurn = 0;
     public string lobbyName = null;
+
+    public bool drawInProgress = false;
+    public TMP_Text lobbyCode;
+    public Button pauseButton;
+
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _networkChatPrefab;
 
@@ -92,6 +98,10 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_players.Count != 2) return;
 
+        if (runner.IsServer)
+        {
+            CodeCanvas.gameObject.SetActive(false);
+        }
         runner.SessionInfo.IsOpen = false;
 
         SetupGame();
@@ -111,19 +121,38 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         PauseButton.OnNetworkingGameRestart += Rematch;
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    public async void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         int playerIndex = _players.FindIndex(p => p.Key == player);
 
         if (runner.IsServer && player != runner.LocalPlayer)
         {
+            if (game.gameOver)
+            {
+                await DisconnectFromPhoton();
+
+                OnNetworkError?.Invoke(ShutdownReason.OperationCanceled);
+
+                return;
+            }
+
+            if (drawInProgress)
+            {
+                await DisconnectFromPhoton();
+
+                OnNetworkError?.Invoke(ShutdownReason.IncompatibleConfiguration);
+
+                return;
+            }
+
             currentTurn = game.currentPlayer.piece == 'O' ? 2 : 1;
+
+            CodeCanvas.gameObject.SetActive(true);
 
             game.showError("Client has disconnected. Waiting until they rejoin...");
 
             runner.Despawn(chat.GetComponent<NetworkObject>());
             Destroy(chat.gameObject);
-
             chat = null;
 
             HideButtons();
@@ -204,6 +233,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
     public GameCore game;
     public GameState gameState;
     public NetworkChat chat;
+    public Canvas CodeCanvas;
 
     public List<ChatMessage> chatLog = new();
 
@@ -218,7 +248,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         _runner.ProvideInput = true;
 
         bool enableClientSessionCreation = false;
-        bool isOpen = true;
 
         var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
         var sceneInfo = new NetworkSceneInfo();
@@ -231,8 +260,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (mode == GameMode.Host)
         {
-            isOpen = false;
-
             System.Random res = new System.Random();
 
             String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -247,13 +274,20 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
 
             lobbyName = ran;
 
-            // TODO: Display this room name on the host's screen. Stored in class's lobbyName variable so it can always be accessed
+            CodeCanvas.gameObject.SetActive(true);
+
+            lobbyCode.text = ran;
         }
 
         if (mode == GameMode.AutoHostOrClient)
         {
             enableClientSessionCreation = true;
             lobbyName = null;
+        }
+
+        if (mode == GameMode.Client)
+        {
+            lobbyName = lobbyName.ToUpper();
         }
 
         var result = await _runner.StartGame(new StartGameArgs()
@@ -264,7 +298,6 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
             PlayerCount = 2,
             EnableClientSessionCreation = enableClientSessionCreation,
-            IsOpen = isOpen,
         });
 
         if (!result.Ok)
@@ -485,6 +518,17 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         GameSetUp = false;
         currentTurn = 0;
         SetupGame(true);
+
+        if (Data.CURRENT_LANGUAGE == "English")
+        {
+            GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart";
+            GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart";
+        }
+        else if (Data.CURRENT_LANGUAGE == "Espa�ol")
+        {
+            GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar";
+            GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar";
+        }
     }
 
     private void HideButtons()
@@ -496,7 +540,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         if (game.currentGameMode == GameType.Online)
         {
             game.drawButton.gameObject.SetActive(false);
-            GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(false);
+            pauseButton.gameObject.SetActive(false);
             game.buttonsCanvas.enabled = false;
         }
     }
@@ -509,7 +553,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         game.drawButton.gameObject.SetActive(true);
-        GameObject.Find("Menu Manager").GetComponent<PauseButton>().pauseButton.gameObject.SetActive(true);
+        pauseButton.gameObject.SetActive(true);
         game.buttonsCanvas.enabled = true;
     }
 

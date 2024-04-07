@@ -428,14 +428,14 @@ public class HardAI : MonoBehaviour
             }
         }
 
-        score = (int)Math.Pow(5, (count));
+        score = (int)Math.Pow(10, (count));
         if(SMLevel == 0)
         {
-           oppScore = -(int)Math.Pow(5, (opponentCount + 1));
+           oppScore = (-(int)Math.Pow(10, (opponentCount)));
         }
         else
         {
-            oppScore = -(int)Math.Pow(5, opponentCount + 1) - 5;
+            oppScore = -(int)Math.Pow(10, opponentCount);
 
         }
 
@@ -570,7 +570,7 @@ public class HardAI : MonoBehaviour
         while(DateTime.Now < endTime)
         {
             (Piece, char) curBestMove = FindBestMove(model, depth, aiFirst, SMLevel);
-            if(curBestMove != (null, null))
+            if(curBestMove != (null, ' '))
             {
                 bestMove = curBestMove;
             }

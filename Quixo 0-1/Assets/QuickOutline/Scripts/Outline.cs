@@ -11,10 +11,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
+
 [DisallowMultipleComponent]
 
 public class Outline : MonoBehaviour {
-  private static HashSet<Mesh> registeredMeshes = new HashSet<Mesh>();
+
+    private static HashSet<Mesh> registeredMeshes = new HashSet<Mesh>();
+
 
   public enum Mode {
     OutlineAll,
@@ -82,8 +86,8 @@ public class Outline : MonoBehaviour {
 
   void Awake() {
 
-    // Cache renderers
-    renderers = GetComponentsInChildren<Renderer>();
+        // Cache renderers
+        renderers = GetComponentsInChildren<Renderer>();
 
     // Instantiate outline materials
     outlineMaskMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineMask"));
@@ -270,9 +274,10 @@ public class Outline : MonoBehaviour {
   }
 
   void UpdateMaterialProperties() {
+        
 
-    // Apply properties according to mode
-    outlineFillMaterial.SetColor("_OutlineColor", outlineColor);
+        // Apply properties according to mode
+        outlineFillMaterial.SetColor("_OutlineColor", outlineColor);
 
     switch (outlineMode) {
       case Mode.OutlineAll:

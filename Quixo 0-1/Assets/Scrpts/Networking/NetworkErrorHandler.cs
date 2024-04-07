@@ -12,9 +12,15 @@ public class NetworkErrorHandler : MonoBehaviour
         NetworkingManager.OnNetworkError += HandleError;
     }
 
+    private bool errorHandled = false;
+
     private void HandleError(ShutdownReason shutdownReason)
     {
         DontDestroyOnLoad(this.gameObject);
+
+        if (errorHandled) return;
+
+        errorHandled = true;
 
         if (shutdownReason == ShutdownReason.DisconnectedByPluginLogic)
         {
@@ -23,6 +29,14 @@ public class NetworkErrorHandler : MonoBehaviour
         else if (shutdownReason == ShutdownReason.GameNotFound)
         {
             LoadScene("Game not found");
+        }
+        else if (shutdownReason == ShutdownReason.OperationCanceled)
+        {
+            LoadScene("Client disconnected");
+        }
+        else if (shutdownReason == ShutdownReason.IncompatibleConfiguration)
+        {
+            LoadScene("A draw request was in progress but a player left");
         }
         else
         {
@@ -33,8 +47,6 @@ public class NetworkErrorHandler : MonoBehaviour
 
     private void LoadScene(string text)
     {
-        Debug.Log("Disconnected by server");
-
         StartCoroutine(AsyncLoadGameScene(1, () =>
         {
             MenuController menuController = GameObject.Find("Game Manager").GetComponent<MenuController>();
@@ -51,7 +63,6 @@ public class NetworkErrorHandler : MonoBehaviour
 
         while (!asyncLoad.isDone)
         {
-            Debug.Log("Waiting for scene load operation to complete...");
             yield return null;
         }
 

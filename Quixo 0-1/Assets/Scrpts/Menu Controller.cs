@@ -25,6 +25,8 @@ public class MenuController : MonoBehaviour
     public Text errorText;
     public Text joinCode;
 
+    AnvilClick anvilClick;
+
     public bool isError = false;
 
     public float moveDuration;
@@ -39,7 +41,9 @@ public class MenuController : MonoBehaviour
     
     void Start()
     {
-        if(labelCanvas)
+        anvilClick = GetComponent<AnvilClick>();
+
+        if (labelCanvas)
             labelCanvas.enabled = true;
         if(tutorialCanvas)
             tutorialCanvas.enabled = false;
@@ -61,11 +65,22 @@ public class MenuController : MonoBehaviour
             orderCanvas.enabled = false;
     }
 
+    public void UpdateHasBeenClickedStatus(bool newStatus)
+    {
+        // Update the click status in the AnvilClick script
+        //anvilClick.UpdateClickStatus(newStatus);
+        GameObject.Find("AnvilMenu").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
+        GameObject.Find("TableMenu").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
+        GameObject.Find("forgeFurnace_LOD1").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
+    }
+
 
     public void displayError(string error)
     {
         errorText.text = error;
         errorCanvas.enabled = true;
+
+        overlayCanvas.enabled = false;
 
         isError = true;
     }
@@ -73,7 +88,9 @@ public class MenuController : MonoBehaviour
     public void closeError()
     { 
         errorCanvas.enabled = false;
-                    
+        
+        overlayCanvas.enabled = true;
+
         Time.timeScale = 1;
         isError = false;
 
@@ -216,6 +233,7 @@ public class MenuController : MonoBehaviour
         }
         currentCam.transform.rotation = targetRotation;
         rotating = false;
+        UpdateHasBeenClickedStatus(false);
     }
     public void goBack()
     {
@@ -350,6 +368,9 @@ public class MenuController : MonoBehaviour
     public void JoinNetworkedGame()
     {
         string code = GameObject.Find("JoinMenu").GetComponentInChildren<TMP_InputField>().text;
+
+        if (code.Length == 0) return;
+        
         StartCoroutine(AsyncLoadGameScene(2, () =>
         {
             Debug.Log("Looking for GameMaster object...");

@@ -32,7 +32,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     {
         networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
 
-        pauseButton = GameObject.FindObjectOfType<PauseButton>();
+        pauseButton = GameObject.Find("Menu Manager").GetComponent<PauseButton>();
 
         TotalPlayers++;
 
@@ -160,17 +160,17 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     {
         RematchDict[wantsToPlayAgainRef] = true;
 
-        // TODO #35: Change the GUI text to reflect the number of players who want to play again
         if (Data.CURRENT_LANGUAGE == "English")
         {
             GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart (1/2)";
             GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart (1/2)";
         }
-        else if (Data.CURRENT_LANGUAGE == "Español")
+        else if (Data.CURRENT_LANGUAGE == "Espaï¿½ol")
         {
             GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar (1/2)";
             GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar (1/2)";
         }
+
         if (RematchDict.Count == 2 && networkingManager._runner.IsServer)
         {
             RpcResetGame();
@@ -192,9 +192,20 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     {
         PlayerRef localPlayerRef = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer).PlayerRef;
 
+        // Set var in networkingManager to test if the player is waiting on a draw - if so and the other player leaves, disconnect
+        networkingManager.drawInProgress = true;
+
         if (callingPlayer != localPlayerRef)
         {
             pauseButton.requestDraw(true);
+        }
+        else
+        {
+            // Dialog box to tell user that they are waiting on the other player to accept or deny the draw
+
+            networkingManager.game.showError("Waiting on other player to accept or deny draw...");
+            
+            HideButtons();
         }
     }
 
@@ -203,6 +214,10 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     public void RpcAcceptDraw()
     {
         pauseButton.acceptDraw(true);
+
+        networkingManager.drawInProgress = false;
+
+        networkingManager.game.closeError();
 
         if (networkingManager._runner.IsServer)
         {
@@ -214,6 +229,19 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcDenyDraw()
     {
+        networkingManager.drawInProgress = false;
+
         pauseButton.denyDraw(true);
+        
+        networkingManager.game.closeError();
+
+        networkingManager.pauseButton.gameObject.SetActive(false);
+    }
+
+    private void HideButtons()
+    {
+        networkingManager.pauseButton.gameObject.SetActive(false);
+        networkingManager.game.buttonsCanvas.enabled = false;
+        networkingManager.game.drawButton.gameObject.SetActive(false);
     }
 }
