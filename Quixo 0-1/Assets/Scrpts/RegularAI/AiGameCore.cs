@@ -136,7 +136,7 @@ public class AiGameCore : MonoBehaviour
 
 
 
-    IEnumerator RotateCamera()
+    IEnumerator RotateCamera(bool won)
     {
         float timeelapsed = 0;
 
@@ -145,11 +145,11 @@ public class AiGameCore : MonoBehaviour
         // Define the target rotation
         Quaternion targetRotation = Quaternion.Euler(-25f, 270f, 0f);
 
-        if (currentPlayer == p2 || (aiFirst && currentPlayer == p1))
+        if (!won)
         {
 
             // One second delay before rotation starts
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(3f);
 
             while (timeelapsed < 1)
             {
@@ -168,7 +168,7 @@ public class AiGameCore : MonoBehaviour
         }
         else
         {
-            yield return new WaitForSeconds(2.25f);
+            yield return new WaitForSeconds(3f);
             winScreen.enabled = true;
         }
     }
@@ -554,7 +554,7 @@ public class AiGameCore : MonoBehaviour
                 highlightPieces();
                 buttonsCanvas.enabled = false; 
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                //StartCoroutine(RotateCamera());
+                StartCoroutine(RotateCamera(true));
 
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -628,7 +628,7 @@ public class AiGameCore : MonoBehaviour
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
                 gamePaused = true;
 
-                //StartCoroutine(RotateCamera());
+                StartCoroutine(RotateCamera(false));
 
                 Debug.Log(currentPlayer.piece + " won!");
             }
@@ -666,7 +666,7 @@ public class AiGameCore : MonoBehaviour
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
                 highlightPieces();
 
-                StartCoroutine(RotateCamera());
+                StartCoroutine(RotateCamera(false));
 
                 gamePaused = true;
                 Debug.Log(currentPlayer.piece + " won!");
@@ -701,7 +701,7 @@ public class AiGameCore : MonoBehaviour
             GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
             StartCoroutine(winAnimation());
             highlightPieces();
-            //StartCoroutine(RotateCamera());
+            StartCoroutine(RotateCamera(false));
 
             gamePaused = true;
             Debug.Log(currentPlayer.piece + " won!");
@@ -718,7 +718,6 @@ public class AiGameCore : MonoBehaviour
         await Task.Delay(750);
         aiMoving = false;
     }
-
 
 
     public IEnumerator waitAI(EasyAI easyAI)
