@@ -30,6 +30,8 @@ public class StoryGameCore : MonoBehaviour
     public bool aiMoving = false;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
 
+    [SerializeField] public AudioClip pieceClickSound;
+
     [SerializeField] private AudioClip hotPieceMoveSound;
     [SerializeField] private AudioClip coldPieceMoveSound;
     [SerializeField] private AudioClip victory;

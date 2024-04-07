@@ -31,6 +31,8 @@ public class AiGameCore : MonoBehaviour
     public bool aiFirst = false;
     public AIType aiType;
 
+    [SerializeField] public AudioClip pieceClickSound;
+
     [SerializeField] private AudioClip hotPieceMoveSound;
     [SerializeField] private AudioClip coldPieceMoveSound;
     [SerializeField] private AudioClip victory;

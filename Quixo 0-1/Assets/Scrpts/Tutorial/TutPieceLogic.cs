@@ -42,6 +42,7 @@ public class TutPieceLogic : MonoBehaviour
             // C: Temporarily disable gravity to lift the piece
             StartCoroutine(game.MovePieceSmoothly(this, new Vector3(transform.position.x, 114f, transform.position.z)));
             isSelected = true;
+            SoundFXManage.Instance.PlaySoundFXClip(game.pieceClickSound, transform, 1f);
             moveList = game.moveOptions(row, col); // C: Creates a list of directional moves based on the piece selected
             selectedPiece = this; // C: Set the current piece as the selected one
             
