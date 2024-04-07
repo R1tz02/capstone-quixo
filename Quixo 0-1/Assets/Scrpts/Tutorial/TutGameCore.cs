@@ -31,6 +31,7 @@ public class TutGameCore : MonoBehaviour
     public int AIcounter = 0;
     public int usrCounter = 0;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
+    public bool gameOver = false;
 
     public Canvas buttonCanvas;
 
@@ -86,6 +87,7 @@ public class TutGameCore : MonoBehaviour
                 }
             }
         }
+        gameOver = true;
     }
     private void highlightPieces()
     {
@@ -645,7 +647,7 @@ public class TutGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col)
     {
-        if (gamePaused)
+        if (gamePaused || gameOver)
         {
             return false;
         }

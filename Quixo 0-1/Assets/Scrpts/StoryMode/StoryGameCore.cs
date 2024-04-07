@@ -26,6 +26,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer p2;
     public int SMLvl = 1;
     public bool gamePaused;
+    public bool gameOver = false;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
 
     public Canvas loseScreen;
@@ -189,6 +190,7 @@ public class StoryGameCore : MonoBehaviour
                 }
             }
         }
+        gameOver = true;
     }
 
     private void highlightPieces()
@@ -692,7 +694,7 @@ public class StoryGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col)
     {
-        if (gamePaused)
+        if (gamePaused || gameOver)
         {
             return false;
         }

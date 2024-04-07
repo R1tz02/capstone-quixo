@@ -25,6 +25,7 @@ public class AiGameCore : MonoBehaviour
     public IPlayer p2;
     public int counter = 0;
     public bool gamePaused;
+    public bool gameOver = false;
     public bool aiMoving = false;
     public bool playHard = true;
     public bool aiFirst = false;
@@ -178,6 +179,7 @@ public class AiGameCore : MonoBehaviour
                 }
             }
         }
+        gameOver = true;
     }
 
     private void highlightPieces()
@@ -648,7 +650,7 @@ public class AiGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col, bool aiTurn = false)
     {
-        if (gamePaused || (aiMoving && !aiTurn))
+        if ((gamePaused||gameOver) || (aiMoving && !aiTurn))
         {
             return false;
         }

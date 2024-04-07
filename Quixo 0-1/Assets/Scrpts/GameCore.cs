@@ -236,6 +236,7 @@ public class GameCore : MonoBehaviour
                 }
             }
         }
+        gameOver = true;
     }
 
     private void highlightPieces()
@@ -539,7 +540,6 @@ public class GameCore : MonoBehaviour
             {
                 StartCoroutine(winAnimation());
                 gameOver = true;
-
                 highlightPieces();
 
                 if (currentGameMode == GameType.Online)
@@ -603,7 +603,7 @@ public class GameCore : MonoBehaviour
     // force is used to force a move, even if the game is paused. Used for networking
     public bool validPiece(int row, int col, bool force = false)
     {
-        if (gamePaused && !force)
+        if ((gamePaused || gameOver) && !force)
         {
             return false;
         }
