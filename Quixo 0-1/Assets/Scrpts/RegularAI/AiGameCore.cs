@@ -516,6 +516,7 @@ public class AiGameCore : MonoBehaviour
                 currentPlayer = p1; 
             }
             gamePaused = false;
+            aiMoving = true; 
 
             if (aiType == AIType.HardAI)
             {
@@ -598,34 +599,37 @@ public class AiGameCore : MonoBehaviour
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
-        await Task.Delay(1500);
+        await Task.Delay(2000);
         (Piece, char) move = await Task.Run(() => mediumAI.FindBestMove(board, 2, aiFirst));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col);
-        shiftBoard(move.Item2, currentPlayer.piece);
-        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
-        if (won())
-        {
-            buttonsCanvas.enabled = false;
-            GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-            highlightPieces();
+        validPiece(move.Item1.row, move.Item1.col, true);
+        
 
-            StartCoroutine(RotateCamera());
+            shiftBoard(move.Item2, currentPlayer.piece);
+            Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
+            if (won())
+            {
+                buttonsCanvas.enabled = false;
+                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+                highlightPieces();
 
-            gamePaused = true;
-            Debug.Log(currentPlayer.piece + " won!");
-        }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }
-        gamePaused = false;
-        aiMoving = false;
+                StartCoroutine(RotateCamera());
+
+                gamePaused = true;
+                Debug.Log(currentPlayer.piece + " won!");
+            }
+            else if (currentPlayer.piece == 'X')
+            {
+                currentPlayer = p2;
+            }
+            else
+            {
+                currentPlayer = p1;
+            }
+            gamePaused = false;
+            aiMoving = false;
+        
     }
     async void EasyAIMove(EasyAI easyAI)
     {
@@ -636,7 +640,7 @@ public class AiGameCore : MonoBehaviour
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col);
+        validPiece(move.Item1.row, move.Item1.col, true);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
