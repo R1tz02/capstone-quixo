@@ -83,12 +83,12 @@ public class AiGameCore : MonoBehaviour
         {
             currentGameMode = GameType.AIHard;
         }
-        if(aiType == AIType.MediumAI)
+        else if(aiType == AIType.MediumAI)
         {
             currentGameMode = GameType.AIMedium;
         }
-        else
-        {
+        else if(aiType == AIType.EasyAI) 
+        {         
             currentGameMode = GameType.AIEasy;
         }
         GameObject player1Object = new GameObject("Player1");

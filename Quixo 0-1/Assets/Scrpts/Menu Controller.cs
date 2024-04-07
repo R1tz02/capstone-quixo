@@ -171,7 +171,7 @@ public class MenuController : MonoBehaviour
         }
         else if (aiDiff == 2)
         {
-            //NewMediumGame();
+            NewMediumGame();
         }
         else if (aiDiff == 3)
         { 
@@ -187,7 +187,7 @@ public class MenuController : MonoBehaviour
         }
         else if (aiDiff == 2)
         {
-            //NewMediumGame();
+            NewMediumGame();
         }
         else if (aiDiff == 3)
         {
