@@ -34,6 +34,10 @@ public class AiGameCore : MonoBehaviour
 
     public GameType currentGameMode;
 
+    public GameObject swordPrefab;
+    public GameObject axePrefab;
+    public GameObject spearPrefab;
+
     public Camera CameraPosition;
     public Canvas loseScreen;
     public Canvas winScreen;
@@ -174,10 +178,12 @@ public class AiGameCore : MonoBehaviour
         List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
         List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
         List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
+        List<AiPieceLogic> listOfPieces = new List<AiPieceLogic>();
         for (int i = 0; i < 5; i++)
         {
             yield return new WaitUntil(() => gamePaused == false);
             AiPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<AiPieceLogic>();
+            listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
@@ -197,6 +203,41 @@ public class AiGameCore : MonoBehaviour
                     yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
                 }
             }
+        }
+
+        foreach (AiPieceLogic piece in listOfPieces)
+        { 
+            piece.gameObject.SetActive(false);
+        }
+        if (winType == WinType.vertical)
+        {
+            GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
+            Vector3 scale = sword.transform.localScale;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
+            sword.transform.localScale = scale;
+            sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
+        }
+        if(winType == WinType.diagonal) 
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2836, 140, -10), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(90.0f, 0, 90.0f, Space.Self);
+        }
+        if (winType == WinType.horizontal)
+        {
+            GameObject spear = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
+            Vector3 scale = spear.transform.localScale;
+            scale.y = 50f;
+            scale.x = 50f;
+            scale.z = 50f;
+            spear.transform.localScale = scale;
+            spear.transform.Rotate(0f, 0, 0, Space.Self);
         }
         gameOver = true;
     }
