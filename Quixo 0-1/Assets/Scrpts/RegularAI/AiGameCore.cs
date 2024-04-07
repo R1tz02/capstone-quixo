@@ -633,7 +633,7 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
-                StartCoroutine(winAnimation());
+               // StartCoroutine(winAnimation());
                 highlightPieces();
                 buttonsCanvas.enabled = false;
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
@@ -710,7 +710,7 @@ public class AiGameCore : MonoBehaviour
             {
                 buttonsCanvas.enabled = false;
                 GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                StartCoroutine(winAnimation());
+                //StartCoroutine(winAnimation());
                 highlightPieces();
                 StartCoroutine(RotateCamera(false));
 

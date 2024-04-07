@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8564,8 +8564,6 @@ MonoBehaviour:
   gamePaused: 0
   gameOver: 0
   pieceClickSound: {fileID: 8300000, guid: f4e8316786ae38946b3e8e8910b9b922, type: 3}
-  menuHoverSound: {fileID: 8300000, guid: d8f6c9dcdac493243bf283fd9184d293, type: 3}
-  menuClickSound: {fileID: 8300000, guid: 2c3bac3e2ff668c43b4ef4ac88cc6413, type: 3}
   hotPieceMoveSound: {fileID: 8300000, guid: 8e87799865391a44589419f36012d277, type: 3}
   coldPieceMoveSound: {fileID: 8300000, guid: ab805e44dc06e25418ba6f35a78e0b19, type: 3}
   victory: {fileID: 8300000, guid: 20a79c634d4a1164a8dc71a3967f2056, type: 3}
@@ -8575,6 +8573,11 @@ MonoBehaviour:
   sword: {fileID: 0}
   axe: {fileID: 0}
   lose: {fileID: 0}
+  swordPrefab: {fileID: 1378010598903046, guid: 431cd727a83ed3849b04c235677e13ae,
+    type: 3}
+  axePrefab: {fileID: 1971897880613298, guid: 84490d26c43499e45b02581945b0a67f, type: 3}
+  spearPrefab: {fileID: 3140830376302814010, guid: e8573012f5a2b24459ddc6d90fcf0273,
+    type: 3}
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
   drawButton: {fileID: 1306903039}
@@ -12734,6 +12737,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   game: {fileID: 1407541394}
+  menuHoverSound: {fileID: 0}
+  menuClickSound: {fileID: 0}
 --- !u!61 &1862863573
 BoxCollider2D:
   m_ObjectHideFlags: 0

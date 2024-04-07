@@ -27,7 +27,6 @@ public class ButtonHandler : MonoBehaviour
         left.onClick.AddListener(delegate { doOnClick('L'); });
         right.onClick.AddListener(delegate { doOnClick('R'); });
 
-        aiGame = GameObject.Find("AiGameCore").GetComponent<AiGameCore>();
         networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
     }
 
