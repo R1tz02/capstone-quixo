@@ -22,6 +22,7 @@ public class MenuController : MonoBehaviour
     public Canvas labelCanvas;
     public Canvas errorCanvas;
     public Canvas orderCanvas;
+    public Canvas volumeSettings;
     public Text errorText;
     public Text joinCode;
 
@@ -63,6 +64,8 @@ public class MenuController : MonoBehaviour
             errorCanvas.enabled = false;
         if(orderCanvas)
             orderCanvas.enabled = false;
+        if(volumeSettings)
+            volumeSettings.enabled = false;
     }
 
     public void UpdateHasBeenClickedStatus(bool newStatus)
@@ -146,6 +149,18 @@ public class MenuController : MonoBehaviour
         Time.timeScale = 1;
         overlayCanvas.enabled = true;
         isError = false;
+    }
+
+    public void openVolumeSettingsMenu()
+    {
+        volumeSettings.enabled = true;
+        overlayCanvas.enabled = false;
+        isError = true;
+    }
+    public void closeVolumeSettingsMenu()
+    {
+        volumeSettings.enabled = false;
+        openTutorialMenu();
     }
 
     public void openHelpMenu()
