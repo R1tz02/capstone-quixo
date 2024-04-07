@@ -27,6 +27,7 @@ public class StoryGameCore : MonoBehaviour
     public int SMLvl = 1;
     public bool gamePaused;
     public bool gameOver = false;
+    public bool aiMoving = false;
     public List<(int, int)> winnerPieces = new List<(int, int)>();
 
     public Canvas loseScreen;
@@ -46,6 +47,10 @@ public class StoryGameCore : MonoBehaviour
     public Canvas IntroSMLvl4;
     public Camera CameraPosition;
     public Canvas buttonCanvas;
+
+    public GameObject swordPrefab;
+    public GameObject axePrefab;
+    public GameObject spearPrefab;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -160,12 +165,13 @@ public class StoryGameCore : MonoBehaviour
         List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
         List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
         List<(int, int)> helmetPos = new List<(int, int)> { (-2856, -10), (-2866, -20), (-2856, 10), (-2846, -10), (-2846, -10) };
-
+        List<StoryPieceLogic> listOfPieces = new List<StoryPieceLogic>();
 
         for (int i = 0; i < 5; i++)
         {
             yield return new WaitUntil(() => gamePaused == false);
             StoryPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<StoryPieceLogic>();
+            listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
@@ -189,6 +195,50 @@ public class StoryGameCore : MonoBehaviour
                     yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
                 }
             }
+        }
+        foreach (StoryPieceLogic piece in listOfPieces)
+        {
+            piece.gameObject.SetActive(false);
+        }
+        if (winType == WinType.vertical)
+        {
+            GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
+            Vector3 scale = sword.transform.localScale;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
+            sword.transform.localScale = scale;
+            sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
+        }
+        if (winType == WinType.Leftdiagonal)
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(90.0f, 0, 135.0f, Space.Self);
+        }
+        if (winType == WinType.horizontal)
+        {
+            GameObject spear = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
+            Vector3 scale = spear.transform.localScale;
+            scale.y = 50f;
+            scale.x = 50f;
+            scale.z = 50f;
+            spear.transform.localScale = scale;
+            spear.transform.Rotate(0f, 0, 0, Space.Self);
+        }
+        if (winType == WinType.Rightdiagonal)
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
         }
         gameOver = true;
     }
@@ -426,7 +476,7 @@ public class StoryGameCore : MonoBehaviour
             case 3:
                 if (leftDiagonalWin() || rightDiagonalWin())
                 {
-                    winType = WinType.diagonal;
+                    winType = WinType.Leftdiagonal;
                     StartCoroutine(DelayedCanvasSelection(SMLvl4)); return true;
                 }
                 break;
@@ -567,6 +617,8 @@ public class StoryGameCore : MonoBehaviour
             {
                 currentPlayer = p1;
             }
+            gamePaused = false;
+            aiMoving = true;
 
             if (playAI)
             {
@@ -576,7 +628,7 @@ public class StoryGameCore : MonoBehaviour
                 }
                 else
                 {
-                    waitAI(easyAI);
+                    EasyAIMove(easyAI);
                 }
 
             }
@@ -624,10 +676,11 @@ public class StoryGameCore : MonoBehaviour
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
+        await Task.Delay(1500);
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0, SMLvl));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col);
+        validPiece(move.Item1.row, move.Item1.col, true);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
@@ -649,16 +702,16 @@ public class StoryGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-    }
+        gamePaused = false;
+        await Task.Delay(750);
 
-
-
-    public System.Collections.IEnumerator waitAI(EasyAI easyAI)
-    {
-        yield return new WaitForSeconds(2);
-        EasyAIMove(easyAI);
+        aiMoving = false;
 
     }
+
+
+
+  
     private async Task WaitFor()
     {
         await Task.Delay(1000);
@@ -692,9 +745,9 @@ public class StoryGameCore : MonoBehaviour
     }
 
     //checks to see if the passed piece is a selectable piece for the player to choose
-    public bool validPiece(int row, int col)
+    public bool validPiece(int row, int col, bool aiTurn = false)
     {
-        if (gamePaused || gameOver)
+        if ((gamePaused || gameOver) || (aiMoving && !aiTurn))
         {
             return false;
         }

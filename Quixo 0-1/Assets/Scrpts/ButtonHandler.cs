@@ -12,6 +12,7 @@ public class ButtonHandler : MonoBehaviour
     public Button up;
     public Button down;
     public GameCore game;
+    public AiGameCore aiGame;
     public NetworkingManager networkingManager;
 
     // Create Event so that we can add a listener to any other class that wants to know when a move was made
@@ -26,6 +27,7 @@ public class ButtonHandler : MonoBehaviour
         left.onClick.AddListener(delegate { doOnClick('L'); });
         right.onClick.AddListener(delegate { doOnClick('R'); });
 
+        aiGame = GameObject.Find("AiGameCore").GetComponent<AiGameCore>();
         networkingManager = GameObject.Find("NetworkManager").GetComponent<NetworkingManager>();
     }
 
@@ -36,7 +38,7 @@ public class ButtonHandler : MonoBehaviour
             NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
             if (localPlayer.piece != game.currentPlayer.piece) return;
         }
-
+        if (aiGame.aiMoving) return;
         bool success = game.makeMove(dir);
 
         if (success) {

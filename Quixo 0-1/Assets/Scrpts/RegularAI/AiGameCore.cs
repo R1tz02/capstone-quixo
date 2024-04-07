@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.SceneManagement;
 
 public class AiGameCore : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class AiGameCore : MonoBehaviour
     Image vikingWeapon;
 
     public GameType currentGameMode;
+
+    public GameObject swordPrefab;
+    public GameObject axePrefab;
+    public GameObject spearPrefab;
 
     public Camera CameraPosition;
     public Canvas loseScreen;
@@ -174,10 +179,12 @@ public class AiGameCore : MonoBehaviour
         List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
         List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
         List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
+        List<AiPieceLogic> listOfPieces = new List<AiPieceLogic>();
         for (int i = 0; i < 5; i++)
         {
             yield return new WaitUntil(() => gamePaused == false);
             AiPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<AiPieceLogic>();
+            listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
             {
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
@@ -197,6 +204,51 @@ public class AiGameCore : MonoBehaviour
                     yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
                 }
             }
+        }
+
+        foreach (AiPieceLogic piece in listOfPieces)
+        { 
+            piece.gameObject.SetActive(false);
+        }
+        if (winType == WinType.vertical)
+        {
+            GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
+            Vector3 scale = sword.transform.localScale;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
+            sword.transform.localScale = scale;
+            sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
+        }
+        if(winType == WinType.Leftdiagonal) 
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(90.0f, 0, 135.0f, Space.Self);
+        }
+        if (winType == WinType.horizontal)
+        {
+            GameObject spear = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
+            Vector3 scale = spear.transform.localScale;
+            scale.y = 50f;
+            scale.x = 50f;
+            scale.z = 50f;
+            spear.transform.localScale = scale;
+            spear.transform.Rotate(0f, 0, 0, Space.Self);
+        }
+        if (winType == WinType.Rightdiagonal)
+        {
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
+            Vector3 scale = axe.transform.localScale;
+            scale.y = 80;
+            scale.x = 80;
+            scale.z = 80;
+            axe.transform.localScale = scale;
+            axe.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
         }
         gameOver = true;
     }
@@ -375,12 +427,12 @@ public class AiGameCore : MonoBehaviour
             return true;
         };
         if (leftDiagonalWin())  {
-            winType = WinType.diagonal;
+            winType = WinType.Leftdiagonal;
             SetSprite("axeWin", vikingWeapon);
             return true;
         }; //separated checkDiagonalWin into two separate functions
         if (rightDiagonalWin()) {
-            winType = WinType.diagonal;
+            winType = WinType.Rightdiagonal;
             SetSprite("axeWin", vikingWeapon);
             return true;
         };
@@ -516,6 +568,7 @@ public class AiGameCore : MonoBehaviour
                 currentPlayer = p1; 
             }
             gamePaused = false;
+            aiMoving = true; 
 
             if (aiType == AIType.HardAI)
             {
@@ -598,34 +651,37 @@ public class AiGameCore : MonoBehaviour
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
-        await Task.Delay(1500);
+        await Task.Delay(2000);
         (Piece, char) move = await Task.Run(() => mediumAI.FindBestMove(board, 2, aiFirst));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col);
-        shiftBoard(move.Item2, currentPlayer.piece);
-        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
-        if (won())
-        {
-            buttonsCanvas.enabled = false;
-            GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-            highlightPieces();
+        validPiece(move.Item1.row, move.Item1.col, true);
+        
 
-            StartCoroutine(RotateCamera());
+            shiftBoard(move.Item2, currentPlayer.piece);
+            Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
+            if (won())
+            {
+                buttonsCanvas.enabled = false;
+                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+                highlightPieces();
 
-            gamePaused = true;
-            Debug.Log(currentPlayer.piece + " won!");
-        }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }
-        gamePaused = false;
-        aiMoving = false;
+                StartCoroutine(RotateCamera());
+
+                gamePaused = true;
+                Debug.Log(currentPlayer.piece + " won!");
+            }
+            else if (currentPlayer.piece == 'X')
+            {
+                currentPlayer = p2;
+            }
+            else
+            {
+                currentPlayer = p1;
+            }
+            gamePaused = false;
+            aiMoving = false;
+        
     }
     async void EasyAIMove(EasyAI easyAI)
     {
@@ -636,7 +692,7 @@ public class AiGameCore : MonoBehaviour
         (Piece, char) move = await Task.Run(() => easyAI.FindBestMove(board, 0));
 
         //await WaitFor();
-        validPiece(move.Item1.row, move.Item1.col);
+        validPiece(move.Item1.row, move.Item1.col, true);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
@@ -659,6 +715,7 @@ public class AiGameCore : MonoBehaviour
             currentPlayer = p1;
         }
         gamePaused = false;
+        await Task.Delay(750);
         aiMoving = false;
     }
 
@@ -746,6 +803,25 @@ public class AiGameCore : MonoBehaviour
         }
     }
 
+    void makeDiagonalWin()
+    {
+        for (int i = 1; i < 5; i++)
+        {
+            gameBoard[i, i].GetComponent<AiPieceLogic>().player = 'X';
+            gameBoard[i, i].GetComponent<Renderer>().material = playerOneSpace;
+        }
+    }
+
+    void makeRightDiagonalWin()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            gameBoard[i, 4 - i].GetComponent<AiPieceLogic>().player = 'X';
+            gameBoard[i, 4 - i].GetComponent<Renderer>().material = playerOneSpace;
+        }
+    }
+
+
     public char[,] translateBoard()
     {
         char[,] aiBoard = new char[5, 5];
@@ -758,5 +834,11 @@ public class AiGameCore : MonoBehaviour
         }
 
         return aiBoard;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.D)) { makeDiagonalWin(); }
+        if (Input.GetKeyDown(KeyCode.R)) { makeRightDiagonalWin(); }
     }
 }

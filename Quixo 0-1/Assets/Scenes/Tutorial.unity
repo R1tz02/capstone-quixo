@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7609,6 +7609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6c45129f080654fa9379f680a23a01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winType: 0
   playerOneSpace: {fileID: 2100000, guid: 1f40211e90609704f90bc8536e0e04b9, type: 2}
   playerTwoSpace: {fileID: 2100000, guid: 79c652c7ea7abe2499dd1d416d9cdb24, type: 2}
   piecePrefab: {fileID: 9075320395111789681, guid: b7dc3fe1a79659740b27de827fa2543c,
@@ -7621,7 +7622,13 @@ MonoBehaviour:
   tutLvl: -1
   AIcounter: 0
   usrCounter: 0
+  gameOver: 0
   buttonCanvas: {fileID: 1850532870}
+  swordPrefab: {fileID: 1378010598903046, guid: 431cd727a83ed3849b04c235677e13ae,
+    type: 3}
+  axePrefab: {fileID: 1971897880613298, guid: 84490d26c43499e45b02581945b0a67f, type: 3}
+  spearPrefab: {fileID: 3140830376302814010, guid: e8573012f5a2b24459ddc6d90fcf0273,
+    type: 3}
 --- !u!1001 &1414145136
 PrefabInstance:
   m_ObjectHideFlags: 0

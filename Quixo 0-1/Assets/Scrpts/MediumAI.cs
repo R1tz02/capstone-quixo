@@ -487,7 +487,7 @@ public class MediumAI : MonoBehaviour
     public int Minimax(quixoModel board, int depth, bool maximizing, int alpha, int beta)
     {
         quixoModel copy = board.Clone();
-        if (board.checkForWin() != '-' || depth == 0 || DateTime.Now >= endTime)
+        if (board.checkForWin() != '-' || depth == 0)
         {
             return Evaluate(board.board);
         }
@@ -559,37 +559,12 @@ public class MediumAI : MonoBehaviour
     //looks through all possible moves and finds the one that has will end with the highest possible score, whent he opponent
     //is also trying to maximize their score
 
-    public DateTime endTime;
-
-    public Task<(Piece, char)> IterativeDeepening(char[,] model, TimeSpan timeLimit, bool aiFirst, int level = 0)
-    {
-        SMLevel = level;
-        endTime = DateTime.Now.Add(timeLimit);
-        (Piece, char) bestMove = (null, ' ');
-        int depth = 1;
-
-        while (DateTime.Now < endTime)
-        {
-            (Piece, char) curBestMove = FindBestMove(model, depth, aiFirst, SMLevel);
-            if (curBestMove != (null, ' '))
-            {
-                bestMove = curBestMove;
-            }
-            else { break; }
-
-            depth++;
-
-
-        }
-
-        return Task.FromResult(bestMove);
-
-    }
+ 
 
 
     private int SMLevel = 0;
 
-    public (Piece, char) FindBestMove(char[,] model, int depth, bool aiFirst, int level = 0)
+    public Task<(Piece, char)> FindBestMove(char[,] model, int depth, bool aiFirst, int level = 0)
     {
 
         if (aiFirst)
@@ -616,7 +591,7 @@ public class MediumAI : MonoBehaviour
                 bestMove = move;
             }
         }
-        return bestMove;
+        return Task.FromResult(bestMove);
         // Update is called once per frame
     }
 
