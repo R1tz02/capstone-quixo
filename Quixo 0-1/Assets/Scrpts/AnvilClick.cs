@@ -78,6 +78,7 @@ public class AnvilClick : MonoBehaviour
 
     public void buttonMover()
     {
+        UpdateClickStatus(true);
         if (currentCam.transform.position != endMarker.position && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
         {
             GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;

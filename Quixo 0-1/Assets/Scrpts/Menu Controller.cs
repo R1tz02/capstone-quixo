@@ -68,7 +68,10 @@ public class MenuController : MonoBehaviour
     public void UpdateHasBeenClickedStatus(bool newStatus)
     {
         // Update the click status in the AnvilClick script
-        anvilClick.UpdateClickStatus(newStatus);
+        //anvilClick.UpdateClickStatus(newStatus);
+        GameObject.Find("AnvilMenu").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
+        GameObject.Find("TableMenu").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
+        GameObject.Find("forgeFurnace_LOD1").GetComponent<AnvilClick>().UpdateClickStatus(newStatus);
     }
 
 
