@@ -38,6 +38,10 @@ public class AiGameCore : MonoBehaviour
     [SerializeField] private AudioClip victory;
     [SerializeField] private AudioClip defeat;
     [SerializeField] private AudioClip growl;
+    [SerializeField] private AudioClip swordWin;
+    [SerializeField] private AudioClip spearWin;
+    [SerializeField] private AudioClip axeWin;
+    [SerializeField] private AudioClip hammerHit;
 
     Image vikingWeapon;
 
