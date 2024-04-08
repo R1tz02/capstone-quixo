@@ -146,30 +146,30 @@ public class GameCore : MonoBehaviour
         if (currentPlayer.piece == 'O')
         {
 
-            // One second delay before rotation starts
-            yield return new WaitForSeconds(2.5f);
+                // One second delay before rotation starts
+                yield return new WaitForSeconds(2.5f);
 
-        SoundFXManage.Instance.PlaySoundFXClip(growl, transform, 1f);
+            SoundFXManage.Instance.PlaySoundFXClip(growl, transform, 1f);
 
-            yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(1.0f);
 
-            while (timeelapsed < 1)
-        {
-            // Smoothly rotate the camera towards the target rotation
-            CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
-            timeelapsed += Time.deltaTime;
-            yield return null;
-        }
+                while (timeelapsed < 1)
+            {
+                // Smoothly rotate the camera towards the target rotation
+                CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
+                timeelapsed += Time.deltaTime;
+                yield return null;
+            }
 
-        CameraPosition.transform.rotation = targetRotation;
-            SoundFXManage.Instance.PlaySoundFXClip(defeat, transform, 1f);
-            // One second delay after rotation ends
-            yield return new WaitForSeconds(2.75f);
+            CameraPosition.transform.rotation = targetRotation;
+                SoundFXManage.Instance.PlaySoundFXClip(defeat, transform, 1f);
+                // One second delay after rotation ends
+                yield return new WaitForSeconds(2.75f);
 
-           // text.text = "You have forged through the fury!";
+               // text.text = "You have forged through the fury!";
             
-            SetSprite("graveLose", vikingWeapon);
-            winScreen.enabled = true;
+                SetSprite("graveLose", vikingWeapon);
+                winScreen.enabled = true;
         }
         else 
         {

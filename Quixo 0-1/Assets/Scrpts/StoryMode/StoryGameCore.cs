@@ -182,7 +182,6 @@ public class StoryGameCore : MonoBehaviour
 
         for (int i = 0; i < 5; i++)
         {
-            yield return new WaitUntil(() => gamePaused == false);
             StoryPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<StoryPieceLogic>();
             listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
@@ -277,10 +276,10 @@ public class StoryGameCore : MonoBehaviour
         for (int row = 0; row < 5; row++)
         {
             success = true;
-            baseSymbol = gameBoard[row, 0].GetComponent<PieceLogic>().player; //F: first value of every row is base
+            baseSymbol = gameBoard[row, 0].GetComponent<StoryPieceLogic>().player; //F: first value of every row is base
             for (int col = 0; col < 5; col++)
             {
-                pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
+                pieceToCheck = gameBoard[row, col].GetComponent<StoryPieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
                 winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
@@ -337,10 +336,10 @@ public class StoryGameCore : MonoBehaviour
         for (int col = 0; col < 5; col++)
         {
             success = true;
-            baseSymbol = gameBoard[0, col].GetComponent<PieceLogic>().player; ;
+            baseSymbol = gameBoard[0, col].GetComponent<StoryPieceLogic>().player; ;
             for (int row = 0; row < 5; row++)
             {
-                pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player;
+                pieceToCheck = gameBoard[row, col].GetComponent<StoryPieceLogic>().player;
                 winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
@@ -506,7 +505,7 @@ public class StoryGameCore : MonoBehaviour
     {
         buttonCanvas.enabled = false;
         GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
-        yield return new WaitForSeconds(2.5f); // 1 second delay
+        yield return new WaitForSeconds(4f); // 1 second delay
         chooseCanvasAndWinner(ref canvasType);
         SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
     }
@@ -715,10 +714,10 @@ public class StoryGameCore : MonoBehaviour
         Debug.Log("Jack's mother");
         char[,] board = translateBoard();
         TimeSpan timeLimit = TimeSpan.FromSeconds(4);
-
         (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit, false, SMLvl));
 
         await WaitFor();
+        
         validPiece(move.Item1.row, move.Item1.col);
         shiftBoard(move.Item2, currentPlayer.piece);
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
@@ -774,11 +773,10 @@ public class StoryGameCore : MonoBehaviour
         {
             currentPlayer = p1;
         }
-        //gamePaused = false;
+        gamePaused = false;
         await Task.Delay(750);
 
         aiMoving = false;
-
     }
 
 
