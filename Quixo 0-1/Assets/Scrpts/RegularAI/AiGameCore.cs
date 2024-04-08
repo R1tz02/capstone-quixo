@@ -616,7 +616,7 @@ public class AiGameCore : MonoBehaviour
 
     public bool makeMove(char c)
     {
-        if (gamePaused )
+        if (gamePaused || aiMoving)
         {
             return false;
         }
@@ -662,6 +662,7 @@ public class AiGameCore : MonoBehaviour
                 EasyAIMove(easyAI);
             }
             aiMoving = false;
+
             return true;
         }
     
@@ -765,6 +766,7 @@ public class AiGameCore : MonoBehaviour
     }
     async void EasyAIMove(EasyAI easyAI)
     {
+        gamePaused = true;
         Debug.Log("Fernando's mother");
         char[,] board = translateBoard();
 
@@ -795,8 +797,8 @@ public class AiGameCore : MonoBehaviour
             {
                 currentPlayer = p1;
             }
-            gamePaused = false;
             await Task.Delay(750);
+            gamePaused = false;
             aiMoving = false;
         }
     }
