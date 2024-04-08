@@ -325,6 +325,7 @@ public class GameCore : MonoBehaviour
     {
         Debug.Log("checking for horizontal win");
         bool success;
+        bool removed = false;
         char baseSymbol = '-';
         char pieceToCheck = '-';
         int winNum = 0;
@@ -366,7 +367,15 @@ public class GameCore : MonoBehaviour
         }
         else if (winNum == 2)
         {
-            winnerPieces.RemoveRange(0, 5);
+            for (int i = 0; winnerPieces.Count != 5; i++)
+            {
+                if (removed) { i--; removed = false; }
+                if (gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>().player != currentPlayer.piece)
+                {
+                    winnerPieces.Remove((winnerPieces[i].Item1, winnerPieces[i].Item2));
+                    removed = true;
+                }
+            }
             return true;
         }
         winnerPieces.Clear();
@@ -376,7 +385,9 @@ public class GameCore : MonoBehaviour
     private bool verticalWin()
     {
         Debug.Log("checking for vertical win");
+        int winNum = 0;
         bool success;
+        bool removed = false;
         char baseSymbol = '-';
         char pieceToCheck = '-';
         for (int col = 0; col < 5; col++)
@@ -389,6 +400,7 @@ public class GameCore : MonoBehaviour
                 winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
+                    winnerPieces.RemoveRange(winnerPieces.Count - row - 1, row + 1);
                     success = false;
                     break;
                 }
@@ -396,6 +408,7 @@ public class GameCore : MonoBehaviour
 
             if (success)
             {
+                winNum++;
                 if (p1.piece == baseSymbol)
                 {
                     p1.won = true;
@@ -406,10 +419,26 @@ public class GameCore : MonoBehaviour
                     p2.won = true;
                     currentPlayer = p2;
                 }
-                return true;
             }
-            winnerPieces.Clear();
         }
+        if (winNum == 1)
+        {
+            return true;
+        }
+        else if (winNum == 2)
+        {
+            for(int i=0; winnerPieces.Count!=5; i++)
+            {
+                if (removed) { i--; removed = false; }
+                if (gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>().player != currentPlayer.piece)
+                {
+                    winnerPieces.Remove((winnerPieces[i].Item1, winnerPieces[i].Item2));
+                    removed = true;
+                }
+            }
+            return true;
+        }
+        winnerPieces.Clear();
         return false;
     }
 
