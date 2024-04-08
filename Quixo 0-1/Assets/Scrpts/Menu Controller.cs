@@ -257,6 +257,7 @@ public class MenuController : MonoBehaviour
         storyCanvas.enabled = false;
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
+        orderCanvas.enabled = false;
         
         overlayCanvas.enabled = true;
 
