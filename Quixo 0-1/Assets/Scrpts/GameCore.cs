@@ -107,8 +107,6 @@ public class GameCore : MonoBehaviour
 
         // Assign the sprite to the Image component
         image.sprite = sprite;
-
-        image.enabled = true;
     }
 
     public void showError(string error)
@@ -807,8 +805,6 @@ public class GameCore : MonoBehaviour
         buttonsCanvas.enabled = true;
 
         gameOver = false;
-
-        vikingWeapon.enabled = false;
 
         if (swordInstance != null)
         {
