@@ -227,7 +227,7 @@ public class GameCore : MonoBehaviour
         GameObject player2Object = new GameObject("Player2");
         p2 = player2Object.AddComponent<LocalPlayer>();
         p2.Initialize('O');
-
+        
         currentPlayer = p1;
 
         buttonHandler = GameObject.FindObjectOfType<ButtonHandler>();
@@ -329,8 +329,10 @@ public class GameCore : MonoBehaviour
     {
         Debug.Log("checking for horizontal win");
         bool success;
+        bool removed = false;
         char baseSymbol = '-';
         char pieceToCheck = '-';
+        int winNum = 0;
 
         for (int row = 0; row < 5; row++)
         {
@@ -339,38 +341,57 @@ public class GameCore : MonoBehaviour
             for (int col = 0; col < 5; col++)
             {
                 pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
-                winnerPieces.Add((row,col));
+                winnerPieces.Add((row,col));               
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
+                    winnerPieces.RemoveRange(winnerPieces.Count-col-1, col+1);
                     success = false; //F: if changed, not same symbols
                     break; //F: get out if not same symbol or blank, and try the next
                 }
             }
             if (success) //F: If unchanged, we have a win
             {
+                winNum++;
                 if (p1.piece == baseSymbol)
                 {
                     p1.won = true;
                     currentPlayer = p1;
-
-                    
                 }
                 else
                 {
                     p2.won = true;
                     currentPlayer = p2;
                 }
-                return true;
             }
-            winnerPieces.Clear();
         }
+
+        if(winNum == 1)
+        {
+            return true;
+        }
+        else if (winNum == 2)
+        {
+            for (int i = 0; winnerPieces.Count != 5; i++)
+            {
+                if (removed) { i--; removed = false; }
+                if (gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>().player != currentPlayer.piece)
+                {
+                    winnerPieces.Remove((winnerPieces[i].Item1, winnerPieces[i].Item2));
+                    removed = true;
+                }
+            }
+            return true;
+        }
+        winnerPieces.Clear();
         return false;
     }
 
     private bool verticalWin()
     {
         Debug.Log("checking for vertical win");
+        int winNum = 0;
         bool success;
+        bool removed = false;
         char baseSymbol = '-';
         char pieceToCheck = '-';
         for (int col = 0; col < 5; col++)
@@ -383,6 +404,7 @@ public class GameCore : MonoBehaviour
                 winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
+                    winnerPieces.RemoveRange(winnerPieces.Count - row - 1, row + 1);
                     success = false;
                     break;
                 }
@@ -390,6 +412,7 @@ public class GameCore : MonoBehaviour
 
             if (success)
             {
+                winNum++;
                 if (p1.piece == baseSymbol)
                 {
                     p1.won = true;
@@ -400,10 +423,26 @@ public class GameCore : MonoBehaviour
                     p2.won = true;
                     currentPlayer = p2;
                 }
-                return true;
             }
-            winnerPieces.Clear();
         }
+        if (winNum == 1)
+        {
+            return true;
+        }
+        else if (winNum == 2)
+        {
+            for(int i=0; winnerPieces.Count!=5; i++)
+            {
+                if (removed) { i--; removed = false; }
+                if (gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>().player != currentPlayer.piece)
+                {
+                    winnerPieces.Remove((winnerPieces[i].Item1, winnerPieces[i].Item2));
+                    removed = true;
+                }
+            }
+            return true;
+        }
+        winnerPieces.Clear();
         return false;
     }
 
@@ -800,4 +839,5 @@ public class GameCore : MonoBehaviour
         // Use main Camera vaiable (CameraPosition) to reset Camera Position
         CameraPosition.transform.rotation = Quaternion.Euler(59.205f, 270f, 0f);
     }
+
 }
