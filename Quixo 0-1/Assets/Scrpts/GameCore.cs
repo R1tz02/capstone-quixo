@@ -145,15 +145,14 @@ public class GameCore : MonoBehaviour
         TMP_Text text = congrats.GetComponent<TMP_Text>();
         if (currentPlayer.piece == 'O')
         {
-
-                // One second delay before rotation starts
-                yield return new WaitForSeconds(2.5f);
+            // One second delay before rotation starts
+            yield return new WaitForSeconds(2.5f);
 
             SoundFXManage.Instance.PlaySoundFXClip(growl, transform, 1f);
 
-                yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.0f);
 
-                while (timeelapsed < 1)
+            while (timeelapsed < 1)
             {
                 // Smoothly rotate the camera towards the target rotation
                 CameraPosition.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, timeelapsed / 1);
@@ -162,26 +161,26 @@ public class GameCore : MonoBehaviour
             }
 
             CameraPosition.transform.rotation = targetRotation;
-                SoundFXManage.Instance.PlaySoundFXClip(defeat, transform, 1f);
-                // One second delay after rotation ends
-                yield return new WaitForSeconds(2.75f);
+            SoundFXManage.Instance.PlaySoundFXClip(defeat, transform, 1f);
+            // One second delay after rotation ends
+            yield return new WaitForSeconds(2.75f);
 
-               // text.text = "You have forged through the fury!";
-            
-                SetSprite("graveLose", vikingWeapon);
-                winScreen.enabled = true;
+            text.text = "The dragons fire consumes all!";
+
+            SetSprite("graveLose", vikingWeapon);
+            winScreen.enabled = true;
         }
-        else 
+        else
         {
             //vikingWeapon.sprite = lose;
-            yield return new WaitForSeconds(3.5f);
+            yield return new WaitForSeconds(5f);
 
-           // text.text = "The dragons fire consumes all!";
-            
+            text.text = "You have forged through the fury!";
+
             SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
             winScreen.enabled = true;
         }
-        
+
     }
 
     public async void StartNetworkedGame(string gameType, string code = null)
