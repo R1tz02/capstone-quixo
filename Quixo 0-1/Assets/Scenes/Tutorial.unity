@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3796845, g: 0.37983716, b: 0.33745897, a: 1}
+  m_IndirectSpecularColor: {r: 0.36527887, g: 0.36893454, b: 0.32716602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -589,6 +589,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 260037350172177437, guid: 103693f11af0cbe48b15b035c5a18c38,
         type: 3}
+      propertyPath: m_margin.x
+      value: -115.63989
+      objectReference: {fileID: 0}
+    - target: {fileID: 260037350172177437, guid: 103693f11af0cbe48b15b035c5a18c38,
+        type: 3}
+      propertyPath: m_margin.y
+      value: -28.357056
+      objectReference: {fileID: 0}
+    - target: {fileID: 260037350172177437, guid: 103693f11af0cbe48b15b035c5a18c38,
+        type: 3}
+      propertyPath: m_margin.z
+      value: -82.71875
+      objectReference: {fileID: 0}
+    - target: {fileID: 260037350172177437, guid: 103693f11af0cbe48b15b035c5a18c38,
+        type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 0889351d61819b942b4e1b3fe5daf56b,
@@ -658,6 +673,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LeftDiagonal
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348667845747871686, guid: 103693f11af0cbe48b15b035c5a18c38,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348667845747871686, guid: 103693f11af0cbe48b15b035c5a18c38,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -11
       objectReference: {fileID: 0}
     - target: {fileID: 8084340932764048182, guid: 103693f11af0cbe48b15b035c5a18c38,
         type: 3}

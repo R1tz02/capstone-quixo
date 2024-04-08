@@ -72,13 +72,13 @@ public static class Data
             { "help_key", new Dictionary<string, string>()
             {
                 {"English", "Choose a clear ingot or an already hot ingot that is located on the edge of the forge. Once selected the player can move their piece to the end of one of the now incomplete rows and shift the other pieces. As a blacksmith your goal is to align five hot ingots in a row either diagonally, vertically or horizontally before the forge cools down by accomplishing the same task with cold coals." },
-                {"Español", "Seleccione un lingote claro o un lingote ya caliente que se encuentre English el borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo Español alinear cinco lingotes calientes English fila, ya sea English diagonal, vertical u horizontal antes de que la forja se enfrie, con los lingotes frios." }
+                {"Español", "Seleccione un lingote claro o un lingote ya caliente que se encuentre al borde de la fragua. Una vez seleccionado, el jugador puede mover su pieza al final de una de las filas ahora incompletas y empujar las otras piezas. Como herrero, tu objetivo es alinear cinco lingotes calientes en fila, ya sea en diagonal, vertical u horizontal antes de que la forja se enfrie, con los lingotes frios." }
             }
             },
             { "congrats_key", new Dictionary<string, string>()
             {
                 {"English", "You Have Forged Through the Fury" },
-                {"Español", "Felicidades" } // Fernando needs to translate
+                {"Español", "Has Superado La Furia" } 
             }
             },
             { "restart_key", new Dictionary<string, string>()
@@ -101,8 +101,8 @@ public static class Data
             },
             { "loss_key", new Dictionary<string, string>()
             {
-                {"English", "The Dragons Fire Consumes All!" },
-                {"Español", "Perdiste! IA gano!" } // Fernando needs to translate
+                {"English", "The Dragon's Fire Consumes All!" },
+                {"Español", "El Fuego Del Dragon Consume Todo!" } 
             }
             },
             { "tie_key", new Dictionary<string, string>()
@@ -192,7 +192,7 @@ public static class Data
             { "step2_key", new Dictionary<string, string>()
             {
                 {"English", "These arrows indicate which direction a piece can move. When an arrow is red, it indicates the piece can move that direction. Select the red arrow or use the coresponding arrow key" },
-                {"Español", "Estas flechas indican en que direccion se puede mover una pieza. Cuando una flecha Español roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja." }//fendando needs to translate
+                {"Español", "Estas flechas indican en que direccion puede moverse una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja o use la tecla de flecha correspondiente" }
             }
             },
             { "offerDraw_key", new Dictionary<string, string>()
@@ -228,68 +228,104 @@ public static class Data
             { "order_key", new Dictionary<string, string>()
             {
                 {"English", "Turn Order"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"Español", "Orden de Turno"} 
             }
             },
             { "first_key", new Dictionary<string, string>()
             {
                 {"English", "First"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"Español", "Primero"} 
             }
             },
             { "second_key", new Dictionary<string, string>()
             {
                 {"English", "Second"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"Español", "Segundo"} 
             }
             },
             { "mediumAI_key", new Dictionary<string, string>()
             {
                 {"English", "Medium"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"Español", "Media"} 
             }
             },
             { "tutorial_key", new Dictionary<string, string>()
             {
                 {"English", "Tutorial"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"Español", "Tutorial"} 
             }
             },
-            { "example_key", new Dictionary<string, string>()
+            { "text_key", new Dictionary<string, string>()
             {
                 {"English", "Enter Text..."},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"Español", "Escribe..."} 
+            }
+            },
+            { "volume_key", new Dictionary<string, string>()
+            {
+                {"English", "Volume"},
+                {"Español", "Volumen"}
+            }
+            },
+            { "soundfx_key", new Dictionary<string, string>()
+            {
+                {"English", "Sound FX"},
+                {"Español", "Efectos"}
+            }
+            },
+            { "music_key", new Dictionary<string, string>()
+            {
+                {"English", "Music"},
+                {"Español", "Musica"}
+            }
+            },
+            { "lobbyCode_key", new Dictionary<string, string>()
+            {
+                {"English", "Lobby Code"},
+                {"Español", "Codigo de Lobby"}
+            }
+            },
+            { "closeChat_key", new Dictionary<string, string>()
+            {
+                {"English", "Close Chat"},
+                {"Español", "Cerrar Chat"}
+            }
+            },
+            { "openChat_key", new Dictionary<string, string>()
+            {
+                {"English", "Open Chat"},
+                {"Español", "Abrir Chat"}
             }
             },
             { "SMLIntroOne_key", new Dictionary<string, string>()
             {
-                {"English", "Guess you're the new smith. Well no time for plesentries we need swords asap on the battle field! (You and the AI can only win by using the vertical pattern)"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"English", "Guess you're the new smith. Well no time for pleasantries we need swords asap on the battle field! (You and the AI can only win by using the vertical pattern)"},
+                {"Español", "Supongo que eres el nuevo herrero. Bueno, no hay tiempo para bromas, ¡necesitamos espadas lo antes posible en el campo de batalla! (Solo se puede ganar usando el patron vertical)"}
             }
             },
             { "SMLIntroTwo_key", new Dictionary<string, string>()
             {
                 {"English", "Seems like you got your chops on you. Well we aren't out of this yet. We need spears on the front line pronto! (You and the AI can only win using the horizontal pattern)"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"Español", "Parece que traes tus habilidades. Bueno, aún no hemos salido de esto. ¡Necesitamos lanzas en primera línea pronto! (Solo se puede ganar usando el patrón horizontal)"} 
             }
             },
             { "SMLIntroThree_key", new Dictionary<string, string>()
             {
-                {"English", "Keep this up and you'll be the next smith for Odin in Asgard. We need new axes for our Beserkers. You up for the task. (You and the AI can only win using a diagonal patten)"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"English", "Keep this up and you'll be the next smith for Odin in Asgard. We need new axes for our Berserkers. You up for the task? (You and the AI can only win using a diagonal patten)"},
+                {"Español", "Sigue así y seras el próximo herrero de Odin en Asgard. Necesitamos nuevas hachas para nuestros Beserkers. Estás preparado para la tarea? (Solo puedes ganar usando un patron diagonal)"} 
             }
             },
             { "SMLIntroFour_key", new Dictionary<string, string>()
             {
-                {"English", "The dragons have been pushed back to their abominable mountains. We will need armor suitible for the gods to get through there. Pull this off and you will be the greatest Viking Smith to live!"},
-                {"Español", "Individual"} // Fernando needs to translate
+                {"English", "The dragons have been pushed back to their abominable mountains. We will need armor suitable for the gods to get through there. Pull this off and you will be the greatest Viking Smith to live!"},
+                {"Español", "Los dragones han sido obligados a regresar a sus abominables montañas. Necesitaremos una armadura adecuada para que los dioses puedan pasar. ¡Hazlo y seras el mejor herrero vikingo en la historia!"}
             }
             },
             { "ModeToLearn_key", new Dictionary<string, string>()
             {
-                {"English", "Mode to Learn"},
-                {"Español", "Individual"} // Fernando needs to translate
-            }
+                {"English", "Learning Mode"},
+                {"Español", "Modo de Aprendizaje"} 
+            } 
             },
         };
 
