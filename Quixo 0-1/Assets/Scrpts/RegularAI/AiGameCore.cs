@@ -186,7 +186,7 @@ public class AiGameCore : MonoBehaviour
         }
         else
         {
-            yield return new WaitForSeconds(3.5f);
+            yield return new WaitForSeconds(4f);
             winScreen.enabled = true;
             SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
         }
@@ -201,7 +201,6 @@ public class AiGameCore : MonoBehaviour
         List<AiPieceLogic> listOfPieces = new List<AiPieceLogic>();
         for (int i = 0; i < 5; i++)
         {
-            yield return new WaitUntil(() => gamePaused == false);
             AiPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<AiPieceLogic>();
             listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
