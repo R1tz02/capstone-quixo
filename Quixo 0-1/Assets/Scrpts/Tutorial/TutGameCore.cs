@@ -78,7 +78,6 @@ public class TutGameCore : MonoBehaviour
         List<TutPieceLogic> listOfPieces = new List<TutPieceLogic>();
         for (int i = 0; i < 5; i++)
         {
-            yield return new WaitUntil(() => gamePaused == false);
             TutPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<TutPieceLogic>();
             listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
@@ -155,16 +154,8 @@ public class TutGameCore : MonoBehaviour
             {
                 gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<Outline>().enabled = true;
             }
-            else
-                gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].AddComponent<Outline>();
         }
-        if(!winnerPieces.Contains((chosenPiece.row, chosenPiece.col)))
-        {
-            if (gameBoard[chosenPiece.row, chosenPiece.col].GetComponent<Outline>())
-            {
-                gameBoard[chosenPiece.row, chosenPiece.col].GetComponent<Outline>().enabled = false;
-            }
-        }
+        
     }
 
     private bool horizontalWin()
@@ -448,7 +439,7 @@ public class TutGameCore : MonoBehaviour
 
     public System.Collections.IEnumerator Delay()
     {
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(4.5f);
         SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
         winScreen.enabled = true;
     }
@@ -471,7 +462,7 @@ public class TutGameCore : MonoBehaviour
             usrCounter++;
             if (won())
             {
-                winAnimation();
+                StartCoroutine(winAnimation());
                 highlightPieces();
                 GameObject.Find("Menu Manager").gameObject.GetComponent<TutPauseButton>().pauseButton.gameObject.SetActive(false);
                 buttonCanvas.enabled = false;
