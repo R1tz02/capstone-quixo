@@ -107,6 +107,8 @@ public class GameCore : MonoBehaviour
 
         // Assign the sprite to the Image component
         image.sprite = sprite;
+
+        image.enabled = true;
     }
 
     public void showError(string error)
@@ -677,7 +679,7 @@ public class GameCore : MonoBehaviour
 
                     networkingManager._runner.SessionInfo.IsOpen = false;
 
-                    GameObject.Find("PlayerIndicatorCanvas").gameObject.SetActive(false);
+                    GameObject.Find("PlayerIndicator").gameObject.SetActive(false);
                 }
 
                 buttonsCanvas.enabled = false;
@@ -806,7 +808,7 @@ public class GameCore : MonoBehaviour
 
         gameOver = false;
 
-        Destroy(vikingWeapon);
+        vikingWeapon.enabled = false;
 
         if (swordInstance != null)
         {
