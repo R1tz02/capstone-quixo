@@ -3,47 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-
-public class MouseOverSound : MonoBehaviour, IPointerEnterHandler
+public class MouseOverSound : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
-
-    public GameCore game;
     [SerializeField] public AudioClip menuHoverSound;
     [SerializeField] public AudioClip menuClickSound;
 
-    public void Start()
-    {
-        game = FindObjectOfType<GameCore>();
-    }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Mouse entered restart  button");
+        Debug.Log("Mouse entered restart button");
         SoundFXManage.Instance.PlaySoundFXClip(menuHoverSound, transform, 1f);
-
-        // Add your custom actions here
-    }
-    /*public bool mouseOverBtn = false;
-    public GameCore game;
-
-    public void Start()
-    {
-        game = GameObject.FindObjectOfType<GameCore>();
     }
 
-    public void OnMouseOver()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("hovered over");
-        if (!mouseOverBtn)
-        {
-            SoundFXManage.Instance.PlaySoundFXClip(game.pieceClickSound, transform, 1f);
-            mouseOverBtn = true;
-        }
+        Debug.Log("Mouse clicked restart button");
+        SoundFXManage.Instance.PlaySoundFXClip(menuClickSound, transform, 1f);
     }
-
-    public void OnMouseExit()
-    {
-        mouseOverBtn = false;
-    }*/
 }
