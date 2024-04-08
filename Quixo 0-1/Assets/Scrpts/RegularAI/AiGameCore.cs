@@ -293,10 +293,10 @@ public class AiGameCore : MonoBehaviour
         for (int row = 0; row < 5; row++)
         {
             success = true;
-            baseSymbol = gameBoard[row, 0].GetComponent<PieceLogic>().player; //F: first value of every row is base
+            baseSymbol = gameBoard[row, 0].GetComponent<AiPieceLogic>().player; //F: first value of every row is base
             for (int col = 0; col < 5; col++)
             {
-                pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
+                pieceToCheck = gameBoard[row, col].GetComponent<AiPieceLogic>().player; //F: assigned to a variable instead of callind GetComponent twice in the if
                 winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-') //F: compare every item to the baseSymbol, ignore immediately if it is blank
                 {
@@ -353,10 +353,10 @@ public class AiGameCore : MonoBehaviour
         for (int col = 0; col < 5; col++)
         {
             success = true;
-            baseSymbol = gameBoard[0, col].GetComponent<PieceLogic>().player; ;
+            baseSymbol = gameBoard[0, col].GetComponent<AiPieceLogic>().player; ;
             for (int row = 0; row < 5; row++)
             {
-                pieceToCheck = gameBoard[row, col].GetComponent<PieceLogic>().player;
+                pieceToCheck = gameBoard[row, col].GetComponent<AiPieceLogic>().player;
                 winnerPieces.Add((row, col));
                 if (pieceToCheck != baseSymbol || pieceToCheck == '-')
                 {
