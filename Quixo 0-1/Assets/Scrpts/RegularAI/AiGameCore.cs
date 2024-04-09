@@ -677,7 +677,7 @@ public class AiGameCore : MonoBehaviour
             aiButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won())
             {
-                if(currentPlayer.piece == 'X')
+                if(currentPlayer.piece == 'X' && aiFirst == false)
                 {
                     usrWin();
                     return true;

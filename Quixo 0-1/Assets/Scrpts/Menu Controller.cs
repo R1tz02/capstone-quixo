@@ -33,7 +33,7 @@ public class MenuController : MonoBehaviour
     public float moveDuration;
     public float rotaionDuration;
 
-    private bool aiFirst = false;
+    public bool aiFirst = false;
     private int aiDiff = 1;
 
     bool rotating;

@@ -86,12 +86,17 @@ public class PauseButton : MonoBehaviour
     {
         MenuController menuController = gameObject.GetComponent<MenuController>();
         Time.timeScale = 1;
+
         switch (gameMaster.GetComponent<GameCore>().currentGameMode)
         {
             case GameType.AIEasy:
                 menuController.NewEasyGame();
                 break;
+            case GameType.AIMedium:
+                menuController.NewMediumGame();
+                break;
             case GameType.AIHard:
+                menuController.NewHardGame();
                 break;
             case GameType.Local:
                 menuController.LocalGame();
@@ -120,7 +125,7 @@ public class PauseButton : MonoBehaviour
         {
             header.GetComponent<TMP_Text>().text = "Player " + playerNumber + " is requesting a draw";
         }
-        else if (Data.CURRENT_LANGUAGE == "Español")
+        else if (Data.CURRENT_LANGUAGE == "EspaÃ±ol")
         {
             header.GetComponent<TMP_Text>().text = "Jugador " + playerNumber + " solicita un empate";
         }

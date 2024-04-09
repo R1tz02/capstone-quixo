@@ -79,12 +79,15 @@ public class AiPauseButton : MonoBehaviour
         switch (gameMaster.GetComponent<AiGameCore>().currentGameMode)
         {
             case GameType.AIEasy:
+                menuController.aiFirst = gameMaster.GetComponent<AiGameCore>().aiFirst;
                 menuController.NewEasyGame();
                 break;
             case GameType.AIHard:
+                menuController.aiFirst = gameMaster.GetComponent<AiGameCore>().aiFirst;
                 menuController.NewHardGame();
                 break;
             case GameType.AIMedium:
+                menuController.aiFirst = gameMaster.GetComponent<AiGameCore>().aiFirst;
                 menuController.NewMediumGame();
                 break;
         }
