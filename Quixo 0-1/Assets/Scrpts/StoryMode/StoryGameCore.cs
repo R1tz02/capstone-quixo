@@ -177,6 +177,7 @@ public class StoryGameCore : MonoBehaviour
 
     private System.Collections.IEnumerator winAnimation()
     {
+        yield return new WaitForSeconds(2f);
         List<int> verPos = new List<int> { -2866, -2876, -2856, -2846, -2836 };
         List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
         List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
@@ -514,7 +515,7 @@ public class StoryGameCore : MonoBehaviour
     {
         buttonCanvas.enabled = false;
         GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
-        yield return new WaitForSeconds(4f); // 1 second delay
+        yield return new WaitForSeconds(6f); // 1 second delay
         chooseCanvasAndWinner(ref canvasType);
         SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
     }
