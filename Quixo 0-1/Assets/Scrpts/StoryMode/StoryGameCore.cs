@@ -24,7 +24,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
-    public int SMLvl = 1;
+    public int SMLvl = 3;
     public bool gamePaused;
     public bool gameOver = false;
     public bool aiMoving = false;
@@ -545,9 +545,14 @@ public class StoryGameCore : MonoBehaviour
                 }
                 break;
             case 3:
-                if (leftDiagonalWin() || rightDiagonalWin())
+                if (leftDiagonalWin())
                 {
                     winType = WinType.Leftdiagonal;
+                    StartCoroutine(DelayedCanvasSelection(SMLvl4)); return true;
+                }
+                else if (rightDiagonalWin())
+                {
+                    winType = WinType.Rightdiagonal;
                     StartCoroutine(DelayedCanvasSelection(SMLvl4)); return true;
                 }
                 break;
@@ -887,4 +892,32 @@ public class StoryGameCore : MonoBehaviour
 
         return aiBoard;
     }
+
+    void makeRightDiagonalWin()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            gameBoard[i, 4 - i].GetComponent<StoryPieceLogic>().player = 'X';
+            gameBoard[i, 4 - i].GetComponent<Renderer>().material = playerOneSpace;
+        }
+    }
+
+    void makeDiagonalWin()
+    {
+        for (int i = 1; i < 5; i++)
+        {
+            gameBoard[i, i].GetComponent<StoryPieceLogic>().player = 'X';
+            gameBoard[i, i].GetComponent<Renderer>().material = playerOneSpace;
+        }
+    }
+
+    private void Update()
+    {
+        //if (Input.GetKeyDown(KeyCode.D)) { makeDiagonalWin(); }
+        //if (Input.GetKeyDown(KeyCode.R)) { makeRightDiagonalWin(); }
+    }
+
+
+
 }
+
