@@ -116,8 +116,14 @@ public class PauseButton : MonoBehaviour
         GameObject header = drawReqScreen.transform.Find("Background/Header/Congrats").gameObject;
 
         int playerNumber = gameMaster.GetComponent<GameCore>().currentPlayer.piece == 'X' ? 1 : 2;
-
-        header.GetComponent<TMP_Text>().text = "Player " + playerNumber + " is requesting a draw";
+        if (Data.CURRENT_LANGUAGE == "English")
+        {
+            header.GetComponent<TMP_Text>().text = "Player " + playerNumber + " is requesting a draw";
+        }
+        else if (Data.CURRENT_LANGUAGE == "Español")
+        {
+            header.GetComponent<TMP_Text>().text = "Jugador " + playerNumber + " solicita un empate";
+        }
         drawReqScreen.enabled = true;
         gameMaster.GetComponent<GameCore>().gamePaused = true;
         pauseButton.gameObject.SetActive(false);
