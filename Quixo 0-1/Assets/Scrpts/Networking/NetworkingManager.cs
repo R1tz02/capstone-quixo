@@ -561,7 +561,7 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart";
             GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart";
         }
-        else if (Data.CURRENT_LANGUAGE == "Espa�ol")
+        else if (Data.CURRENT_LANGUAGE == "Español")
         {
             GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar";
             GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar";
