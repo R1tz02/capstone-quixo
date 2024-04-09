@@ -169,7 +169,14 @@ public class GameCore : MonoBehaviour
             // One second delay after rotation ends
             yield return new WaitForSeconds(2.75f);
 
-            //text.text = "The dragons fire consumes all!";
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                text.text = "The Dragons Fire Consumes All!";
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {   
+                text.text = "El Fuego Del Dragon Consume Todo!";
+            }
 
             SetSprite("graveLose", vikingWeapon);
             winScreen.enabled = true;
@@ -178,8 +185,14 @@ public class GameCore : MonoBehaviour
         {
             //vikingWeapon.sprite = lose;
             yield return new WaitForSeconds(6f);
-
-            //text.text = "You have forged through the fury!";
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                text.text = "You Have Forged Through the Fury!";
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {   
+                text.text = "Has Superado La Furia!";
+            }
 
             SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
             winScreen.enabled = true;

@@ -6550,6 +6550,7 @@ GameObject:
   - component: {fileID: 1066905899}
   - component: {fileID: 1066905901}
   - component: {fileID: 1066905900}
+  - component: {fileID: 1066905902}
   m_Layer: 5
   m_Name: openChatTxt
   m_TagString: Untagged
@@ -6596,7 +6597,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Open Chat
+  m_text: openChat_key
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0889351d61819b942b4e1b3fe5daf56b, type: 2}
   m_sharedMaterial: {fileID: 4675364707967612749, guid: 0889351d61819b942b4e1b3fe5daf56b,
@@ -6674,6 +6675,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1066905898}
   m_CullTransparentMesh: 1
+--- !u!114 &1066905902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066905898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f4cacc50bf2054488444ea2c503d2b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1077194493 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2260838521744650801, guid: c1ca82afce0fdf042a3bf8588fce1e88,
@@ -12422,6 +12435,7 @@ GameObject:
   - component: {fileID: 1832060956}
   - component: {fileID: 1832060958}
   - component: {fileID: 1832060957}
+  - component: {fileID: 1832060959}
   m_Layer: 5
   m_Name: closeChatTxt
   m_TagString: Untagged
@@ -12468,7 +12482,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Close Chat
+  m_text: closeChat_key
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0889351d61819b942b4e1b3fe5daf56b, type: 2}
   m_sharedMaterial: {fileID: 4675364707967612749, guid: 0889351d61819b942b4e1b3fe5daf56b,
@@ -12546,6 +12560,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832060955}
   m_CullTransparentMesh: 1
+--- !u!114 &1832060959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832060955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f4cacc50bf2054488444ea2c503d2b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1838329366
 GameObject:
   m_ObjectHideFlags: 0
