@@ -119,13 +119,27 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
     {
         NetworkedPlayer localPlayer = networkingManager.GetNetworkedPlayer(networkingManager._runner.LocalPlayer);
 
-        if (networkingManager.playerIndicator.text == "Player 1's turn")
+        if (networkingManager.playerIndicator.text == "Player 1's turn" || networkingManager.playerIndicator.text == "Turno del jugador 1")
         {
-            networkingManager.playerIndicator.text = "Player 2's turn";
+           if (Data.CURRENT_LANGUAGE == "English")
+            {
+                networkingManager.playerIndicator.text = "Player 2's turn";
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                networkingManager.playerIndicator.text = "Turno del jugador 2";
+            }
         }
         else
         {
-            networkingManager.playerIndicator.text = "Player 1's turn";
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                networkingManager.playerIndicator.text = "Player 1's turn";
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                networkingManager.playerIndicator.text = "Turno del jugador 1";
+            }
         }
 
         if (localPlayer.PlayerRef == sendingPlayerRef) return;

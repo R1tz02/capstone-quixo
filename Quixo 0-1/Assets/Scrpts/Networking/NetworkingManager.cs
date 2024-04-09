@@ -93,7 +93,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             game = GameObject.Find("GameMaster").GetComponent<GameCore>();
 
-            game.showError("Waiting for client to join...");
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                game.showError("Waiting for client to join...");
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                game.showError("Esperando que el cliente se una...");
+            }
 
             Time.timeScale = 1;
         }
@@ -158,8 +165,14 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
             }
 
             PlayerIndicatorCanvas.gameObject.SetActive(false);
-
-            game.showError("Client has disconnected. Waiting until they rejoin...");
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                game.showError("Client has disconnected. Waiting until they rejoin...");
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                game.showError("Cliente se ha desconectado. Espera a que vuelvan...");
+            }
 
             runner.Despawn(chat.GetComponent<NetworkObject>());
             Destroy(chat.gameObject);
@@ -533,7 +546,15 @@ public class NetworkingManager : MonoBehaviour, INetworkRunnerCallbacks
         currentTurn = 0;
         SetupGame(true);
         PlayerIndicatorCanvas.gameObject.SetActive(true);
-        playerIndicator.text = "Player 1's turn";
+
+        if (Data.CURRENT_LANGUAGE == "English")
+        {
+            playerIndicator.text = "Player 1's turn";
+        }
+        else if (Data.CURRENT_LANGUAGE == "Español")
+        {
+            playerIndicator.text = "Turno del jugador 1";
+        }
 
         if (Data.CURRENT_LANGUAGE == "English")
         {

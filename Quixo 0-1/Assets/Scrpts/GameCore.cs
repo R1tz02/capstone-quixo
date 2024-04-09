@@ -169,7 +169,7 @@ public class GameCore : MonoBehaviour
             // One second delay after rotation ends
             yield return new WaitForSeconds(2.75f);
 
-            text.text = "The dragons fire consumes all!";
+            //text.text = "The dragons fire consumes all!";
 
             SetSprite("graveLose", vikingWeapon);
             winScreen.enabled = true;
@@ -179,7 +179,7 @@ public class GameCore : MonoBehaviour
             //vikingWeapon.sprite = lose;
             yield return new WaitForSeconds(6f);
 
-            text.text = "You have forged through the fury!";
+            //text.text = "You have forged through the fury!";
 
             SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
             winScreen.enabled = true;

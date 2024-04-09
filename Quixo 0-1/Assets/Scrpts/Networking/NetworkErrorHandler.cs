@@ -24,23 +24,58 @@ public class NetworkErrorHandler : MonoBehaviour
 
         if (shutdownReason == ShutdownReason.DisconnectedByPluginLogic)
         {
-            LoadScene("Host disconnected");
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                LoadScene("Host disconnected");
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                LoadScene("Anfitrion desconectado");
+            }
         }
         else if (shutdownReason == ShutdownReason.GameNotFound)
         {
-            LoadScene("Game not found");
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                LoadScene("Game not found");
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                LoadScene("Juego no encontrado");
+            }
         }
         else if (shutdownReason == ShutdownReason.OperationCanceled)
         {
-            LoadScene("Client disconnected");
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                LoadScene("Client disconnected");
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                LoadScene("Cliente desconectado");
+            }
         }
         else if (shutdownReason == ShutdownReason.IncompatibleConfiguration)
         {
-            LoadScene("A draw request was in progress but a player left");
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                LoadScene("A draw request was in progress but a player left");
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                LoadScene("Una solicitud de empate estaba en progreso, pero un jugador se fue");
+            }
         }
         else
         {
-            LoadScene("A network error occurred");
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                LoadScene("A network error occurred");
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                LoadScene("Un error de red ocurrio");//
+            }
         }
 
     }
