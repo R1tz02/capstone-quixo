@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 public static class Data
 {
@@ -283,6 +281,12 @@ public static class Data
             {
                 {"English", "Lobby Code"},
                 {"Español", "Codigo de Lobby"}
+            }
+            },
+            { "storyEasy_key", new Dictionary<string, string>()
+            {
+                {"English", "Embark"},
+                {"Español", "Embarcar"}
             }
             },
             { "closeChat_key", new Dictionary<string, string>()
