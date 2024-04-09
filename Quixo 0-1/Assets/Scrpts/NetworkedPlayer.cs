@@ -104,7 +104,14 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
         if (playerTurnLocal == 2)
         {
             networkingManager.game.currentPlayer = networkingManager.game.p2;
-            networkingManager.playerIndicator.text = "Player 2's turn";
+            if (Data.CURRENT_LANGUAGE == "English")
+            {
+                networkingManager.playerIndicator.text = "Player 2's turn";
+            }
+            else if (Data.CURRENT_LANGUAGE == "Español")
+            {
+                networkingManager.playerIndicator.text = "Turno del jugador 2";
+            }
         }
         else
         {
