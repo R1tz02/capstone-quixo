@@ -537,6 +537,7 @@ public class TutGameCore : MonoBehaviour
         chosenPiece = piece;
         OnChosenPiece?.Invoke(fakeAI.row, fakeAI.col);
         shiftBoard(fakeMove.Item2, currentPlayer.piece);
+        await WaitFor(1100);
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -560,6 +561,7 @@ public class TutGameCore : MonoBehaviour
         chosenPiece = piece;
         OnChosenPiece?.Invoke(fakeAI.row, fakeAI.col);
         shiftBoard(fakeMove.Item2, currentPlayer.piece);
+        await WaitFor(1100);
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -594,6 +596,7 @@ public class TutGameCore : MonoBehaviour
         chosenPiece = piece;
         OnChosenPiece?.Invoke(fakeMove.Item1.row, fakeMove.Item1.col);
         shiftBoard(fakeMove.Item2, 'O');
+        await WaitFor(1100);
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -629,6 +632,7 @@ public class TutGameCore : MonoBehaviour
         chosenPiece = piece;
         OnChosenPiece?.Invoke(fakeMove.Item1.row, fakeMove.Item1.col);
         shiftBoard(fakeMove.Item2, 'O');
+        await WaitFor(1100);
         if (currentPlayer.piece == 'X')
         {
             currentPlayer = p2;
@@ -741,17 +745,19 @@ public class TutGameCore : MonoBehaviour
     //checks to see if the passed piece is a selectable piece for the player to choose
     public bool validPiece(int row, int col)
     {
-        if ( gameOver)
+        if ( gameOver || (aiMoving && aiTurn))
         {
             return false;
         }
         TutPieceLogic piece = gameBoard[row, col].GetComponent<TutPieceLogic>();
+        Debug.LogError(currentPlayer.piece);
         if (currentPlayer.piece == p1.piece)
         {
                 List<(Piece, char)> tutMoves = allowedPieces();
                 if (piece.row == tutMoves[usrCounter].Item1.row && piece.col == tutMoves[usrCounter].Item1.col)
                 {
-                    chosenPiece = piece;
+                Debug.LogError("Fernando's Mother");
+                   chosenPiece = piece;
                     OnChosenPiece?.Invoke(row, col);
                     return true;
                 }

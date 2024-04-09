@@ -30,7 +30,7 @@ public class TutPieceLogic : MonoBehaviour
             StartCoroutine(game.MovePieceSmoothly(selectedPiece, new Vector3(selectedPiece.transform.position.x, 96f, selectedPiece.transform.position.z)));
         }
 
-        if (game.validPiece(row, col) && game.gamePaused == false)
+        if (game.validPiece(row, col) && game.gamePaused == false && game.aiMoving == false)
         {
             GameObject menu = GameObject.Find("Menu Manager");
             if (menu.GetComponent<TutPauseButton>().stepOne.enabled == true)
