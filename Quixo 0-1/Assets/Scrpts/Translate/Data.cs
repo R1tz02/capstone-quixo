@@ -189,8 +189,8 @@ public static class Data
             },
             { "step2_key", new Dictionary<string, string>()
             {
-                {"English", "These arrows indicate which direction a piece can move. When an arrow is red, it indicates the piece can move that direction. Select the red arrow or use the coresponding arrow key" },
-                {"Español", "Estas flechas indican en que direccion puede moverse una pieza. Cuando una flecha es roja, indica que la pieza puede moverse en esa direccion. Seleccione la flecha roja o use la tecla de flecha correspondiente" }
+                {"English", "These arrows indicate which direction a piece can move. When an arrow is gold, it indicates the piece can move that direction. Select the gold arrow or use the coresponding arrow key" },
+                {"Español", "Estas flechas indican en que direccion puede moverse una pieza. Cuando una flecha es dorada, indica que la pieza puede moverse en esa direccion. Seleccione la flecha dorada o use la tecla de flecha correspondiente" }
             }
             },
             { "offerDraw_key", new Dictionary<string, string>()
