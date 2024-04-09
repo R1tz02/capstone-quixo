@@ -226,18 +226,18 @@ public class StoryGameCore : MonoBehaviour
         if (winType == WinType.vertical)
         {
             SoundFXManage.Instance.PlaySoundFXClip(swordWin, transform, 1f);
-            GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 135, 0), Quaternion.identity);
+            GameObject sword = Instantiate(swordPrefab, new Vector3(-2815, 135, 0), Quaternion.identity);
             Vector3 scale = sword.transform.localScale;
-            scale.y = 50f;
-            scale.x = 50;
-            scale.z = 50;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
             sword.transform.localScale = scale;
             sword.transform.Rotate(90.0f, 0f, 90.0f, Space.Self);
         }
         if (winType == WinType.Leftdiagonal)
         {
             SoundFXManage.Instance.PlaySoundFXClip(axeWin, transform, 1f);
-            GameObject axe = Instantiate(axePrefab, new Vector3(-2827, 140, 29), Quaternion.identity);
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2847, 140, 5), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
             scale.y = 90;
             scale.x = 90;
@@ -248,18 +248,18 @@ public class StoryGameCore : MonoBehaviour
         if (winType == WinType.horizontal)
         {
             SoundFXManage.Instance.PlaySoundFXClip(spearWin, transform, 1f);
-            GameObject spear = Instantiate(spearPrefab, new Vector3(-2851, 140, -79), Quaternion.identity);
+            GameObject spear = Instantiate(spearPrefab, new Vector3(-2851, 140, 18), Quaternion.identity);
             Vector3 scale = spear.transform.localScale;
-            scale.y = 70f;
-            scale.x = 70f;
-            scale.z = 70f;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
             spear.transform.localScale = scale;
             spear.transform.Rotate(90f, 0, 0, Space.Self);
         }
         if (winType == WinType.Rightdiagonal)
         {
             SoundFXManage.Instance.PlaySoundFXClip(axeWin, transform, 1f);
-            GameObject axe = Instantiate(axePrefab, new Vector3(-2817, 140, -36), Quaternion.identity);
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2844, 140, -2), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
             scale.y = 90;
             scale.x = 90;

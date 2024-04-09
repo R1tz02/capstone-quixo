@@ -9146,11 +9146,10 @@ MonoBehaviour:
   sword: {fileID: 0}
   axe: {fileID: 0}
   lose: {fileID: 0}
-  swordPrefab: {fileID: 8887224701790690321, guid: 3a078232abb58e049ac7e99e15aa5575,
+  swordPrefab: {fileID: 1867380768938526, guid: aef8341ab1063944b9738039ae3e1b63,
     type: 3}
-  axePrefab: {fileID: 3004864123894120851, guid: 103991a4cea9ec247851053c49e3eb4a,
-    type: 3}
-  spearPrefab: {fileID: 969205022638321708, guid: d2ca7759bb942c34bbcf6cd674312110,
+  axePrefab: {fileID: 1030757382248632, guid: c44d28895a94e954ebb7354676ca7853, type: 3}
+  spearPrefab: {fileID: 1431400907415248, guid: 53b6995f335e57a409a9e613226c79ed,
     type: 3}
   loseScreen: {fileID: 83578772}
   winScreen: {fileID: 2039624279}
