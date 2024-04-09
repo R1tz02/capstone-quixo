@@ -677,14 +677,19 @@ public class AiGameCore : MonoBehaviour
             aiButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won())
             {
-                if(currentPlayer.piece == 'X' && aiFirst == false)
+                if (aiFirst && currentPlayer.piece == 'X')
                 {
-                    usrWin();
+                    AIWin();
+                    return true;
+                }
+                else if (!aiFirst && currentPlayer.piece == 'O')
+                {
+                    AIWin();
                     return true;
                 }
                 else
                 {
-                    AIWin();
+                    usrWin();
                     return true;
                 }
             }
@@ -760,7 +765,11 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
-                if(currentPlayer.piece == 'O')
+                if (aiFirst && currentPlayer.piece == 'X')
+                {
+                    AIWin();
+                }
+                else if (!aiFirst && currentPlayer.piece == 'O')
                 {
                     AIWin();
                 }
@@ -768,7 +777,6 @@ public class AiGameCore : MonoBehaviour
                 {
                     usrWin();
                 }
-                
             }
             else if (currentPlayer.piece == 'X')
             {
@@ -799,7 +807,11 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
-                if (currentPlayer.piece == 'O')
+                if (aiFirst && currentPlayer.piece == 'X')
+                {
+                    AIWin();
+                }
+                else if (!aiFirst && currentPlayer.piece == 'O')
                 {
                     AIWin();
                 }
@@ -836,7 +848,11 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
-                if (currentPlayer.piece == 'O')
+                if (aiFirst && currentPlayer.piece == 'X')
+                {
+                    AIWin();
+                }
+                else if (!aiFirst && currentPlayer.piece == 'O')
                 {
                     AIWin();
                 }
