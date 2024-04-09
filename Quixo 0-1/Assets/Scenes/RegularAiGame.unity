@@ -2307,6 +2307,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f4cacc50bf2054488444ea2c503d2b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &328025968 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2081044094258837862, guid: 25faf3cad2629954db2939ba813bf8a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 50642303}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &365744726
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2925,10 +2931,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PauseButton, Assembly-CSharp
+      - m_Target: {fileID: 789017402}
+        m_TargetAssemblyTypeName: AiPauseButton, Assembly-CSharp
         m_MethodName: requestDraw
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5454,7 +5460,7 @@ MonoBehaviour:
   drawAccepted: {fileID: 365744727}
   drawDenied: {fileID: 759142743}
   firstOrSecond: {fileID: 0}
-  directionsAndDraw: {fileID: 0}
+  directionsAndDraw: {fileID: 328025968}
 --- !u!114 &789017403
 MonoBehaviour:
   m_ObjectHideFlags: 0
