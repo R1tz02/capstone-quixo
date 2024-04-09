@@ -24,7 +24,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
-    public int SMLvl = 1;
+    public int SMLvl = 3;
     public bool gamePaused;
     public bool gameOver = false;
     public bool aiMoving = false;
@@ -226,7 +226,7 @@ public class StoryGameCore : MonoBehaviour
         if (winType == WinType.vertical)
         {
             SoundFXManage.Instance.PlaySoundFXClip(swordWin, transform, 1f);
-            GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
+            GameObject sword = Instantiate(swordPrefab, new Vector3(-2815, 135, 0), Quaternion.identity);
             Vector3 scale = sword.transform.localScale;
             scale.y = 100f;
             scale.x = 100f;
@@ -237,33 +237,33 @@ public class StoryGameCore : MonoBehaviour
         if (winType == WinType.Leftdiagonal)
         {
             SoundFXManage.Instance.PlaySoundFXClip(axeWin, transform, 1f);
-            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2847, 140, 5), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
-            scale.y = 80;
-            scale.x = 80;
-            scale.z = 80;
+            scale.y = 90;
+            scale.x = 90;
+            scale.z = 90;
             axe.transform.localScale = scale;
             axe.transform.Rotate(90.0f, 0, 135.0f, Space.Self);
         }
         if (winType == WinType.horizontal)
         {
             SoundFXManage.Instance.PlaySoundFXClip(spearWin, transform, 1f);
-            GameObject spear = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
+            GameObject spear = Instantiate(spearPrefab, new Vector3(-2851, 140, 18), Quaternion.identity);
             Vector3 scale = spear.transform.localScale;
-            scale.y = 50f;
-            scale.x = 50f;
-            scale.z = 50f;
+            scale.y = 100f;
+            scale.x = 100f;
+            scale.z = 100f;
             spear.transform.localScale = scale;
-            spear.transform.Rotate(0f, 0, 0, Space.Self);
+            spear.transform.Rotate(90f, 0, 0, Space.Self);
         }
         if (winType == WinType.Rightdiagonal)
         {
             SoundFXManage.Instance.PlaySoundFXClip(axeWin, transform, 1f);
-            GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
+            GameObject axe = Instantiate(axePrefab, new Vector3(-2844, 140, -2), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
-            scale.y = 80;
-            scale.x = 80;
-            scale.z = 80;
+            scale.y = 90;
+            scale.x = 90;
+            scale.z = 90;
             axe.transform.localScale = scale;
             axe.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
         }
@@ -545,9 +545,14 @@ public class StoryGameCore : MonoBehaviour
                 }
                 break;
             case 3:
-                if (leftDiagonalWin() || rightDiagonalWin())
+                if (leftDiagonalWin())
                 {
                     winType = WinType.Leftdiagonal;
+                    StartCoroutine(DelayedCanvasSelection(SMLvl4)); return true;
+                }
+                else if (rightDiagonalWin())
+                {
+                    winType = WinType.Rightdiagonal;
                     StartCoroutine(DelayedCanvasSelection(SMLvl4)); return true;
                 }
                 break;
@@ -867,4 +872,32 @@ public class StoryGameCore : MonoBehaviour
 
         return aiBoard;
     }
+
+    void makeRightDiagonalWin()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            gameBoard[i, 4 - i].GetComponent<StoryPieceLogic>().player = 'X';
+            gameBoard[i, 4 - i].GetComponent<Renderer>().material = playerOneSpace;
+        }
+    }
+
+    void makeDiagonalWin()
+    {
+        for (int i = 1; i < 5; i++)
+        {
+            gameBoard[i, i].GetComponent<StoryPieceLogic>().player = 'X';
+            gameBoard[i, i].GetComponent<Renderer>().material = playerOneSpace;
+        }
+    }
+
+    private void Update()
+    {
+        //if (Input.GetKeyDown(KeyCode.D)) { makeDiagonalWin(); }
+        //if (Input.GetKeyDown(KeyCode.R)) { makeRightDiagonalWin(); }
+    }
+
+
+
 }
+

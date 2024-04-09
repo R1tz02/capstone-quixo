@@ -1040,8 +1040,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3681,7 +3681,7 @@ PrefabInstance:
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_fontSize
-      value: 50
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -3692,7 +3692,7 @@ PrefabInstance:
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_fontSizeBase
-      value: 50
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -5523,6 +5523,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 0fdb4c834b7c7dc43a8427f0e152ca5e, type: 2}
+  masterSlider: {fileID: 0}
+  musicSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
 --- !u!4 &772207345
 Transform:
   m_ObjectHideFlags: 0
@@ -7409,10 +7412,10 @@ MonoBehaviour:
   axeWin: {fileID: 8300000, guid: 4207232f52b252b44ae111e885340432, type: 3}
   hammerHit: {fileID: 8300000, guid: 75dc8b06fb43b9346b740a880f30620a, type: 3}
   currentGameMode: 0
-  swordPrefab: {fileID: 1378010598903046, guid: 431cd727a83ed3849b04c235677e13ae,
+  swordPrefab: {fileID: 1867380768938526, guid: aef8341ab1063944b9738039ae3e1b63,
     type: 3}
-  axePrefab: {fileID: 1971897880613298, guid: 84490d26c43499e45b02581945b0a67f, type: 3}
-  spearPrefab: {fileID: 3140830376302814010, guid: e8573012f5a2b24459ddc6d90fcf0273,
+  axePrefab: {fileID: 1030757382248632, guid: c44d28895a94e954ebb7354676ca7853, type: 3}
+  spearPrefab: {fileID: 1431400907415248, guid: 53b6995f335e57a409a9e613226c79ed,
     type: 3}
   CameraPosition: {fileID: 0}
   loseScreen: {fileID: 83578772}

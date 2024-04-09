@@ -310,13 +310,13 @@ public static class Data
             { "SMLIntroTwo_key", new Dictionary<string, string>()
             {
                 {"English", "Seems like you got your chops on you. Well we aren't out of this yet. We need spears on the front line pronto! (You and the AI can only win using the horizontal pattern)"},
-                {"Español", "Parece que traes tus habilidades. Bueno, aún no hemos salido de esto. ¡Necesitamos lanzas en primera línea pronto! (Solo se puede ganar usando el patrón horizontal)"} 
+                {"Español", "Parece que traes tus habilidades. Bueno, aún no hemos salido de esto. ¡Necesitamos lanzas en primera linea pronto! (Solo se puede ganar usando el patron horizontal)"} 
             }
             },
             { "SMLIntroThree_key", new Dictionary<string, string>()
             {
                 {"English", "Keep this up and you'll be the next smith for Odin in Asgard. We need new axes for our Berserkers. You up for the task? (You and the AI can only win using a diagonal patten)"},
-                {"Español", "Sigue así y seras el próximo herrero de Odin en Asgard. Necesitamos nuevas hachas para nuestros Beserkers. Estás preparado para la tarea? (Solo puedes ganar usando un patron diagonal)"} 
+                {"Español", "Sigue asi y seras el proximo herrero de Odin en Asgard. Necesitamos nuevas hachas para nuestros Beserkers. Estas preparado para la tarea? (Solo puedes ganar usando un patron diagonal)"} 
             }
             },
             { "SMLIntroFour_key", new Dictionary<string, string>()
@@ -329,6 +329,12 @@ public static class Data
             {
                 {"English", "Learning Mode"},
                 {"Español", "Modo de Aprendizaje"} 
+            } 
+            },
+            { "storymodeEnd_key", new Dictionary<string, string>()
+            {
+                {"English", "The fury of the dragons have been defeated thanks to your smithing. The halls of Valhalla will sing of your might craftsmanship in ages to come. You are now a true forge master!"},
+                {"Español", "La furia de los dragones ha sido derrotada gracias a tu herrería. Los pasillos del Valhalla cantaran sobre tu poderosa artesania en los siglos venideros. ¡Ahora eres un verdadero maestro de la forja!"} 
             } 
             },
         };
