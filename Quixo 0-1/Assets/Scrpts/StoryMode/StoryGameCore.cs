@@ -182,7 +182,7 @@ public class StoryGameCore : MonoBehaviour
         List<int> horPos = new List<int> { -10, -20, 0, 10, 20 };
         List<(int, int)> leftDiagPos = new List<(int, int)> { (-2866, -10), (-2876, -20), (-2856, 0), (-2846, 10), (-2836, 20) };
         List<(int, int)> rightDiagPos = new List<(int, int)> { (-2866, 10), (-2876, 20), (-2856, 0), (-2846, -10), (-2836, -20) };
-        List<(int, int)> helmetPos = new List<(int, int)> { (-2856, -10), (-2866, -20), (-2856, 10), (-2846, -10), (-2846, -10) };
+        List<(int, int)> helmetPos = new List<(int, int)> { (-2866, 0), (-2856, -10), (-2846, -10),  (-2856, 10), (-2846, 10) };
         List<StoryPieceLogic> listOfPieces = new List<StoryPieceLogic>();
 
         for (int i = 0; i < 5; i++)
@@ -492,7 +492,7 @@ public class StoryGameCore : MonoBehaviour
 
         if ((helmetPart1 == helmetPart2 && helmetPart2 == helmetPart3 && helmetPart3 == helmetPart4 && helmetPart4 == helmetPart5) && helmetPart5!= '-')
         {
-            if (p1.piece == helmetPart1)
+            if(helmetPart1 == 'X')
             {
                 p1.won = true;
                 currentPlayer = p1;
@@ -521,7 +521,7 @@ public class StoryGameCore : MonoBehaviour
     {
         buttonCanvas.enabled = false;
         GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
-        yield return new WaitForSeconds(6f); // 1 second delay
+        yield return new WaitForSeconds(7f); // 1 second delay
         chooseCanvasAndWinner(ref canvasType);
         SoundFXManage.Instance.PlaySoundFXClip(victory, transform, 1f);
     }
@@ -676,6 +676,23 @@ public class StoryGameCore : MonoBehaviour
             gamePaused = false;
 
     }
+
+    public void AIWin()
+    {
+        buttonCanvas.enabled = false;
+        GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
+        StartCoroutine(RotateCamera());
+        highlightPieces();
+        Debug.Log(currentPlayer.piece + " won!");
+    }
+
+    public void usrWin()
+    {
+        StartCoroutine(winAnimation());
+        highlightPieces();
+        Debug.Log(currentPlayer.piece + " won!");
+    }
+
     public bool makeMove(char c)
     {
         if (gamePaused)
@@ -688,12 +705,16 @@ public class StoryGameCore : MonoBehaviour
             buttonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won())
             {
-                //Time.timeScale = 0;
-                //gamePaused = true;
-                StartCoroutine(winAnimation());
-                highlightPieces();
-                Debug.Log(currentPlayer.piece + " won!");
-                return true;
+                if (currentPlayer.piece == 'X')
+                {
+                    usrWin();
+                    return true;
+                }
+                else
+                {
+                    AIWin();
+                    return true;
+                }
             }
             //F: if not won, we change the currentPlayer
             else if (currentPlayer.piece == 'X')
@@ -709,53 +730,12 @@ public class StoryGameCore : MonoBehaviour
 
             if (playAI)
             {
-                if (playHard)
-                {
-                    HardAIMove(hardAI);
-                }
-                else
-                {
                     EasyAIMove(easyAI);
-                }
-
             }
 
             return true;
         }
         return false;
-    }
-
-    async void HardAIMove(HardAI hardAI)
-    {
-        Debug.Log("Jack's mother");
-        char[,] board = translateBoard();
-        TimeSpan timeLimit = TimeSpan.FromSeconds(4);
-        (Piece, char) move = await Task.Run(() => hardAI.IterativeDeepening(board, timeLimit, false, SMLvl));
-
-        await WaitFor();
-        
-        validPiece(move.Item1.row, move.Item1.col);
-        shiftBoard(move.Item2, currentPlayer.piece);
-        Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
-        if (won())
-        {
-            //Time.timeScale = 0;
-            //gamePaused = true;
-            buttonCanvas.enabled = false;
-            GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
-            //StartCoroutine(winAnimation());
-            StartCoroutine(RotateCamera());
-            highlightPieces();
-            Debug.Log(currentPlayer.piece + " won!");
-        }
-        else if (currentPlayer.piece == 'X')
-        {
-            currentPlayer = p2;
-        }
-        else
-        {
-            currentPlayer = p1;
-        }
     }
 
     async void EasyAIMove(EasyAI easyAI)
@@ -772,14 +752,14 @@ public class StoryGameCore : MonoBehaviour
         Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
         if (won())
         {
-            //Time.timeScale = 0;
-            //gamePaused = true;
-            buttonCanvas.enabled = false;
-            GameObject.Find("Menu Manager").GetComponent<StoryPauseButton>().pauseButton.gameObject.SetActive(false);
-            //StartCoroutine(winAnimation());
-            StartCoroutine(RotateCamera());
-            highlightPieces();
-            Debug.Log(currentPlayer.piece + " won!");
+            if(currentPlayer.piece == 'O')
+            {
+                AIWin();
+            }
+            else
+            {
+                usrWin();
+            }
         }
         else if (currentPlayer.piece == 'X')
         {

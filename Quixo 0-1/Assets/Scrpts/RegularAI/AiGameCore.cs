@@ -643,6 +643,26 @@ public class AiGameCore : MonoBehaviour
             gamePaused = false;
     }
 
+    public void AIWin()
+    {
+        buttonsCanvas.enabled = false;
+        GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+        highlightPieces();
+        StartCoroutine(RotateCamera(false));
+        gamePaused = true;
+        Debug.Log(currentPlayer.piece + " won!");
+    }
+
+    public void usrWin()
+    {
+        StartCoroutine(winAnimation());
+        highlightPieces();
+        buttonsCanvas.enabled = false;
+        GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
+        StartCoroutine(RotateCamera(true));
+        gamePaused = true;
+        Debug.Log(currentPlayer.piece + " won!");
+    }
 
     public bool makeMove(char c)
     {
@@ -650,24 +670,23 @@ public class AiGameCore : MonoBehaviour
         {
             return false;
         }
-
-
-       
+               
         if (validPiece(chosenPiece.row, chosenPiece.col) && moveOptions(chosenPiece.row, chosenPiece.col).Contains(c))
         {
             shiftBoard(c, currentPlayer.piece);
             aiButtonHandler.changeArrowsBack(); //F: change arrows back for every new piece selected
             if (won())
             {
-                StartCoroutine(winAnimation());
-                highlightPieces();
-                buttonsCanvas.enabled = false;
-                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                StartCoroutine(RotateCamera(true));
-
-                gamePaused = true;
-                Debug.Log(currentPlayer.piece + " won!");
-                return true;
+                if(currentPlayer.piece == 'X')
+                {
+                    usrWin();
+                    return true;
+                }
+                else
+                {
+                    AIWin();
+                    return true;
+                }
             }
             //F: if not won, we change the currentPlayer
             else if (currentPlayer.piece == 'X') {
@@ -741,15 +760,15 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
-               // StartCoroutine(winAnimation());
-                highlightPieces();
-                buttonsCanvas.enabled = false;
-                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                gamePaused = true;
-
-                StartCoroutine(RotateCamera(false));
-
-                Debug.Log(currentPlayer.piece + " won!");
+                if(currentPlayer.piece == 'O')
+                {
+                    AIWin();
+                }
+                else
+                {
+                    usrWin();
+                }
+                
             }
             else if (currentPlayer.piece == 'X')
             {
@@ -780,14 +799,14 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
-                buttonsCanvas.enabled = false;
-                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                highlightPieces();
-
-                StartCoroutine(RotateCamera(false));
-
-                gamePaused = true;
-                Debug.Log(currentPlayer.piece + " won!");
+                if (currentPlayer.piece == 'O')
+                {
+                    AIWin();
+                }
+                else
+                {
+                    usrWin();
+                }
             }
             else if (currentPlayer.piece == 'X')
             {
@@ -817,14 +836,14 @@ public class AiGameCore : MonoBehaviour
             Debug.Log("Row: " + move.Item1.row + "Col: " + move.Item1.col + ":" + move.Item2);
             if (won())
             {
-                buttonsCanvas.enabled = false;
-                GameObject.Find("Menu Manager").GetComponent<AiPauseButton>().pauseButton.gameObject.SetActive(false);
-                //StartCoroutine(winAnimation());
-                highlightPieces();
-                StartCoroutine(RotateCamera(false));
-
-                gamePaused = true;
-                Debug.Log(currentPlayer.piece + " won!");
+                if (currentPlayer.piece == 'O')
+                {
+                    AIWin();
+                }
+                else
+                {
+                    usrWin();
+                }
             }
             else if (currentPlayer.piece == 'X')
             {
