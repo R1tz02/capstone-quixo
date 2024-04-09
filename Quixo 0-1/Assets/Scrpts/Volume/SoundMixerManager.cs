@@ -14,15 +14,27 @@ public class SoundMixerManager : MonoBehaviour
     {
         audioMixer.GetFloat("masterVolume", out float masterVolume);
         masterLevel = Mathf.Pow(10f, masterVolume / 20);
-        masterSlider.value = masterLevel;
+
+        if (masterSlider != null)
+        {
+            masterSlider.value = masterLevel;
+        }
 
         audioMixer.GetFloat("soundFXVolume", out float soundFXVolume);
         sfxLevel = Mathf.Pow(10f, soundFXVolume / 20);
-        sfxSlider.value = sfxLevel;
+
+        if (sfxSlider != null)
+        {
+            sfxSlider.value = sfxLevel;
+        }
 
         audioMixer.GetFloat("musicVolume", out float musicVolume);
         musicLevel = Mathf.Pow(10f, musicVolume / 20);
-        musicSlider.value = musicLevel;
+
+        if (musicSlider != null)
+        {
+            musicSlider.value = musicLevel;
+        }
     }
 
     public void SetMasterVolume(float level)
