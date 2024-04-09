@@ -1040,8 +1040,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3681,7 +3681,7 @@ PrefabInstance:
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_fontSize
-      value: 50
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -3692,7 +3692,7 @@ PrefabInstance:
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
       propertyPath: m_fontSizeBase
-      value: 50
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8519331947677676479, guid: a1343ae76a9c0c24eabe5270144fd379,
         type: 3}
@@ -5523,6 +5523,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 0fdb4c834b7c7dc43a8427f0e152ca5e, type: 2}
+  masterSlider: {fileID: 0}
+  musicSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
 --- !u!4 &772207345
 Transform:
   m_ObjectHideFlags: 0
