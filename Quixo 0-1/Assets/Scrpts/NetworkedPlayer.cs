@@ -211,7 +211,7 @@ public class NetworkedPlayer : NetworkBehaviour, IPlayer
             GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart (1/2)";
             GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Restart (1/2)";
         }
-        else if (Data.CURRENT_LANGUAGE == "Espa�ol")
+        else if (Data.CURRENT_LANGUAGE == "Español")
         {
             GameObject.Find("tiePlayAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar (1/2)";
             GameObject.Find("playAgainTxt").gameObject.GetComponent<TMP_Text>().text = "Reiniciar (1/2)";
