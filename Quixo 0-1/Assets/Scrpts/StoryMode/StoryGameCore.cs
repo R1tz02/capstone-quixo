@@ -24,7 +24,7 @@ public class StoryGameCore : MonoBehaviour
     public IPlayer currentPlayer;
     public IPlayer p1;
     public IPlayer p2;
-    public int SMLvl = 3;
+    public int SMLvl = 1;
     public bool gamePaused;
     public bool gameOver = false;
     public bool aiMoving = false;
@@ -63,6 +63,7 @@ public class StoryGameCore : MonoBehaviour
     public GameObject swordPrefab;
     public GameObject axePrefab;
     public GameObject spearPrefab;
+    public GameObject helmetPrefab;
 
     //Event for sending chosen piece to the NetworkingManager
     public delegate void ChosenPieceEvent(int row, int col);
@@ -266,6 +267,17 @@ public class StoryGameCore : MonoBehaviour
             scale.z = 90;
             axe.transform.localScale = scale;
             axe.transform.Rotate(-90.0f, 0, 135.0f, Space.Self);
+        }
+        if (winType == WinType.helmet)
+        {
+            SoundFXManage.Instance.PlaySoundFXClip(axeWin, transform, 1f);
+            GameObject helmet = Instantiate(helmetPrefab, new Vector3(-2851, 140, -0), Quaternion.identity);
+            Vector3 scale = helmet.transform.localScale;
+            scale.y = 100;
+            scale.x = 100;
+            scale.z = 100;
+            helmet.transform.localScale = scale;
+            helmet.transform.Rotate(-45f, 90, 0f, Space.Self);
         }
         gameOver = true;
         
