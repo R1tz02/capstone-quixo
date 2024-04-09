@@ -360,8 +360,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8172,11 +8172,10 @@ MonoBehaviour:
   hammerHit: {fileID: 8300000, guid: 75dc8b06fb43b9346b740a880f30620a, type: 3}
   buttonCanvas: {fileID: 390640822}
   aiTurn: 0
-  swordPrefab: {fileID: 8887224701790690321, guid: 3a078232abb58e049ac7e99e15aa5575,
+  swordPrefab: {fileID: 1867380768938526, guid: aef8341ab1063944b9738039ae3e1b63,
     type: 3}
-  axePrefab: {fileID: 3004864123894120851, guid: 103991a4cea9ec247851053c49e3eb4a,
-    type: 3}
-  spearPrefab: {fileID: 969205022638321708, guid: d2ca7759bb942c34bbcf6cd674312110,
+  axePrefab: {fileID: 1030757382248632, guid: c44d28895a94e954ebb7354676ca7853, type: 3}
+  spearPrefab: {fileID: 1431400907415248, guid: 53b6995f335e57a409a9e613226c79ed,
     type: 3}
 --- !u!1001 &1414145136
 PrefabInstance:
