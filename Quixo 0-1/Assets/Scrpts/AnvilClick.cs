@@ -64,6 +64,7 @@ public class AnvilClick : MonoBehaviour
         {
             UpdateClickStatus(true);
             SoundFXManage.Instance.PlaySoundFXClip(objectClick, transform, 1f);
+
             GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
             GameObject.Find("Game Manager").GetComponent<MenuController>().overlayCanvas.enabled = false;
             if (!rotating)
@@ -82,6 +83,9 @@ public class AnvilClick : MonoBehaviour
         UpdateClickStatus(true);
         if (currentCam.transform.position != endMarker.position && !GameObject.Find("Game Manager").GetComponent<MenuController>().isError)
         {
+            GameObject.Find("Game Manager").GetComponent<MenuController>().quickCanvas.enabled = false;
+            GameObject.Find("Game Manager").GetComponent<MenuController>().storyCanvas.enabled = false;
+            GameObject.Find("Game Manager").GetComponent<MenuController>().multiCanvas.enabled = false;
             GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
             GameObject.Find("Game Manager").GetComponent<MenuController>().overlayCanvas.enabled = false;
             if (!rotating)
@@ -109,6 +113,7 @@ public class AnvilClick : MonoBehaviour
         currentCam.transform.position = endMarker.position;
         currentCanvas.enabled = true;
         moving = false;
+        GameObject.Find("Game Manager").GetComponent<MenuController>().labelCanvas.enabled = false;
     }
     IEnumerator RotateDown()
     {
