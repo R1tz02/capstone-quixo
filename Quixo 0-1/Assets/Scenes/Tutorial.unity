@@ -7909,6 +7909,10 @@ MonoBehaviour:
   victory: {fileID: 8300000, guid: 20a79c634d4a1164a8dc71a3967f2056, type: 3}
   defeat: {fileID: 8300000, guid: f85bbb4d7626e954b8df84a1beda2669, type: 3}
   growl: {fileID: 8300000, guid: da5648ae720be3945b68e45239283407, type: 3}
+  swordWin: {fileID: 8300000, guid: 7859669e153e84745811a8317544d789, type: 3}
+  spearWin: {fileID: 8300000, guid: dc5db11298308f54c99468896a422740, type: 3}
+  axeWin: {fileID: 8300000, guid: 4207232f52b252b44ae111e885340432, type: 3}
+  hammerHit: {fileID: 8300000, guid: 75dc8b06fb43b9346b740a880f30620a, type: 3}
   buttonCanvas: {fileID: 1850532870}
   aiTurn: 0
   swordPrefab: {fileID: 1378010598903046, guid: 431cd727a83ed3849b04c235677e13ae,

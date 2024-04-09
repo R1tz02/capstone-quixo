@@ -37,6 +37,10 @@ public class StoryGameCore : MonoBehaviour
     [SerializeField] private AudioClip victory;
     [SerializeField] private AudioClip defeat;
     [SerializeField] private AudioClip growl;
+    [SerializeField] private AudioClip swordWin;
+    [SerializeField] private AudioClip spearWin;
+    [SerializeField] private AudioClip axeWin;
+    [SerializeField] private AudioClip hammerHit;
 
     public Canvas loseScreen;
     public Canvas winScreen;
@@ -182,6 +186,7 @@ public class StoryGameCore : MonoBehaviour
 
         for (int i = 0; i < 5; i++)
         {
+            SoundFXManage.Instance.PlaySoundFXClip(hammerHit, transform, 1f);
             StoryPieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<StoryPieceLogic>();
             listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
@@ -214,6 +219,7 @@ public class StoryGameCore : MonoBehaviour
         }
         if (winType == WinType.vertical)
         {
+            SoundFXManage.Instance.PlaySoundFXClip(swordWin, transform, 1f);
             GameObject sword = Instantiate(swordPrefab, new Vector3(-2800, 140, 0), Quaternion.identity);
             Vector3 scale = sword.transform.localScale;
             scale.y = 100f;
@@ -224,6 +230,7 @@ public class StoryGameCore : MonoBehaviour
         }
         if (winType == WinType.Leftdiagonal)
         {
+            SoundFXManage.Instance.PlaySoundFXClip(axeWin, transform, 1f);
             GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, 45), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
             scale.y = 80;
@@ -234,6 +241,7 @@ public class StoryGameCore : MonoBehaviour
         }
         if (winType == WinType.horizontal)
         {
+            SoundFXManage.Instance.PlaySoundFXClip(spearWin, transform, 1f);
             GameObject spear = Instantiate(spearPrefab, new Vector3(-2850, 140, 45), Quaternion.identity);
             Vector3 scale = spear.transform.localScale;
             scale.y = 50f;
@@ -244,6 +252,7 @@ public class StoryGameCore : MonoBehaviour
         }
         if (winType == WinType.Rightdiagonal)
         {
+            SoundFXManage.Instance.PlaySoundFXClip(axeWin, transform, 1f);
             GameObject axe = Instantiate(axePrefab, new Vector3(-2800, 140, -45), Quaternion.identity);
             Vector3 scale = axe.transform.localScale;
             scale.y = 80;
