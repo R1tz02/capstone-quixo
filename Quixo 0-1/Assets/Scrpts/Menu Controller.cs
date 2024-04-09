@@ -107,10 +107,22 @@ public class MenuController : MonoBehaviour
         hostJoinCanvas.enabled = true;
     }
 
+    public void backToMultiplayer()
+    {
+        multiCanvas.enabled = true;
+        hostJoinCanvas.enabled = false;
+    }
+
     public void JoinLobby()
     {
         hostJoinCanvas.enabled = false;
         joinLobbyCanvas.enabled = true;
+    }
+
+    public void backToHostJoin()
+    {
+        hostJoinCanvas.enabled = true;
+        joinLobbyCanvas.enabled = false;
     }
 
     public void moveOrderEasy()
@@ -118,6 +130,13 @@ public class MenuController : MonoBehaviour
         quickCanvas.enabled = false;
         orderCanvas.enabled = true;
         aiDiff = 1;
+    }
+    
+    public void backToAI()
+    {
+        quickCanvas.enabled = true;
+        orderCanvas.enabled = false;
+        //aiDiff = 0;
     }
 
     public void moveOrderMedium()
@@ -255,9 +274,11 @@ public class MenuController : MonoBehaviour
         quickCanvas.enabled = false;
         multiCanvas.enabled = false;
         storyCanvas.enabled = false;
+        orderCanvas.enabled = false;
         joinLobbyCanvas.enabled = false;
         hostJoinCanvas.enabled = false;
         orderCanvas.enabled = false;
+        aiDiff = 0;
         
         overlayCanvas.enabled = true;
 
