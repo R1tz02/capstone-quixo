@@ -12,6 +12,7 @@ public class StoryButtonHandler : MonoBehaviour
     public Button up;
     public Button down;
     public StoryGameCore game;
+    public Color gold = new Color(1f, 0.843f, 0f);
 
     // Create Event so that we can add a listener to any other class that wants to know when a move was made
     public delegate void MoveMade(char direction);
@@ -48,16 +49,16 @@ public class StoryButtonHandler : MonoBehaviour
         switch (dir) //F: Change corresponding arrows depending on the available move options
         {
             case 'U':
-                up.GetComponent<Image>().color = Color.red;
+                up.GetComponent<Image>().color = gold;
                 break;
             case 'D':
-                down.GetComponent<Image>().color = Color.red;
+                down.GetComponent<Image>().color = gold;
                 break;
             case 'L':
-                left.GetComponent<Image>().color = Color.red;
+                left.GetComponent<Image>().color = gold;
                 break;
             case 'R':
-                right.GetComponent<Image>().color = Color.red;
+                right.GetComponent<Image>().color = gold;
                 break;
         }
     }
