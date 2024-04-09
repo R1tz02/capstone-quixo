@@ -937,7 +937,7 @@ public class AiGameCore : MonoBehaviour
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.D)) { makeDiagonalWin(); }
-            if (Input.GetKeyDown(KeyCode.R)) { makeRightDiagonalWin(); }
+            //if (Input.GetKeyDown(KeyCode.D)) { makeDiagonalWin(); }
+            //if (Input.GetKeyDown(KeyCode.R)) { makeRightDiagonalWin(); }
         }
 }
