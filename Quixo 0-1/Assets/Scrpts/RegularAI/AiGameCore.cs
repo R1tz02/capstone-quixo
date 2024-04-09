@@ -656,7 +656,7 @@ public class AiGameCore : MonoBehaviour
             else {
                 currentPlayer = p1;
             }
-            gamePaused = false;
+            gamePaused = true;
             aiMoving = true;
 
             if (aiType == AIType.HardAI)
