@@ -668,14 +668,17 @@ public class AiGameCore : MonoBehaviour
             if (aiType == AIType.HardAI)
             {
                 HardAIMove(hardAI);
+                counter++;
             }
             if (aiType == AIType.MediumAI)
             {
                 MediumAIMove(mediumAI);
+                counter++;
             }
             else if (aiType == AIType.EasyAI)
             {
                 EasyAIMove(easyAI);
+                counter++;
             }
             aiMoving = false;
 
@@ -689,21 +692,25 @@ public class AiGameCore : MonoBehaviour
     {
         int score;
         char[,] board = translateBoard();
-        if (aiType == AIType.HardAI)
+        if (counter > 4)
         {
-            score = hardAI.Evaluate(board);
+            if (aiType == AIType.HardAI)
+            {
+                score = hardAI.Evaluate(board);
 
+            }
+            else
+            {
+                score = easyAI.Evaluate(board);
+            }
+            if (score < 1800)
+            {
+                return true;
+            }
         }
-        else
-        {
-            score = easyAI.Evaluate(board);
-        }
-        if (score < 1800)
-        {
-            return true;
-        }
-        return false;
+            return false;
     }
+    
 
     async void HardAIMove(HardAI hardAI)
     {
