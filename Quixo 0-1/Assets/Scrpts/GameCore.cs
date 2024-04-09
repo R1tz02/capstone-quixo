@@ -247,29 +247,33 @@ public class GameCore : MonoBehaviour
         List<PieceLogic> listOfPieces = new List<PieceLogic>();
         for (int i = 0; i < 5; i++)
         {
-            SoundFXManage.Instance.PlaySoundFXClip(hammerHit, transform, 1f);
             yield return new WaitUntil(() => gamePaused == false);
             PieceLogic curPiece = gameBoard[winnerPieces[i].Item1, winnerPieces[i].Item2].GetComponent<PieceLogic>();
             listOfPieces.Add(curPiece);
             if (winType == WinType.vertical)
             {
+                SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(verPos[i], 140, 0)));
             }
             else if (winType == WinType.horizontal)
             {
+                SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
                 yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(-2856, 140, horPos[i])));
             }
             else
             {
                 if (winnerPieces.Contains((0, 0))) //means it is left diagonal
                 {
+                    SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
                     yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(leftDiagPos[i].Item1, 140, leftDiagPos[i].Item2)));
                 }
                 else //right diagonal
                 {
+                    SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
                     yield return StartCoroutine(MovePieceSmoothly(curPiece, new Vector3(rightDiagPos[i].Item1, 140, rightDiagPos[i].Item2)));
                 }
             }
+            SoundFXManage.Instance.PlaySoundFXClip(hammerHit, transform, 1f);
         }
         foreach (PieceLogic piece in listOfPieces)
         {
