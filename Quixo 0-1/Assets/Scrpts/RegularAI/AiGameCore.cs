@@ -517,13 +517,27 @@ public class AiGameCore : MonoBehaviour
 
     public void currentPlayerSFX()
     {
-        if (currentPlayer == p1)
+        if (aiFirst)
         {
-            SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
+            if (currentPlayer == p1)
+            {
+                SoundFXManage.Instance.PlaySoundFXClip(coldPieceMoveSound, transform, 1f);
+            }
+            else
+            {
+                SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
+            }
         }
         else
         {
-            SoundFXManage.Instance.PlaySoundFXClip(coldPieceMoveSound, transform, 1f);
+            if (currentPlayer == p1)
+            {
+                SoundFXManage.Instance.PlaySoundFXClip(hotPieceMoveSound, transform, 1f);
+            }
+            else
+            {
+                SoundFXManage.Instance.PlaySoundFXClip(coldPieceMoveSound, transform, 1f);
+            }
         }
     }
 
