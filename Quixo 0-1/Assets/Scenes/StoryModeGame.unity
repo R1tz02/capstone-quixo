@@ -10683,10 +10683,11 @@ MonoBehaviour:
   IntroSMLvl4: {fileID: 1544522768}
   CameraPosition: {fileID: 0}
   buttonCanvas: {fileID: 1101805696}
-  swordPrefab: {fileID: 1378010598903046, guid: 431cd727a83ed3849b04c235677e13ae,
+  swordPrefab: {fileID: 8887224701790690321, guid: 3a078232abb58e049ac7e99e15aa5575,
     type: 3}
-  axePrefab: {fileID: 1971897880613298, guid: 84490d26c43499e45b02581945b0a67f, type: 3}
-  spearPrefab: {fileID: 3140830376302814010, guid: e8573012f5a2b24459ddc6d90fcf0273,
+  axePrefab: {fileID: 3004864123894120851, guid: 103991a4cea9ec247851053c49e3eb4a,
+    type: 3}
+  spearPrefab: {fileID: 969205022638321708, guid: d2ca7759bb942c34bbcf6cd674312110,
     type: 3}
 --- !u!1 &1429386287
 GameObject:
