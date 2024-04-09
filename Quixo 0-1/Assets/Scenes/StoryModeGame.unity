@@ -8594,6 +8594,12 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!223 &1101805696 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2081044094258837862, guid: 25faf3cad2629954db2939ba813bf8a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1160781287}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1113584295
 GameObject:
   m_ObjectHideFlags: 0
@@ -10748,7 +10754,7 @@ MonoBehaviour:
   IntroSMLvl3: {fileID: 599672929}
   IntroSMLvl4: {fileID: 1544522768}
   CameraPosition: {fileID: 0}
-  buttonCanvas: {fileID: 0}
+  buttonCanvas: {fileID: 1101805696}
   swordPrefab: {fileID: 1378010598903046, guid: 431cd727a83ed3849b04c235677e13ae,
     type: 3}
   axePrefab: {fileID: 1971897880613298, guid: 84490d26c43499e45b02581945b0a67f, type: 3}
